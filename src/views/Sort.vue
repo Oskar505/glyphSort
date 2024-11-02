@@ -1,31 +1,55 @@
 <template>
     <header>
-        <h1>Sort</h1>
+        <h1 @click="clearStorage()">Sort</h1>
     </header>
 
+    <main>
+        <div class="sortWrapper" :class="borderFeedback">
+            <div class="glyphCardWrapper">
+                <glyph-card :value="val1"></glyph-card>
+                <glyph-card :value="val2"></glyph-card>
+            </div>
+            
+
+            <div class="answerBtnWrapper">
+                <div class="answerBtn" id="lessBtn" :class="btn0Feedback" @click="checkAnswer(0)">
+                    <p><</p>
+                </div>
+
+                <div class="answerBtn" id="lessBtn" :class="btn1Feedback" @click="checkAnswer(1)">
+                    <p>=</p>
+                </div>
+
+                <div class="answerBtn" id="lessBtn" :class="btn2Feedback" @click="checkAnswer(2)">
+                    <p>></p>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="infoWrapper">
+            <div class="infoBox" title="Number of sorted glyphs">
+                <p class="data">{{ sortedCount }}</p>
+                <p class="label">Count</p>
+            </div>
+            
+            <div class="infoBox" title="Average time to sort a pair of glyphs">
+                <p class="data">{{ sortTime }}&nbsp;s</p>
+                <p class="label">Time</p>
+            </div>
+
+            <div class="infoBox" title="Success rate">
+                <p class="data">{{ successRate }}&nbsp;%</p>
+                <p class="label">Success</p>
+            </div>
+
+            <div class="infoBox" title="Difference between glyph values (0 - 100)">
+                <p class="data">{{ Math.round(distance / glyphStepsCount * 100) }}</p>
+                <p class="label">Difference</p>
+            </div>
+        </div>
+    </main>
     
-    <div class="sortWrapper" :class="borderFeedback">
-        <div class="glyphCardWrapper">
-            <glyph-card :value="val1"></glyph-card>
-            <glyph-card :value="val2"></glyph-card>
-        </div>
-        
-
-        <div class="answerBtnWrapper">
-            <div class="answerBtn" id="lessBtn" :class="btn0Feedback" @click="checkAnswer(0)">
-                <p><</p>
-            </div>
-
-            <div class="answerBtn" id="lessBtn" :class="btn1Feedback" @click="checkAnswer(1)">
-                <p>=</p>
-            </div>
-
-            <div class="answerBtn" id="lessBtn" :class="btn2Feedback" @click="checkAnswer(2)">
-                <p>></p>
-            </div>
-        </div>
-        
-    </div>
 </template>
 
 
@@ -33,6 +57,7 @@
     export default {
         data() {
             return {
+                glyphName: "a",
                 distance: undefined,
                 val1: 0,
                 val2: 0,
@@ -40,6 +65,10 @@
                 lastCorrect: true,
                 glyphStepsCount: 100,
                 equalChance: 1, // 1 = 10%
+
+                successRate: 0,
+                sortedCount: 0,
+                sortTime: 0,
 
                 clickCooldown: false,
 
@@ -53,7 +82,14 @@
 
 
         mounted() {
-            window.addEventListener('keydown', this.handleKeydown)       
+            window.addEventListener('keydown', this.handleKeydown)
+
+            this.newGlyphs()
+
+            // get stats
+            let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || []
+            let sessionAnswers = JSON.parse(sessionStorage.getItem("sessionAnswers")) || []
+            this.getStats(allAnswers, sessionAnswers)
         },
 
         beforeUnmount() {
@@ -175,6 +211,33 @@
                 }
 
 
+                // Get data
+                let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || []
+                let sessionAnswers = JSON.parse(sessionStorage.getItem("sessionAnswers")) || []
+
+
+                // Push new data
+                let answerData = {
+                    "glyphName": this.glyphName,
+                    "val1": this.val1,
+                    "val2": this.val2,
+                    "correct": this.lastCorrect,
+                    "time": Date.now()
+                }
+
+                allAnswers.push(answerData)
+                sessionAnswers.push(answerData)
+
+
+                this.getStats(allAnswers, sessionAnswers)
+
+
+                // Save data
+                localStorage.setItem("allAnswers", JSON.stringify(allAnswers))
+                sessionStorage.setItem("sessionAnswers", JSON.stringify(sessionAnswers))
+
+
+
                 // reset feedbacks and get new glyphs
                 setTimeout(() => {
                     this.btn0Feedback = ''
@@ -214,6 +277,49 @@
                     this.clickCooldown = false;
                 }, 500);
             },
+
+
+            clearStorage() {
+                console.log("clearing storage");
+
+                localStorage.clear();
+                sessionStorage.clear();
+            },
+
+
+
+            getStats(allAnswers, sessionAnswers) {
+                // success rate
+                try {
+                    this.successRate = Math.round((allAnswers.filter(x => x.correct).length / allAnswers.length) * 100)
+                }
+
+                catch (error) {
+                    this.successRate = 0
+                    console.warn('Could not get success rate ' + error);
+                }
+
+                if (isNaN(this.successRate)) {
+                    this.successRate = 0
+                }
+
+                console.log(this.successRate);
+
+                // sorted count
+                this.sortedCount = allAnswers.length
+
+
+                // time per sort
+                try {
+                    let timeDiff = sessionAnswers[sessionAnswers.length - 1].time - sessionAnswers[0].time
+                    this.sortTime = ((timeDiff / sessionAnswers.length) / 1000).toFixed(2)
+                }
+
+                catch (error) {
+                    this.sortTime = 0
+                    console.warn('Could not get time per sort ' + error);
+                }
+            }
         },
 
     }
@@ -224,7 +330,6 @@
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) ) + min;
     }
-
 </script>
 
 
@@ -244,6 +349,17 @@
     }
 
 
+
+    main {
+       max-width: 500px;
+       width: 100%;
+       margin: 0 auto;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+    }
+
+
     .sortWrapper {
         display: flex;
         flex-direction: column;
@@ -252,12 +368,10 @@
         gap: 50px;
         border-radius: 15px;
         background-color: #fcfcfc;
-        box-shadow: 0px 0px 15px #eee;
+        box-shadow: 0px 0px 15px #dedede;
         border: 3px solid #999;
-        max-width: 500px;
-        margin: 0 auto;
-        margin-top: 6%;
-        padding: 30px 40px;
+        margin-top: 13%;
+        padding: 30px 80px;
         user-select: none;
     }
 
@@ -286,6 +400,44 @@
         padding: 0 25px;
         border-radius: 15px;
         background-color: white;
+    }
+
+
+
+    .infoWrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        width: 110%;
+        margin-top: 6%;
+    }
+
+
+    .infoBox {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        flex: 1;
+        border: 2px solid #444;
+        border-radius: 15px;
+        padding: 10px;
+        cursor: help;
+    }
+
+    .infoBox .data {
+        font-size: 30px;
+        color: #444;
+        font-weight: 500;
+    }
+
+    .infoBox .label {
+        font-size: 20px;
+        color: #666;
     }
 
     
