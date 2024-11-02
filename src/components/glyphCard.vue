@@ -16,7 +16,7 @@
 
         props: {
             value: {
-                type: String,
+                type: Number,
                 required: true
             }
         },
@@ -28,10 +28,11 @@
     div {
         width: 1in;
         height: 1in;
-        border: 2px solid black;
+        border: 3px solid black;
         display: flex;
         justify-content: center;
         align-items: center;
+        background-color: white;
     }
 
 
