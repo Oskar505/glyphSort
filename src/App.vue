@@ -15,4 +15,19 @@
     font-family: "Roboto", serif;
     box-sizing: border-box;
   }
+
+
+  header {
+    padding: 10px 100px;
+    border-bottom: 1px solid #ddd;
+    background-color: #00ace6;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #eee;
+    background-color: #fcfcfc;
+  }
+
+  h1 {
+    font-size: 37px;
+    color: #444;
+  }
 </style>

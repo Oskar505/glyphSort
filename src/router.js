@@ -14,6 +14,11 @@ const router = createRouter({
       path: '/sort',
       name: 'Sort',
       component: () => import('./views/Sort.vue') // lazy-loaded
+    },
+    {
+      path: '/results',
+      name: 'Results',
+      component: () => import('./views/Results.vue')
     }
   ]
 })

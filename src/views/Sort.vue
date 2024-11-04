@@ -12,51 +12,63 @@
             
 
             <div class="answerBtnWrapper">
-                <div class="answerBtn" id="lessBtn" :class="btn0Feedback" @click="checkAnswer(0)">
+                <div class="answerBtn" id="lessBtn" :class="btn0Feedback" @click="checkAnswer(0, glyphSets[pickedSet])">
                     <p><</p>
                 </div>
 
-                <div class="answerBtn" id="lessBtn" :class="btn1Feedback" @click="checkAnswer(1)">
+                <div class="answerBtn" id="lessBtn" :class="btn1Feedback" @click="checkAnswer(1, glyphSets[pickedSet])">
                     <p>=</p>
                 </div>
 
-                <div class="answerBtn" id="lessBtn" :class="btn2Feedback" @click="checkAnswer(2)">
+                <div class="answerBtn" id="lessBtn" :class="btn2Feedback" @click="checkAnswer(2, glyphSets[pickedSet])">
                     <p>></p>
                 </div>
             </div>
         </div>
 
 
-        <div class="infoWrapper">
+        <div class="infoWrapper" v-if="glyphSets[pickedSet]">
             <div class="infoBox" title="Number of sorted glyphs">
-                <p class="data">{{ sortedCount }}</p>
+                <p class="data">{{ glyphSets[pickedSet].sortedCount }}</p>
                 <p class="label">Count</p>
             </div>
             
             <div class="infoBox" title="Average time to sort a pair of glyphs">
-                <p class="data">{{ sortTime }}&nbsp;s</p>
+                <p class="data">{{ glyphSets[pickedSet].sortTime }}&nbsp;s</p>
                 <p class="label">Time</p>
             </div>
 
             <div class="infoBox" title="Success rate">
-                <p class="data">{{ successRate }}&nbsp;%</p>
+                <p class="data">{{ glyphSets[pickedSet].successRate }}&nbsp;%</p>
                 <p class="label">Success</p>
             </div>
 
             <div class="infoBox" title="Difference between glyph values (0 - 100)">
-                <p class="data">{{ Math.round(distance / glyphStepsCount * 100) }}</p>
+                <p class="data">{{ Math.round(glyphSets[pickedSet].actualDistance / parseFloat(glyphSets[pickedSet].glyphStepsCount) * 100) }}</p>
                 <p class="label">Difference</p>
             </div>
         </div>
     </main>
+
+
+    <div class="floatingBtn" @click="this.$router.push({path:'/results', query: {successRate: successRate, sortedCount: sortedCount, sortTime: sortTime, distance: distance, sessionTime: sessionTime, glyphStepsCount: glyphStepsCount}})">
+        <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#444"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
+    </div>
     
 </template>
 
 
 <script>
+    import GlyphSet from '../GlyphSetClass.js'
+
+
     export default {
         data() {
             return {
+                glyphSets: [],
+                pickedSet: 0,
+
+
                 glyphName: "a",
                 distance: undefined,
                 val1: 0,
@@ -69,6 +81,7 @@
                 successRate: 0,
                 sortedCount: 0,
                 sortTime: 0,
+                sessionTime: 0,
 
                 clickCooldown: false,
 
@@ -83,13 +96,24 @@
 
         mounted() {
             window.addEventListener('keydown', this.handleKeydown)
+            
 
-            this.newGlyphs()
+            //TEST: define class
+            this.glyphSets = [new GlyphSet("a")]
+
+            let newGlyphData = this.glyphSets[0].getGlyphPair(undefined, true)
+            this.distance = newGlyphData.distance
+            this.val1 = newGlyphData.val1
+            this.val2 = newGlyphData.val2
+
+
 
             // get stats
             let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || []
             let sessionAnswers = JSON.parse(sessionStorage.getItem("sessionAnswers")) || []
-            this.getStats(allAnswers, sessionAnswers)
+            this.glyphSets[0].getStats(allAnswers, sessionAnswers)
+
+            console.log(this.glyphSets[this.pickedSet])
         },
 
         beforeUnmount() {
@@ -99,78 +123,18 @@
 
 
         methods: {
-            newGlyphs() {
-                // set first distance to 20%
-                if (this.distance == undefined) {
-                    this.distance = this.glyphStepsCount * 0.2
-                }
-                
-                // if last response was correct, decrease distance, otherwise increase distance
-                else {
-                    this.distance = this.lastCorrect ? this.distance * this.gamma : this.distance / this.gamma;
-                }
-
-
-                // if distance is too small, start over
-                if (this.distance < 1) {
-                    this.distance = 20
-                    console.warn("distance too small, starting over");
-                }
-
-                // distance cannot be higher than the starting distance
-                else if (this.distance > this.glyphStepsCount * 0.2) {
-                    this.distance = this.glyphStepsCount * 0.2 
-                    console.warn("distance too high, starting over");
-                }
-
-
-
-                // chance of getting equal values
-                if (getRandomInt(0, 9) > this.equalChance) {
-                    let offset = this.distance / 2
-
-                    // Get the middle value. After adding or subtracting the offset, it cannot be lower than 0 or higher than the highest glyph.
-                    let midVal = getRandomInt(offset, this.glyphStepsCount - offset)
-
-
-                    // higher of lower
-                    if (getRandomInt(0,1) == 0) {
-                        this.val1 = Math.round(midVal - offset);
-                        this.val2 = Math.round(midVal + offset);
-                    }
-
-                    else {
-                        this.val1 = Math.round(midVal + offset);
-                        this.val2 = Math.round(midVal - offset);
-                    }
-                }
-
-
-                else {
-                    this.val1 = getRandomInt(0, this.glyphStepsCount);
-                    this.val2 = this.val1;
-                }
-
-
-                console.log(this.val1, this.val2);
-            },
-
-
-
-            checkAnswer(buttonId) {
+            checkAnswer(buttonId, glyphSet) {
                 // check
                 if (buttonId == 0) {
                     this.lastCorrect = this.val1 < this.val2
 
                     // show feedback
                     if (this.lastCorrect) {
-                        console.log("correct");
                         this.btn0Feedback = "correctBtn"
                         this.borderFeedback = "correctBorder"
                     }
 
                     else {
-                        console.log("wrong");
                         this.btn0Feedback = "wrongBtn"
                         this.borderFeedback = "wrongBorder"
                     }
@@ -181,13 +145,11 @@
 
                     // show feedback
                     if (this.lastCorrect) {
-                        console.log("correct");
                         this.btn1Feedback = "correctBtn"
                         this.borderFeedback = "correctBorder"
                     }
 
                     else {
-                        console.log("wrong");
                         this.btn1Feedback = "wrongBtn"
                         this.borderFeedback = "wrongBorder"
                     }
@@ -198,44 +160,31 @@
 
                     // show feedback
                     if (this.lastCorrect) {
-                        console.log("correct");
                         this.btn2Feedback = "correctBtn"
                         this.borderFeedback = "correctBorder"
                     }
 
                     else {
-                        console.log("wrong");
                         this.btn2Feedback = "wrongBtn"
                         this.borderFeedback = "wrongBorder"
                     }
                 }
 
 
-                // Get data
-                let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || []
-                let sessionAnswers = JSON.parse(sessionStorage.getItem("sessionAnswers")) || []
 
-
-                // Push new data
+                // Save new answer
                 let answerData = {
-                    "glyphName": this.glyphName,
                     "val1": this.val1,
                     "val2": this.val2,
                     "correct": this.lastCorrect,
+                    'distance': this.distance,
                     "time": Date.now()
                 }
 
-                allAnswers.push(answerData)
-                sessionAnswers.push(answerData)
+                glyphSet.addAnswer(answerData)
 
 
-                this.getStats(allAnswers, sessionAnswers)
-
-
-                // Save data
-                localStorage.setItem("allAnswers", JSON.stringify(allAnswers))
-                sessionStorage.setItem("sessionAnswers", JSON.stringify(sessionAnswers))
-
+                glyphSet.getStats()
 
 
                 // reset feedbacks and get new glyphs
@@ -246,10 +195,13 @@
                     this.borderFeedback = ''
 
 
-                    this.newGlyphs()
-                }, 500);
+                    // this.newGlyphs()
 
-                
+                    let newGlyphData = glyphSet.getGlyphPair(this.distance, this.lastCorrect)
+                    this.distance = newGlyphData.distance
+                    this.val1 = newGlyphData.val1
+                    this.val2 = newGlyphData.val2
+                }, 500);
             },
 
 
@@ -259,15 +211,15 @@
 
 
                 if (e.key == "ArrowLeft" || e.key == "a") {
-                    this.checkAnswer(0)
+                    this.checkAnswer(0, this.glyphSets[this.pickedSet])
                 }
 
                 else if (e.key == "ArrowDown" || e.key == "s") {
-                    this.checkAnswer(1)
+                    this.checkAnswer(1, this.glyphSets[this.pickedSet])
                 }
 
                 else if (e.key == "ArrowRight" || e.key == "d") {
-                    this.checkAnswer(2)
+                    this.checkAnswer(2, this.glyphSets[this.pickedSet])
                 }
 
 
@@ -285,71 +237,13 @@
                 localStorage.clear();
                 sessionStorage.clear();
             },
-
-
-
-            getStats(allAnswers, sessionAnswers) {
-                // success rate
-                try {
-                    this.successRate = Math.round((allAnswers.filter(x => x.correct).length / allAnswers.length) * 100)
-                }
-
-                catch (error) {
-                    this.successRate = 0
-                    console.warn('Could not get success rate ' + error);
-                }
-
-                if (isNaN(this.successRate)) {
-                    this.successRate = 0
-                }
-
-                console.log(this.successRate);
-
-                // sorted count
-                this.sortedCount = allAnswers.length
-
-
-                // time per sort
-                try {
-                    let timeDiff = sessionAnswers[sessionAnswers.length - 1].time - sessionAnswers[0].time
-                    this.sortTime = ((timeDiff / sessionAnswers.length) / 1000).toFixed(2)
-                }
-
-                catch (error) {
-                    this.sortTime = 0
-                    console.warn('Could not get time per sort ' + error);
-                }
-            }
         },
 
-    }
-
-
-
-
-    function getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1) ) + min;
     }
 </script>
 
 
 <style scoped>
-    header {
-        padding: 10px 100px;
-        border-bottom: 1px solid #ddd;
-        background-color: #00ace6;
-        background-color: #fff;
-        box-shadow: 0px 0px 10px #eee;
-        background-color: #fcfcfc;
-    }
-
-    h1 {
-        font-size: 37px;
-        color: #444;
-    }
-
-
-
     main {
        max-width: 500px;
        width: 100%;
@@ -427,6 +321,7 @@
         border-radius: 15px;
         padding: 10px;
         cursor: help;
+        background-color: #fcfcfc;
     }
 
     .infoBox .data {
@@ -438,6 +333,22 @@
     .infoBox .label {
         font-size: 20px;
         color: #666;
+    }
+
+
+
+    .floatingBtn {
+        position: fixed;
+        bottom: 60px;
+        right: 60px;
+        background-color: transparent;
+        border: 3px solid #444;
+        border-radius: 50%;
+        padding: 7px;
+        cursor: pointer;
+        transition: 0.2s;
+        background-color: #fcfcfc;
+        box-shadow: 0px 0px 10px #ddd;
     }
 
     
