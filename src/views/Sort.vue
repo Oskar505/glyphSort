@@ -51,7 +51,7 @@
     </main>
 
 
-    <div class="floatingBtn" @click="this.$router.push({path:'/results', query: {successRate: successRate, sortedCount: sortedCount, sortTime: sortTime, distance: distance, sessionTime: sessionTime, glyphStepsCount: glyphStepsCount}})">
+    <div class="floatingBtn" @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})">
         <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#444"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
     </div>
     
@@ -66,6 +66,7 @@
         data() {
             return {
                 glyphSets: [],
+                glyphSetIds: [],
                 pickedSet: 0,
 
 
@@ -99,8 +100,9 @@
             
 
             //TEST: define class
-            this.glyphSets = [new GlyphSet("a")]
+            this.glyphSets = [new GlyphSet("Glyph set A")]
 
+            this.glyphSetIds = this.glyphSets.map(glyphSet => glyphSet.id)
             let newGlyphData = this.glyphSets[0].getGlyphPair(undefined, true)
             this.distance = newGlyphData.distance
             this.val1 = newGlyphData.val1

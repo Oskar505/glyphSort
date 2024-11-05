@@ -6,42 +6,56 @@
 
 
     <main>
-        <div class="resultBox stats">
-            <h2>Statistics</h2>
+        <div class="resultBox stats" v-for="glyphSet in glyphSets" :key="glyphSet.id">
+            <h2>{{ glyphSet.id }}</h2>
 
-            <div class="infoBox" title="Number of sorted glyphs">
-                <p class="data">{{ sortedCount }}</p>
-                <p class="label">Count</p>
+
+            <h3>Stats</h3>
+
+            <div class="statsWrapper">
+                <div class="infoBox" title="Number of sorted glyphs">
+                    <p class="data">{{ glyphSet.sortedCount }}</p>
+                    <p class="label">Count</p>
+                </div>
+                
+                <div class="infoBox" title="Average time to sort a pair of glyphs">
+                    <p class="data">{{ glyphSet.sortTime }}&nbsp;s</p>
+                    <p class="label">Time</p>
+                </div>
+
+                <div class="infoBox" title="Success rate">
+                    <p class="data">{{ glyphSet.successRate }}&nbsp;%</p>
+                    <p class="label">Success</p>
+                </div>
+
+                <div class="infoBox" title="Smallest difference between glyph values (0 - 100)">
+                    <p class="data">{{ Math.round(glyphSet.smallestDistance / parseFloat(glyphSet.glyphStepsCount) * 100) }}</p>
+                    <p class="label">Difference</p>
+                </div>
+
             </div>
             
-            <div class="infoBox" title="Average time to sort a pair of glyphs">
-                <p class="data">{{ sortTime }}&nbsp;s</p>
-                <p class="label">Time</p>
-            </div>
 
-            <div class="infoBox" title="Success rate">
-                <p class="data">{{ successRate }}&nbsp;%</p>
-                <p class="label">Success</p>
-            </div>
+            <h3>Graphs</h3>
 
-            <div class="infoBox" title="Difference between glyph values (0 - 100)">
-                <p class="data">{{ Math.round(parseFloat(distance) / parseFloat(glyphStepsCount) * 100) }}</p>
-                <p class="label">Difference</p>
-            </div>
-        </div>
+            <div class="graphsWrapper">
 
-        
-        <div class="resultBox graphs">
-            <h2>Graphs</h2>
+            </div>
         </div>
     </main>
 </template>
 
 
 <script>
+    import GlyphSet from '../GlyphSetClass.js'
+
+
+
     export default {
         data() {
             return {
+                glyphSets: [],
+
                 successRate: null,
                 sortedCount: null,
                 sortTime: null,
@@ -54,15 +68,20 @@
 
 
         mounted() {
-            this.successRate = this.$route.query.successRate
-            this.sortedCount = this.$route.query.sortedCount
-            this.sortTime = this.$route.query.sortTime
-            this.sessionTime = this.$route.query.sessionTime
-            this.distance = this.$route.query.distance
-            this.glyphStepsCount = this.$route.query.glyphStepsCount
+            // re-init glyph sets and get stats
+            JSON.parse(this.$route.query.glyphSetIds).forEach(glyphSetId => {
+                let newGlyphSet = new GlyphSet(glyphSetId)
+                newGlyphSet.getStats()
+                this.glyphSets.push(newGlyphSet)
+            })
 
-            console.log(this.successRate, this.sortedCount, this.sortTime, this.sessionTime, this.distance, this.glyphStepsCount)
-            console.log(Math.round(parseFloat(this.distance) / parseFloat(this.glyphStepsCount) * 100))
+
+            // this.successRate = this.$route.query.successRate
+            // this.sortedCount = this.$route.query.sortedCount
+            // this.sortTime = this.$route.query.sortTime
+            // this.sessionTime = this.$route.query.sessionTime
+            // this.distance = this.$route.query.distance
+            // this.glyphStepsCount = this.$route.query.glyphStepsCount
         },
 
 
@@ -85,13 +104,32 @@
         flex-wrap: wrap;
     }
 
+    h2 {
+        font-size: 30px;
+        color: #444;
+        margin: -10px 0 5px -10px;
+        font-weight: 800;
+    }
+
+    h3 {
+        font-size: 29px;
+        color: #444;
+        margin-top: 10px;
+        font-weight: 700;
+    }
+
 
     .resultBox {
         border-radius: 15px;
         background-color: #fcfcfc;
         box-shadow: 0px 0px 15px #dedede;
         border: 3px solid #999;
-        padding: 20px 30px;
+        padding: 25px 30px;
+        width: 1000px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 6%;
     }
 
 
@@ -118,5 +156,19 @@
     .infoBox .label {
         font-size: 20px;
         color: #666;
+    }
+
+
+    .statsWrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        width: 500px;
+    }
+
+    .statsWrapper div {
+        flex: 1;
     }
 </style>

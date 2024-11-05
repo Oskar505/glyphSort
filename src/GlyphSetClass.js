@@ -3,7 +3,7 @@ class GlyphSet {
         this.id = id
         this.data = this.getData()
 
-        if (this.data == null) {
+        if (this.data == null || !this.data) {
             // TODO: get from zip
             this.glyphs = Array.from({ length: 100 }, (_, index) => index)
             this.distance = distance
@@ -15,12 +15,6 @@ class GlyphSet {
             if (distance == undefined) {
                 this.distance = this.glyphStepsCount * 0.2
             }
-
-
-            this.successRate = 0
-            this.sortedCount = 0
-            this.sortTime = 0
-            this.sessionTime = 0
 
 
             // save
@@ -45,12 +39,14 @@ class GlyphSet {
             this.gamma = this.data.gamma
             this.glyphStepsCount = this.glyphs.length
             this.equalChance = this.data.equalChance // 1 = 10%
-
-            this.successRate = 0
-            this.sortedCount = 0
-            this.sortTime = 0
-            this.sessionTime = 0
         }
+
+
+        this.successRate = 0
+        this.sortedCount = 0
+        this.sortTime = 0
+        this.sessionTime = 0
+        this.smallestDistance = 0
     }
 
 
@@ -68,7 +64,7 @@ class GlyphSet {
         let data = localStorage.getItem(this.id)
 
         if (!data) {
-            console.error("no data found in local storage")
+            console.warn("no data found in local storage")
             return false
         }
 
@@ -200,6 +196,19 @@ class GlyphSet {
             this.sortTime = 0
             this.sessionTime = 0
             console.warn('Could not get time per sort ' + error);
+        }
+
+
+
+        // smallest distance
+        try {
+            console.log(...allAnswers.map(x => x.distance))
+            this.smallestDistance = Math.min(...allAnswers.map(x => x.distance))
+        }
+
+        catch (error) {
+            this.smallestDistance = 0
+            console.warn('Could not get the smallest distance ' + error);
         }
     }
 }
