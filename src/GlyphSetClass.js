@@ -211,6 +211,45 @@ class GlyphSet {
             console.warn('Could not get the smallest distance ' + error);
         }
     }
+
+
+    getChartData() {
+        // {20:100, 14:99, 10:90, 7:80, 3:50}
+
+
+        let allAnswers = this.getData().answers
+
+        // get distances
+        let distances = []
+
+        allAnswers.forEach(answer => {
+            if (!distances.includes(answer.distance)) {
+                distances.push(answer.distance)
+            }
+        });
+
+
+        // sort answers
+        let diffsAndErrs = {}
+
+        distances.forEach(distance => {
+            let correctCount = 0
+            let count = 0
+
+            allAnswers.filter(item => item.distance == distance).forEach(answer => {
+                if (answer.correct) {
+                    correctCount++
+                }
+
+                count++
+            })
+
+            diffsAndErrs[Math.round(distance)] = Math.round((correctCount / count) * 100)
+        });
+
+
+        return diffsAndErrs
+    }
 }
 
 

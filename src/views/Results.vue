@@ -9,9 +9,6 @@
         <div class="resultBox stats" v-for="glyphSet in glyphSets" :key="glyphSet.id">
             <h2>{{ glyphSet.id }}</h2>
 
-
-            <h3>Stats</h3>
-
             <div class="statsWrapper">
                 <div class="infoBox" title="Number of sorted glyphs">
                     <p class="data">{{ glyphSet.sortedCount }}</p>
@@ -19,12 +16,12 @@
                 </div>
                 
                 <div class="infoBox" title="Average time to sort a pair of glyphs">
-                    <p class="data">{{ glyphSet.sortTime }}&nbsp;s</p>
+                    <p class="data">{{ glyphSet.sortTime }}s</p>
                     <p class="label">Time</p>
                 </div>
 
                 <div class="infoBox" title="Success rate">
-                    <p class="data">{{ glyphSet.successRate }}&nbsp;%</p>
+                    <p class="data">{{ glyphSet.successRate }}%</p>
                     <p class="label">Success</p>
                 </div>
 
@@ -36,10 +33,10 @@
             </div>
             
 
-            <h3>Graphs</h3>
+            <h3>Charts</h3>
 
-            <div class="graphsWrapper">
-
+            <div class="chartsWrapper">
+                <line-chart :datasets="this.chartDatasets" :labels="this.chartLabels"></line-chart>
             </div>
         </div>
     </main>
@@ -55,6 +52,8 @@
         data() {
             return {
                 glyphSets: [],
+                chartDatasets: [],
+                chartLabels: [],
 
                 successRate: null,
                 sortedCount: null,
@@ -68,11 +67,49 @@
 
 
         mounted() {
+            // chart line colors
+            let lineColors = [
+                'rgba(54, 162, 235, 1)', // Modrá
+                'rgba(255, 99, 132, 1)', // Červená
+                'rgba(75, 192, 192, 1)', // Zelená
+                'rgba(255, 159, 64, 1)', // Oranžová
+                'rgba(153, 102, 255, 1)', // Fialová
+                'rgba(63, 191, 191, 1)', // Tyrkysová
+                'rgba(255, 0, 0, 1)', // Tmavě červená
+                'rgba(255, 255, 0, 1)', // Žlutá
+                'rgba(255, 105, 180, 1)', // Růžová
+                'rgba(25, 25, 112, 1)'  // Tmavě modrá
+            ];
+
+            let labelCount = 0
+
+
+
             // re-init glyph sets and get stats
             JSON.parse(this.$route.query.glyphSetIds).forEach(glyphSetId => {
                 let newGlyphSet = new GlyphSet(glyphSetId)
                 newGlyphSet.getStats()
                 this.glyphSets.push(newGlyphSet)
+
+
+                // chart data
+                let diffsAndErrs = newGlyphSet.getChartData()
+                let chartDataset = {
+                    label: glyphSetId,
+                    data: Object.values(diffsAndErrs),
+                    borderColor: lineColors[0],
+                    backgroundColor: lineColors[0],
+                    tension: 0.4
+                }
+
+                this.chartDatasets.push(chartDataset)
+                lineColors.shift()
+
+
+                if (Object.keys(diffsAndErrs).length > this.chartLabels.length) {
+                    this.chartLabels = Object.keys(diffsAndErrs)
+                }
+
             })
 
 

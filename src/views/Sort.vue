@@ -34,12 +34,12 @@
             </div>
             
             <div class="infoBox" title="Average time to sort a pair of glyphs">
-                <p class="data">{{ glyphSets[pickedSet].sortTime }}&nbsp;s</p>
+                <p class="data">{{ glyphSets[pickedSet].sortTime }}s</p>
                 <p class="label">Time</p>
             </div>
 
             <div class="infoBox" title="Success rate">
-                <p class="data">{{ glyphSets[pickedSet].successRate }}&nbsp;%</p>
+                <p class="data">{{ glyphSets[pickedSet].successRate }}%</p>
                 <p class="label">Success</p>
             </div>
 
