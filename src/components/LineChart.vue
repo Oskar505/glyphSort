@@ -56,6 +56,8 @@
                             },
 
                             ticks: {
+                                beginAtZero: true,
+                                max: 100,
                                 callback: function (value) {
                                     return value + '%';
                                 }

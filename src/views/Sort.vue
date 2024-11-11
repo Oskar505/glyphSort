@@ -6,8 +6,8 @@
     <main>
         <div class="sortWrapper" :class="borderFeedback">
             <div class="glyphCardWrapper">
-                <glyph-card :value="val1"></glyph-card>
-                <glyph-card :value="val2"></glyph-card>
+                <glyph-card :value="img1"></glyph-card>
+                <glyph-card :value="img2"></glyph-card>
             </div>
             
 
@@ -74,6 +74,10 @@
                 distance: undefined,
                 val1: 0,
                 val2: 0,
+
+                img1: '',
+                img2: '',
+
                 gamma: 0.7,
                 lastCorrect: true,
                 glyphStepsCount: 100,
@@ -98,15 +102,23 @@
         mounted() {
             window.addEventListener('keydown', this.handleKeydown)
             
+            let setIds = JSON.parse(this.$route.query.setIds);
+            console.log(setIds);  // ["Cool line"]
 
-            //TEST: define class
-            this.glyphSets = [new GlyphSet("Glyph set A")]
+            setIds.forEach(id => {
+                this.glyphSets.push(new GlyphSet(id));
+            });
+
+            
 
             this.glyphSetIds = this.glyphSets.map(glyphSet => glyphSet.id)
             let newGlyphData = this.glyphSets[0].getGlyphPair(undefined, true)
             this.distance = newGlyphData.distance
             this.val1 = newGlyphData.val1
             this.val2 = newGlyphData.val2
+
+            this.img1 = this.glyphSets[this.pickedSet].glyphs[this.val1]
+            this.img2 = this.glyphSets[this.pickedSet].glyphs[this.val2]
 
 
 
@@ -121,6 +133,24 @@
         beforeUnmount() {
             window.removeEventListener('keydown', this.handleKeydown)
         },
+
+
+
+        // watch: {
+        //     val1(index) {
+        //         this.$nextTick(() => {
+        //             console.log(this.glyphsets, this.pickedSet)
+
+        //             this.img1 = this.glyphsets[this.pickedSet].glyphs[index]
+        //         })
+        //     },
+
+        //     val2(index) {
+        //         this.$nextTick(() => {
+        //             this.img2 = this.glyphsets[this.pickedSet].glyphs[index]
+        //         })
+        //     },
+        // },
 
 
 
@@ -203,6 +233,9 @@
                     this.distance = newGlyphData.distance
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
+
+                    this.img1 = this.glyphSets[this.pickedSet].glyphs[this.val1]
+                    this.img2 = this.glyphSets[this.pickedSet].glyphs[this.val2]
                 }, 500);
             },
 

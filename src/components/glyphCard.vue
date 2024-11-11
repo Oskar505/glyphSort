@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h1>{{ value }}</h1>
+        <!-- <h1>{{ value }}</h1> -->
+        <img :src="decodedImg" :alt="decodedImg" @click="test">
     </div>
 </template>
 
@@ -9,17 +10,30 @@
     export default {
         data() {
             return {
-
+                decodedImg: ''
             }
         },
 
 
         props: {
             value: {
-                type: Number,
+                type: String,
                 required: true
             }
         },
+
+        watch: {
+            value(newValue) {
+                this.decodedImg = atob(newValue)
+                console.log(this.decodedImg)
+            }
+        },
+
+        methods: {
+            test() {
+                console.log(atob(this.value))
+            }
+        }
     }
 </script>
 
@@ -33,6 +47,11 @@
         justify-content: center;
         align-items: center;
         background-color: white;
+    }
+
+    div img {
+        width: 1in;
+        height: 1in;
     }
 
 

@@ -108,6 +108,9 @@
 
                 if (Object.keys(diffsAndErrs).length > this.chartLabels.length) {
                     this.chartLabels = Object.keys(diffsAndErrs)
+                    // this.chartLabels = this.chartLabels.map(label => label / 10)
+
+                    console.log(this.chartLabels)
                 }
 
             })

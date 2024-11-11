@@ -1,11 +1,18 @@
 class GlyphSet {
-    constructor(id, distance=undefined, gamma=0.7, equalChance=1) {
+    constructor(id, glyphs=[], distance=undefined, gamma=0.7, equalChance=1) {
         this.id = id
         this.data = this.getData()
 
+        console.log(this.data)
+
         if (this.data == null || !this.data) {
             // TODO: get from zip
-            this.glyphs = Array.from({ length: 100 }, (_, index) => index)
+            // this.glyphs = Array.from({ length: 100 }, (_, index) => index)
+            
+            
+
+            this.glyphs = glyphs
+
             this.distance = distance
             this.actualDistance = distance
             this.gamma = gamma
@@ -51,8 +58,47 @@ class GlyphSet {
 
 
     //CRUD
+    saveGlyphsFromZip(glyphs) {
+        this.glyphs = []
+        let base64Image;
+
+        for(const glyph of glyphs) {
+            base64Image = btoa(glyph)
+            this.glyphs.push(base64Image)
+        }
+
+        console.log(this.glyphs[0])
+
+        // for(const glyph of glyphs) {
+        //     base64Image = new Promise((resolve, reject) => {
+        //         const reader = new FileReader()
+
+        //         console.log(typeof glyph)
+
+        //         reader.readAsDataURL(glyph)
+        //         reader.onload = () => resolve(reader.result)
+        //         reader.onerror = error => reject(error)
+        //     })
+
+        //     this.glyphs.push(base64Image)
+        // }
+
+        this.data["glyphs"] = this.glyphs
+
+        return this.data
+    }
+
     saveData(data) {
+        data = this.saveGlyphsFromZip(data.glyphs)
+
+        console.log(data)
+
         localStorage.setItem(this.id, JSON.stringify(data))
+        
+
+        let glyphSetList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
+        glyphSetList.push(this.id)
+        localStorage.setItem("glyphSetList", JSON.stringify(glyphSetList))
     }
 
     getData() {
@@ -112,8 +158,8 @@ class GlyphSet {
             let offset = this.actualDistance / 2
 
             // Get the middle value. After adding or subtracting the offset, it cannot be lower than 0 or higher than the highest glyph.
-            let midVal = getRandomInt(offset, this.glyphStepsCount - offset)
-
+            let midVal = getRandomInt(offset, this.glyphStepsCount - offset - 1)
+ 
             // higher of lower
             if (getRandomInt(0,1) == 0) {
                 val1 = Math.round(midVal - offset);
@@ -128,11 +174,19 @@ class GlyphSet {
 
 
         else {
-            val1 = getRandomInt(0, this.glyphStepsCount);
+            val1 = getRandomInt(0, this.glyphStepsCount - 1);
             val2 = val1;
         }
 
 
+
+
+        console.log(this.glyphs[0])
+        console.log(atob(this.glyphs[0]))
+
+
+        console.log(val1, val2)
+        
 
         return {val1:val1, val2:val2, distance:this.actualDistance}
     }
@@ -244,7 +298,7 @@ class GlyphSet {
                 count++
             })
 
-            diffsAndErrs[Math.round(distance)] = Math.round((correctCount / count) * 100)
+            diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
         });
 
 
