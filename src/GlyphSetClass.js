@@ -1,5 +1,5 @@
 class GlyphSet {
-    constructor(id, glyphs=[], distance=undefined, gamma=0.7, equalChance=1) {
+    constructor(id, glyphs=[], info={}, distance=undefined, gamma=0.7, equalChance=1) {
         this.id = id
         this.data = this.getData()
 
@@ -24,9 +24,14 @@ class GlyphSet {
             }
 
 
+            console.log(info)
+
             // save
             this.data = {
                 "id": this.id,
+                "name": info.name,
+                "author": info.author,
+                "version": info.version,
                 "glyphs": this.glyphs,
                 "distance": this.distance,
                 "gamma": this.gamma,
@@ -46,6 +51,9 @@ class GlyphSet {
             this.gamma = this.data.gamma
             this.glyphStepsCount = this.glyphs.length
             this.equalChance = this.data.equalChance // 1 = 10%
+            this.name = this.data.name
+            this.author = this.data.author
+            this.version = this.data.version
         }
 
 
@@ -268,9 +276,6 @@ class GlyphSet {
 
 
     getChartData() {
-        // {20:100, 14:99, 10:90, 7:80, 3:50}
-
-
         let allAnswers = this.getData().answers
 
         // get distances
@@ -300,6 +305,11 @@ class GlyphSet {
 
             diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
         });
+
+
+
+        // Second chart
+        
 
 
         return diffsAndErrs

@@ -26,8 +26,9 @@
             </div>
         </div>
 
+        <glyph-set-info :glyphSet="glyphSets[pickedSet]" :live="true" style="margin-top: 6%;" v-if="glyphSets[pickedSet]"/>
 
-        <div class="infoWrapper" v-if="glyphSets[pickedSet]">
+        <!-- <div class="infoWrapper" v-if="glyphSets[pickedSet]">
             <div class="infoBox" title="Number of sorted glyphs">
                 <p class="data">{{ glyphSets[pickedSet].sortedCount }}</p>
                 <p class="label">Count</p>
@@ -47,7 +48,7 @@
                 <p class="data">{{ Math.round(glyphSets[pickedSet].actualDistance / parseFloat(glyphSets[pickedSet].glyphStepsCount) * 100) }}</p>
                 <p class="label">Difference</p>
             </div>
-        </div>
+        </div> -->
     </main>
 
 
@@ -133,24 +134,6 @@
         beforeUnmount() {
             window.removeEventListener('keydown', this.handleKeydown)
         },
-
-
-
-        // watch: {
-        //     val1(index) {
-        //         this.$nextTick(() => {
-        //             console.log(this.glyphsets, this.pickedSet)
-
-        //             this.img1 = this.glyphsets[this.pickedSet].glyphs[index]
-        //         })
-        //     },
-
-        //     val2(index) {
-        //         this.$nextTick(() => {
-        //             this.img2 = this.glyphsets[this.pickedSet].glyphs[index]
-        //         })
-        //     },
-        // },
 
 
 
@@ -329,45 +312,6 @@
         padding: 0 25px;
         border-radius: 15px;
         background-color: white;
-    }
-
-
-
-    .infoWrapper {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 20px;
-        width: 110%;
-        margin-top: 6%;
-    }
-
-
-    .infoBox {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 4px;
-        flex: 1;
-        border: 2px solid #444;
-        border-radius: 15px;
-        padding: 10px;
-        cursor: help;
-        background-color: #fcfcfc;
-    }
-
-    .infoBox .data {
-        font-size: 30px;
-        color: #444;
-        font-weight: 500;
-    }
-
-    .infoBox .label {
-        font-size: 20px;
-        color: #666;
     }
 
 

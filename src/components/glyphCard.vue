@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <h1>{{ value }}</h1> -->
-        <img :src="decodedImg" :alt="decodedImg" @click="test">
+        <img :src="decodedImg" :alt="decodedImg">
     </div>
 </template>
 

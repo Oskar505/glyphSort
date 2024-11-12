@@ -14,7 +14,7 @@
                 <p class="info"><span class="lessImportant">Image count: </span>{{ imageList.length }}</p>
             </div>
             
-            <img src="" alt="preview image" id="previewImage" @click="saveSet">
+            <img src="" alt="preview image" id="previewImage">
 
             <div class="saveBtn" @click="saveSet"><p>Save</p></div>
         </div>
@@ -39,6 +39,7 @@
                 author: null,
                 imageList: [],
                 images: [],
+                info: {},
             };
         },
 
@@ -96,6 +97,13 @@
                                 this.shortName = this.metadata.short_name;
                                 this.author = this.metadata.author;
                                 this.imageList = this.metadata.images;
+                                this.version = this.metadata.version;
+
+                                this.info = {
+                                    "name":this.name,
+                                    "author":this.author,
+                                    "version":this.version
+                                }
                             };
                         }
 
@@ -127,7 +135,7 @@
             saveSet() {
                 let images = JSON.parse(JSON.stringify(this.images))
 
-                new GlyphSet(this.shortName, images)
+                new GlyphSet(this.shortName, images, this.info)
             }
         },
     };
@@ -199,7 +207,11 @@ label {
     border: 3px solid #999;
     display: none;
     padding: 15px 30px;
-    position: relative;
+    /* position: relative; */
+    position: absolute;
+    left: 50%;
+    top: 9%;
+    transform: translateX(-50%);
 }
 
 

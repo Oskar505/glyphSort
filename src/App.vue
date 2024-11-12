@@ -18,16 +18,22 @@
 
 
   header {
-    padding: 10px 100px;
+    padding: 10px 40px;
     border-bottom: 1px solid #ddd;
     background-color: #00ace6;
     background-color: #fff;
     box-shadow: 0px 0px 10px #eee;
     background-color: #fcfcfc;
+    margin-bottom: 50px;
   }
 
   h1 {
     font-size: 37px;
     color: #444;
+  }
+
+  .wideContainer {
+    max-width: 1900px;
+    margin: 0 auto
   }
 </style>
