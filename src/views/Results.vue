@@ -15,7 +15,9 @@
             <h3>Charts</h3>
 
             <div class="chartsWrapper">
-                <line-chart :datasets="this.chartDatasets" :labels="this.chartLabels"></line-chart>
+                <line-chart :datasets="this.charts[0].datasets" :labels="this.charts[0].labels" :average="glyphSet.successRate"></line-chart>
+
+                <bar-chart :datasets="this.charts[1].datasets" :labels="this.charts[1].labels" :average="glyphSet.successRate"></bar-chart>
             </div>
         </div>
     </main>
@@ -31,6 +33,7 @@
         data() {
             return {
                 glyphSets: [],
+                charts: [],
                 chartDatasets: [],
                 chartLabels: [],
 
@@ -47,7 +50,7 @@
 
         mounted() {
             // chart line colors
-            let lineColors = [
+            let lineColors1 = [
                 'rgba(54, 162, 235, 1)', // Modrá
                 'rgba(255, 99, 132, 1)', // Červená
                 'rgba(75, 192, 192, 1)', // Zelená
@@ -60,11 +63,13 @@
                 'rgba(25, 25, 112, 1)'  // Tmavě modrá
             ];
 
-            let labelCount = 0
-
+            let lineColors2 = [...lineColors1]
 
 
             // re-init glyph sets and get stats
+            let chartDatasets2 = []
+            let chartLabels2 = []
+
             JSON.parse(this.$route.query.glyphSetIds).forEach(glyphSetId => {
                 let newGlyphSet = new GlyphSet(glyphSetId)
                 newGlyphSet.getStats()
@@ -72,27 +77,73 @@
 
 
                 // chart data
-                let diffsAndErrs = newGlyphSet.getChartData()
+                this.chartDatasets = []
+                this.chartLabels = []
+
+                let chartData = newGlyphSet.getChartData()
+
+                chartData[0] = chartData[0].reverse()
+                let x = chartData[0].map(obj => obj.x)
+                let y = chartData[0].map(obj => obj.y)
+
+
                 let chartDataset = {
                     label: glyphSetId,
-                    data: Object.values(diffsAndErrs),
-                    borderColor: lineColors[0],
-                    backgroundColor: lineColors[0],
+                    data: y,
+                    borderColor: lineColors1[0],
+                    backgroundColor: lineColors1[0],
                     tension: 0.4
                 }
 
                 this.chartDatasets.push(chartDataset)
-                lineColors.shift()
+                lineColors1.shift()
 
 
-                if (Object.keys(diffsAndErrs).length > this.chartLabels.length) {
-                    this.chartLabels = Object.keys(diffsAndErrs)
+                if (x.length > this.chartLabels.length) {
+                    this.chartLabels = x
                     // this.chartLabels = this.chartLabels.map(label => label / 10)
 
                     console.log(this.chartLabels)
                 }
 
+
+
+                // Acc and val chart
+                x = chartData[1].map(obj => obj.x)
+                y = chartData[1].map(obj => obj.y)
+
+
+                chartDataset = {
+                    label: glyphSetId,
+                    data: y,
+                    borderColor: lineColors2[0],
+                    backgroundColor: lineColors2[0],
+                    tension: 0.4
+                }
+
+                
+                chartDatasets2.push(chartDataset)
+                lineColors2.shift()
+
+
+                if (x.length > chartLabels2.length) {
+                    chartLabels2 = x
+                    // this.chartLabels = this.chartLabels.map(label => label / 10)
+
+                    console.log(chartLabels2)
+                }
+
+
+                
+
             })
+
+
+
+            this.charts.push({'datasets': this.chartDatasets, 'labels': this.chartLabels})
+            this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2})
+
+            console.log(this.charts)
 
 
             // this.successRate = this.$route.query.successRate

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "chart.js": "^4.4.6",
+    "chartjs-plugin-annotation": "^3.1.0",
     "jszip": "^3.10.1",
     "pinia": "^2.2.4",
     "vue": "^3.5.12",

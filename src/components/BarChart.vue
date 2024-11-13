@@ -1,5 +1,5 @@
 <template>
-    <Line
+    <Bar
         id="my-chart-id"
         :options="chartOptions"
         :data="chartData"
@@ -7,22 +7,21 @@
 </template>
 
 <script>
-    import { Line } from 'vue-chartjs'
-    import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js'
+    import { Bar } from 'vue-chartjs'
+    import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
     import chartAnnotation from 'chartjs-plugin-annotation'
 
-    // Zaregistrujeme prvky pro čárový graf
-    ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, chartAnnotation)
+    ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, chartAnnotation)
 
     export default {
-        name: 'LineChart',
-        components: { Line },
+        name: 'BarChart',
+        components: { Bar },
 
         props: {
             datasets: Array,
             labels: Array,
-            average: Number,
+            average: Number
         },
 
         data() {
@@ -69,7 +68,7 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Difference'
+                                text: 'Glyph value'
                             }
                         },
                         y: {

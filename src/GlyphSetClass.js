@@ -289,7 +289,7 @@ class GlyphSet {
 
 
         // sort answers
-        let diffsAndErrs = {}
+        let diffsAndErrs = []
 
         distances.forEach(distance => {
             let correctCount = 0
@@ -303,16 +303,43 @@ class GlyphSet {
                 count++
             })
 
-            diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
+            // diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
+            diffsAndErrs.push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
         });
 
 
 
-        // Second chart
+        // Glyph accuracy and value chart
         
+        let accuracyAndVal = []
+        let valueGroup = (this.glyphStepsCount / 10)
+        
+        for (let i = 0; i < this.glyphStepsCount / valueGroup; i++) {
+            let answerGroup = allAnswers.filter(answer => (answer.val1 + answer.val2) / 2 > valueGroup * i && (answer.val1 + answer.val2) / 2 <= valueGroup * (i + 1))
+            console.log(answerGroup)
 
 
-        return diffsAndErrs
+            let correctCount = 0
+
+            answerGroup.forEach(answer => {
+                if (answer.correct) {
+                    correctCount++
+                }
+            })
+
+
+            let accuracy = Math.round((correctCount / answerGroup.length) * 100)
+            accuracy = accuracy == 0 ? 1 : accuracy
+            accuracy = isNaN(accuracy) || accuracy == null ? 0 : accuracy
+
+            accuracyAndVal.push({'x': ((valueGroup * i) / this.glyphStepsCount) * 100, 'y':accuracy})
+        }
+
+
+        console.log(accuracyAndVal)
+
+
+        return [diffsAndErrs, accuracyAndVal]
     }
 }
 
