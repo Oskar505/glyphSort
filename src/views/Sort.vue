@@ -1,54 +1,48 @@
 <template>
     <header>
         <h1 @click="clearStorage()">Sort</h1>
+
+        <nav>
+            <div @click="this.$router.push({path:'/'})"><h2>Home</h2></div>
+            <div @click="this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2 class="navActive">Sort</h2></div>
+            <div @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2>Results</h2></div>
+        </nav>
     </header>
 
     <main>
-        <div class="sortWrapper" :class="borderFeedback">
-            <div class="glyphCardWrapper">
-                <glyph-card :value="img1"></glyph-card>
-                <glyph-card :value="img2"></glyph-card>
-            </div>
-            
-
-            <div class="answerBtnWrapper">
-                <div class="answerBtn" id="lessBtn" :class="btn0Feedback" @click="checkAnswer(0, glyphSets[pickedSet])">
-                    <p><</p>
+        <section v-show="glyphSets.length > 0">
+            <div class="sortWrapper" :class="borderFeedback">
+                <div class="glyphCardWrapper">
+                    <glyph-card :value="img1"></glyph-card>
+                    <glyph-card :value="img2"></glyph-card>
                 </div>
+                
 
-                <div class="answerBtn" id="lessBtn" :class="btn1Feedback" @click="checkAnswer(1, glyphSets[pickedSet])">
-                    <p>=</p>
+                <div class="answerBtnWrapper">
+                    <div class="answerBtn" id="lessBtn" :class="btn0Feedback" @click="checkAnswer(0, glyphSets[pickedSet])">
+                        <p><</p>
+                    </div>
+
+                    <div class="answerBtn" id="lessBtn" :class="btn1Feedback" @click="checkAnswer(1, glyphSets[pickedSet])">
+                        <p>=</p>
+                    </div>
+
+                    <div class="answerBtn" id="lessBtn" :class="btn2Feedback" @click="checkAnswer(2, glyphSets[pickedSet])">
+                        <p>></p>
+                    </div>
                 </div>
-
-                <div class="answerBtn" id="lessBtn" :class="btn2Feedback" @click="checkAnswer(2, glyphSets[pickedSet])">
-                    <p>></p>
-                </div>
-            </div>
-        </div>
-
-        <glyph-set-info :glyphSet="glyphSets[pickedSet]" :live="true" style="margin-top: 6%;" v-if="glyphSets[pickedSet]"/>
-
-        <!-- <div class="infoWrapper" v-if="glyphSets[pickedSet]">
-            <div class="infoBox" title="Number of sorted glyphs">
-                <p class="data">{{ glyphSets[pickedSet].sortedCount }}</p>
-                <p class="label">Count</p>
-            </div>
-            
-            <div class="infoBox" title="Average time to sort a pair of glyphs">
-                <p class="data">{{ glyphSets[pickedSet].sortTime }}s</p>
-                <p class="label">Time</p>
             </div>
 
-            <div class="infoBox" title="Success rate">
-                <p class="data">{{ glyphSets[pickedSet].successRate }}%</p>
-                <p class="label">Success</p>
-            </div>
 
-            <div class="infoBox" title="Difference between glyph values (0 - 100)">
-                <p class="data">{{ Math.round(glyphSets[pickedSet].actualDistance / parseFloat(glyphSets[pickedSet].glyphStepsCount) * 100) }}</p>
-                <p class="label">Difference</p>
-            </div>
-        </div> -->
+            <!-- <glyph-set-info :glyphSet="glyphSets[pickedSet]" :live="true" style="margin-top: 6%;" v-if="glyphSets[pickedSet]"/> -->
+        </section>
+        
+
+        
+        <section class="middlePageWarning" v-if="glyphSets.length == 0">
+            <h1>No set selected</h1>
+            <h2>Select set on the <a href="/">home page</a></h2>
+        </section>
     </main>
 
 
@@ -61,6 +55,7 @@
 
 <script>
     import GlyphSet from '../GlyphSetClass.js'
+    import { useGlyphSetStore } from '../glyphSetStore'
 
 
     export default {
@@ -69,7 +64,7 @@
                 glyphSets: [],
                 glyphSetIds: [],
                 pickedSet: 0,
-
+                glyphSetStore: useGlyphSetStore(),
 
                 glyphName: "a",
                 distance: undefined,
@@ -101,17 +96,26 @@
 
 
         mounted() {
+            console.log(this.glyphSetStore.glyphSets)
+
             window.addEventListener('keydown', this.handleKeydown)
-            
-            let setIds = JSON.parse(this.$route.query.setIds);
+
+
+            // get glyph sets
+            console.log(this.$route.query.glyphSetIds + ' test')
+            let setIds = this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []
             console.log(setIds);  // ["Cool line"]
+
+            // let setIds = JSON.parse(JSON.stringify(this.glyphSetStore.glyphSets))
+
+            console.log(setIds)
 
             setIds.forEach(id => {
                 this.glyphSets.push(new GlyphSet(id));
             });
 
             
-
+            // get sets data
             this.glyphSetIds = this.glyphSets.map(glyphSet => glyphSet.id)
             let newGlyphData = this.glyphSets[0].getGlyphPair(undefined, true)
             this.distance = newGlyphData.distance
@@ -143,46 +147,36 @@
                 if (buttonId == 0) {
                     this.lastCorrect = this.val1 < this.val2
 
-                    // show feedback
-                    if (this.lastCorrect) {
-                        this.btn0Feedback = "correctBtn"
-                        this.borderFeedback = "correctBorder"
-                    }
+                    // show neutral feedback
+                    this.btn0Feedback = "neutralBtn"
+                    this.borderFeedback = "neutralBorder"
 
-                    else {
-                        this.btn0Feedback = "wrongBtn"
-                        this.borderFeedback = "wrongBorder"
-                    }
+
+                    // if (this.lastCorrect) {
+                    //     this.btn0Feedback = "correctBtn"
+                    //     this.borderFeedback = "correctBorder"
+                    // }
+
+                    // else {
+                    //     this.btn0Feedback = "wrongBtn"
+                    //     this.borderFeedback = "wrongBorder"
+                    // }
                 }
 
                 else if (buttonId == 1) {
                     this.lastCorrect = this.val1 == this.val2
 
-                    // show feedback
-                    if (this.lastCorrect) {
-                        this.btn1Feedback = "correctBtn"
-                        this.borderFeedback = "correctBorder"
-                    }
-
-                    else {
-                        this.btn1Feedback = "wrongBtn"
-                        this.borderFeedback = "wrongBorder"
-                    }
+                    // show neutral feedback
+                    this.btn1Feedback = "neutralBtn"
+                    this.borderFeedback = "neutralBorder"
                 }
 
                 else if (buttonId == 2) {
                     this.lastCorrect = this.val1 > this.val2
 
-                    // show feedback
-                    if (this.lastCorrect) {
-                        this.btn2Feedback = "correctBtn"
-                        this.borderFeedback = "correctBorder"
-                    }
-
-                    else {
-                        this.btn2Feedback = "wrongBtn"
-                        this.borderFeedback = "wrongBorder"
-                    }
+                    // show neutral feedback
+                    this.btn2Feedback = "neutralBtn"
+                    this.borderFeedback = "neutralBorder"
                 }
 
 
@@ -328,6 +322,18 @@
         transition: 0.2s;
         background-color: #fcfcfc;
         box-shadow: 0px 0px 10px #ddd;
+        transition: 0.3s ease;
+    }
+
+    .floatingBtn:hover {
+        border-color: #4a90e2;
+        background-color: #4a90e2;
+        transition: 0.3s ease;
+    }
+
+    .floatingBtn:hover svg{
+        fill: #fff;
+        transition: 0.3s ease;
     }
 
     
@@ -369,6 +375,24 @@
     }
 
 
+    @keyframes neutralBtnKeyframe {
+        0% {
+            background-color: transparent;
+            border: 3px solid #444
+        }
+
+        50% {
+            background-color: #4a90e2;
+            border: 3px solid #4a90e2;
+        }
+
+        100% {
+            background-color: transparent;
+            border: 3px solid #444
+        }
+    }
+
+
     @keyframes correctBorderKeyframe {
         0% {
             border: 3px solid #999
@@ -398,12 +422,32 @@
     }
 
 
+    @keyframes neutralBorderKeyframe {
+        0% {
+            border: 3px solid #999
+        }
+
+        50% {
+            border: 4px solid #4a90e2;
+        }
+
+        100% {
+            border: 3px solid #999
+        }
+    }
+
+
+
     .correctBtn {
         animation: correctBtnKeyframe 500ms ease-in;
     }
 
     .wrongBtn {
         animation: wrongBtnKeyframe 500ms ease-in;
+    }
+
+    .neutralBtn {
+        animation: neutralBtnKeyframe 500ms ease-in;
     }
 
 
@@ -414,6 +458,11 @@
     
     .wrongBorder {
         animation: wrongBorderKeyframe 500ms ease-in;
+        background-color: #fcfcfc !important;
+    }
+
+    .neutralBorder {
+        animation: neutralBorderKeyframe 500ms ease-in;
         background-color: #fcfcfc !important;
     }
 </style>

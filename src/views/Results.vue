@@ -1,25 +1,40 @@
 <template>
     <header>
-        <h1 @click="clearStorage()">Results</h1>
+        <h1 @click="clearStorage()">Sort</h1>
+
+        <nav>
+            <div @click="this.$router.push({path:'/'})"><h2>Home</h2></div>
+            <div @click="this.$router.push({path:'/sort', query: {glyphSetIds: this.$route.query.glyphSetIds}})"><h2>Sort</h2></div>
+            <div @click="this.$router.push({path:'/results', query: {glyphSetIds: this.$route.query.glyphSetIds}})"><h2 class="navActive">Results</h2></div>
+        </nav>
     </header>
 
 
 
     <main>
-        <div class="resultBox stats" v-for="glyphSet in glyphSets" :key="glyphSet.id">
-            <h2>{{ glyphSet.id }}</h2>
+        <section v-show="glyphSets.length > 0">
+            <div class="resultBox stats" v-for="glyphSet in glyphSets" :key="glyphSet.id">
+                <h2 class="setHeader">{{ glyphSet.id }}</h2>
 
-            <glyph-set-info style="max-width: 500px;" :glyphSet="glyphSet" :live="false" v-if="glyphSet"/>
-            
+                <glyph-set-info style="max-width: 500px;" :glyphSet="glyphSet" :live="false" v-if="glyphSet"/>
+                
 
-            <h3>Charts</h3>
+                <h3>Charts</h3>
 
-            <div class="chartsWrapper">
-                <line-chart :datasets="this.charts[0].datasets" :labels="this.charts[0].labels" :average="glyphSet.successRate"></line-chart>
+                <div class="chartsWrapper">
+                    <line-chart :datasets="this.charts[0].datasets" :labels="this.charts[0].labels" :average="glyphSet.successRate"></line-chart>
 
-                <bar-chart :datasets="this.charts[1].datasets" :labels="this.charts[1].labels" :average="glyphSet.successRate"></bar-chart>
+                    <bar-chart :datasets="this.charts[1].datasets" :labels="this.charts[1].labels" :average="glyphSet.successRate"></bar-chart>
+                </div>
             </div>
-        </div>
+        </section>
+        
+
+
+        <section class="middlePageWarning" v-if="glyphSets.length == 0">
+            <h1>No set selected</h1>
+            <h2>Select set on the <a href="/">home page</a></h2>
+        </section>
     </main>
 </template>
 
@@ -174,7 +189,7 @@
         flex-wrap: wrap;
     }
 
-    h2 {
+    .setHeader {
         font-size: 35px;
         color: #444;
         margin: -10px 0 5px -10px;

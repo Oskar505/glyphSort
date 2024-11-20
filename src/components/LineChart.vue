@@ -49,8 +49,8 @@
                             annotations: {
                                 average: {
                                     type: 'line',
-                                    yMin: this.average,
-                                    yMax: this.average,
+                                    yMin: 100 - this.average,
+                                    yMax: 100 -this.average,
                                     borderColor: 'black',
                                     borderWidth: 2,
                                     label: {

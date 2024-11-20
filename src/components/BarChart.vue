@@ -74,7 +74,7 @@
                         y: {
                             title: {
                                 display: true,
-                                text: 'Error'
+                                text: 'Succes'
                             },
 
                             ticks: {

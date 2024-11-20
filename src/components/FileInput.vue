@@ -136,6 +136,12 @@
                 let images = JSON.parse(JSON.stringify(this.images))
 
                 new GlyphSet(this.shortName, images, this.info)
+
+
+                document.getElementById("dropZone").style.display = "flex";
+                document.getElementById("filePreview").style.display = "none";
+
+                this.$emit('setSaved')
             }
         },
     };
@@ -146,11 +152,10 @@
 <style scoped>
 
 .fileInputWrapper {
-    width: 1000px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-end;
+    justify-content: flex-start;
 }
 
 #dropZone {
@@ -203,7 +208,7 @@ label {
     gap: 50px;
     border-radius: 15px;
     background-color: #fcfcfc;
-    box-shadow: 0px 0px 15px hwb(0 85% 15%);
+    box-shadow: 0px 0px 50px hsl(0, 0%, 73%);
     border: 3px solid #999;
     display: none;
     padding: 15px 30px;
@@ -259,6 +264,7 @@ h2 {
     transform: translateX(-133%);
     padding: 0.3em 0.7em;
     margin-bottom: 15px;
+    transition: 0.3s ease;
 }
 
 
