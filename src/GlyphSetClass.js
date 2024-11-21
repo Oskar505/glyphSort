@@ -1,3 +1,6 @@
+import pako from 'pako'
+
+
 class GlyphSet {
     constructor(id, glyphs=[], info={}, distance=undefined, gamma=0.7, equalChance=1) {
         this.id = id
@@ -72,7 +75,13 @@ class GlyphSet {
 
         for(const glyph of glyphs) {
             base64Image = btoa(glyph)
-            this.glyphs.push(base64Image)
+
+            const binaryString = atob(glyph.split(',')[1]); // Base64 -> binary
+            const binaryArray = new Uint8Array(
+                binaryString.split('').map((char) => char.charCodeAt(0))
+            );
+            const compressed = pako.gzip(binaryArray); // compress
+            this.glyphs.push(btoa(String.fromCharCode(...compressed))); // back to Base64
         }
 
         console.log(this.glyphs[0])
@@ -197,6 +206,16 @@ class GlyphSet {
         
 
         return {val1:val1, val2:val2, distance:this.actualDistance}
+    }
+
+
+
+    decodeGlyph(glyph) {
+        let compressedBinary = Uint8Array.from(atob(glyph), c => c.charCodeAt(0)); // Base64 to binary
+        let decompressedBinary = pako.ungzip(compressedBinary); // decompress
+        let base64Image = btoa(String.fromCharCode(...decompressedBinary)); // back to Base64
+
+        return `data:image/png;base64,${base64Image}`
     }
 
 

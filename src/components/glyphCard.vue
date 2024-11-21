@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- <h1>{{ value }}</h1> -->
-        <img :src="decodedImg" :alt="decodedImg">
+        <img :src="value" alt="glyph">
     </div>
 </template>
 
@@ -22,12 +22,12 @@
             }
         },
 
-        watch: {
-            value(newValue) {
-                this.decodedImg = atob(newValue)
-                console.log(this.decodedImg)
-            }
-        },
+        // watch: {
+        //     value(newValue) {
+        //         this.decodedImg = atob(newValue)
+        //         console.log(this.decodedImg)
+        //     }
+        // },
 
         methods: {
             test() {

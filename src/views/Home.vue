@@ -29,7 +29,7 @@
                         <svg class="deleteBtn" @click.stop="deleteSet(glyphSet.id)" xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="#444"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                     </div>
 
-                    <img :src="getDecodedImage(glyphSet)" alt="preview image" class="previewImage">
+                    <img :src="glyphSet.decodeGlyph(glyphSet.glyphs[glyphSet.glyphs.length - 1])" alt="preview image" class="previewImage">
                 </div>
             </div>
         </div>
@@ -60,6 +60,7 @@
 <script>
     import GlyphSet from '../GlyphSetClass.js'
     import { useGlyphSetStore } from '../glyphSetStore'
+    import pako from 'pako'
 
 
     export default {
@@ -133,9 +134,15 @@
 
 
             getDecodedImage(glyphSet) {
-                const glyphData = glyphSet.glyphs[glyphSet.glyphs.length - 1];
+                let compressedImage = glyphSet.glyphs[glyphSet.glyphs.length - 1];
 
-                return atob(glyphData)
+                let compressedBinary = Uint8Array.from(atob(compressedImage), c => c.charCodeAt(0)); // Base64 to binary
+                let decompressedBinary = pako.ungzip(compressedBinary); // decompress
+                let base64Image = btoa(String.fromCharCode(...decompressedBinary)); // back to Base64
+
+                console.log(base64Image)
+
+                return `data:image/png;base64,${base64Image}`
             },
 
 

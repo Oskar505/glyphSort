@@ -19,7 +19,12 @@ const router = createRouter({
       path: '/results',
       name: 'Results',
       component: () => import('./views/Results.vue')
-    }
+    },
+    {
+      path: '/calibration',
+      name: 'Calibration',
+      component: () => import('./views/Calibration.vue')
+    },
   ]
 })
 

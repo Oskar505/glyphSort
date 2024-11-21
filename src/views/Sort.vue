@@ -122,8 +122,10 @@
             this.val1 = newGlyphData.val1
             this.val2 = newGlyphData.val2
 
-            this.img1 = this.glyphSets[this.pickedSet].glyphs[this.val1]
-            this.img2 = this.glyphSets[this.pickedSet].glyphs[this.val2]
+            let pickedSet = this.glyphSets[this.pickedSet]
+
+            this.img1 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
+            this.img2 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
 
 
 
@@ -211,8 +213,10 @@
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
 
-                    this.img1 = this.glyphSets[this.pickedSet].glyphs[this.val1]
-                    this.img2 = this.glyphSets[this.pickedSet].glyphs[this.val2]
+                    let pickedSet = this.glyphSets[this.pickedSet]
+
+                    this.img1 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
+                    this.img2 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
                 }, 500);
             },
 
