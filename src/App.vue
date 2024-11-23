@@ -57,8 +57,8 @@
   } */
 
   nav div h2 {
-    font-size: 26px;
-    color: #666;
+    font-size: 26px !important;
+    color: #666 !important;
     line-height: 1;
     font-weight: 400;
   }
