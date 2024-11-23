@@ -1,7 +1,6 @@
 <template>
     <div>
-        <!-- <h1>{{ value }}</h1> -->
-        <img :src="value" alt="glyph">
+        <img :src="value" alt="glyph" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px' }">
     </div>
 </template>
 
@@ -10,7 +9,18 @@
     export default {
         data() {
             return {
-                decodedImg: ''
+                decodedImg: '',
+                glyphWidth: 1,
+            }
+        },
+
+        mounted() {
+            const dpi = this.$getCookie('dpi')
+
+            console.log(dpi)
+
+            if (dpi) {
+                this.glyphWidth = dpi
             }
         },
 

@@ -21,4 +21,22 @@ app.component('glyph-set-info', GlyphSetInfo)
 app.use(createPinia())
 app.use(router)
 
+
+
+app.config.globalProperties.$getCookie = function (name) {
+    const cookies = document.cookie.split(';');
+
+    for (let cookie of cookies) {
+        const [key, value] = cookie.trim().split('=');
+
+        if (key === name) {
+            return decodeURIComponent(value);
+        }
+    }
+
+    return null;
+}
+
+
+
 app.mount('#app')

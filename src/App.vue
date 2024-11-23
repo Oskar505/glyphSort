@@ -63,6 +63,14 @@
     font-weight: 400;
   }
 
+  .secondaryNavBtn {
+    height: 60px;
+  }
+
+  .secondaryNavBtn svg {
+    height: 30px;
+  }
+
   .navActive {
     color: #333;
     font-weight: 700;
