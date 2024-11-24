@@ -60,7 +60,6 @@
 
 <script>
     import GlyphSet from '../GlyphSetClass.js'
-    import { useGlyphSetStore } from '../glyphSetStore'
     import pako from 'pako'
 
 
@@ -70,7 +69,6 @@
                 setIdList: [],
                 glyphSetList: [],
                 selectedGlyphs: [],
-                glyphSetStore: useGlyphSetStore()
             }
         },
 

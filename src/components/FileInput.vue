@@ -24,7 +24,7 @@
 
 
 <script>
-    import JSZip from 'jszip';
+    import JSZip, { file } from 'jszip';
     import GlyphSet from '../GlyphSetClass.js'
 
 
@@ -45,15 +45,27 @@
 
 
         methods: {
-            handleDragOver(event) {
+            handleDragOver() {
                 this.isDragOver = true;
             },
             handleDragLeave() {
                 this.isDragOver = false;
             },
-            async handleDrop(event) {
+
+            handleFileSelect(event) {
+                const files = event.target.files;
+                this.processFiles(files)
+            },
+
+            handleDrop(event) {
                 this.isDragOver = false;
                 const files = Array.from(event.dataTransfer.files);
+
+                this.processFiles(files)
+            },
+
+            
+            async processFiles(files) {
                 let file = files[0];
 
                 console.log(files)
@@ -126,9 +138,6 @@
                 const imageElement = document.getElementById("previewImage");
                 imageElement.src = this.images[this.images.length - 1];
                 document.getElementById("filePreview").appendChild(imageElement);
-
-
-                this.$emit("files-dropped", files); // pošli soubory rodičovské komponentě
             },
 
 

@@ -15,7 +15,7 @@
         <div class="cardCalibrationWrapper">
             <div class="instructions">
                 <h2>Adjust this rectangle to match your credit card</h2>
-                <p>If you don't have a credit card, you can measure the width with a ruler. It should be 8.56cm wide.</p>
+                <p>If you don't have a credit card, use a ruler to measure the width. It should be 8.56cm wide.</p>
             </div>
 
             <div class="cardContainer">

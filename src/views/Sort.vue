@@ -14,8 +14,8 @@
         <section v-show="glyphSets.length > 0">
             <div class="sortWrapper" :class="borderFeedback">
                 <div class="glyphCardWrapper">
-                    <glyph-card :value="img1"></glyph-card>
-                    <glyph-card :value="img2"></glyph-card>
+                    <glyph-card :value="img1" :class="animationClass"></glyph-card>
+                    <glyph-card :value="img2" :class="animationClass"></glyph-card>
                 </div>
                 
 
@@ -56,7 +56,6 @@
 
 <script>
     import GlyphSet from '../GlyphSetClass.js'
-    import { useGlyphSetStore } from '../glyphSetStore'
 
 
     export default {
@@ -65,7 +64,7 @@
                 glyphSets: [],
                 glyphSetIds: [],
                 pickedSet: 0,
-                glyphSetStore: useGlyphSetStore(),
+                animationClass: '',
 
                 glyphName: "a",
                 distance: undefined,
@@ -97,8 +96,6 @@
 
 
         mounted() {
-            console.log(this.glyphSetStore.glyphSets)
-
             window.addEventListener('keydown', this.handleKeydown)
 
 
@@ -117,25 +114,27 @@
 
             
             // get sets data
-            this.glyphSetIds = this.glyphSets.map(glyphSet => glyphSet.id)
-            let newGlyphData = this.glyphSets[0].getGlyphPair(undefined, true)
-            this.distance = newGlyphData.distance
-            this.val1 = newGlyphData.val1
-            this.val2 = newGlyphData.val2
+            if (this.glyphSets.length > 0) {
+                this.glyphSetIds = this.glyphSets.map(glyphSet => glyphSet.id)
+                let newGlyphData = this.glyphSets[0].getGlyphPair(undefined, true)
+                this.distance = newGlyphData.distance
+                this.val1 = newGlyphData.val1
+                this.val2 = newGlyphData.val2
 
-            let pickedSet = this.glyphSets[this.pickedSet]
+                let pickedSet = this.glyphSets[this.pickedSet]
 
-            this.img1 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
-            this.img2 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
+                this.img1 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
+                this.img2 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
 
 
 
-            // get stats
-            let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || []
-            let sessionAnswers = JSON.parse(sessionStorage.getItem("sessionAnswers")) || []
-            this.glyphSets[0].getStats(allAnswers, sessionAnswers)
+                // get stats
+                let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || []
+                let sessionAnswers = JSON.parse(sessionStorage.getItem("sessionAnswers")) || []
+                this.glyphSets[0].getStats(allAnswers, sessionAnswers)
 
-            console.log(this.glyphSets[this.pickedSet])
+                console.log(this.glyphSets[this.pickedSet])
+            }
         },
 
         beforeUnmount() {
@@ -198,6 +197,8 @@
 
                 glyphSet.getStats()
 
+                this.animationClass = 'newGlyphs'
+
 
                 // reset feedbacks and get new glyphs
                 setTimeout(() => {
@@ -218,6 +219,8 @@
 
                     this.img1 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
                     this.img2 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
+
+                    this.animationClass = ''
                 }, 500);
             },
 
@@ -262,7 +265,7 @@
 
 <style scoped>
     main {
-       max-width: 500px;
+       max-width: 700px;
        width: 100%;
        margin: 0 auto;
        display: flex;
@@ -282,7 +285,7 @@
         box-shadow: 0px 0px 15px #dedede;
         border: 3px solid #999;
         margin-top: 13%;
-        padding: 30px 80px;
+        padding: 50px 90px;
         user-select: none;
     }
 
@@ -443,6 +446,24 @@
 
 
 
+    @keyframes newGlyphPairKeyFrame {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+
+
+
+
     .correctBtn {
         animation: correctBtnKeyframe 500ms ease-in;
     }
@@ -469,5 +490,10 @@
     .neutralBorder {
         animation: neutralBorderKeyframe 500ms ease-in;
         background-color: #fcfcfc !important;
+    }
+
+
+    .newGlyphs {
+        animation: newGlyphPairKeyFrame 400ms ease-in;
     }
 </style>

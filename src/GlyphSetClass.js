@@ -285,6 +285,7 @@ class GlyphSet {
         try {
             console.log(...allAnswers.map(x => x.distance))
             this.smallestDistance = Math.min(...allAnswers.map(x => x.distance))
+            console.log(this.smallestDistance)
         }
 
         catch (error) {

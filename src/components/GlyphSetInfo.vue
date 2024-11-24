@@ -16,13 +16,13 @@
         </div>
 
         <div class="infoBox" title="Difference between glyph values (0 - 100)" v-if="live">
-            <p class="data">{{ Math.round(glyphSet.actualDistance / parseFloat(glyphSet.glyphStepsCount) * 100) }}</p>
+            <p class="data">{{ (glyphSet.actualDistance / parseFloat(glyphSet.glyphStepsCount) * 100).toFixed(2) }}</p>
             <p class="label">Difference</p>
         </div>
 
 
         <div class="infoBox" title="Smallest difference between glyph values (0 - 100)" v-if="!live">
-            <p class="data">{{ Math.round(glyphSet.smallestDistance / parseFloat(glyphSet.glyphStepsCount) * 100) }}</p>
+            <p class="data">{{ (glyphSet.smallestDistance / parseFloat(glyphSet.glyphStepsCount) * 100).toFixed(2) }}</p>
             <p class="label">Difference</p>
         </div>
     </div>

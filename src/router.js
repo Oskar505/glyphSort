@@ -8,24 +8,34 @@ const router = createRouter({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Home,
+      meta: { title: 'Self eval - Home' }
     },
     {
       path: '/sort',
       name: 'Sort',
-      component: () => import('./views/Sort.vue') // lazy-loaded
+      component: () => import('./views/Sort.vue'), // lazy-loaded
+      meta: { title: 'Self eval - Sort' }
     },
     {
       path: '/results',
       name: 'Results',
-      component: () => import('./views/Results.vue')
+      component: () => import('./views/Results.vue'),
+      meta: { title: 'Self eval - Results' }
     },
     {
       path: '/calibration',
       name: 'Calibration',
-      component: () => import('./views/Calibration.vue')
+      component: () => import('./views/Calibration.vue'),
+      meta: { title: 'Self eval - Calibration' }
     },
   ]
+})
+
+
+router.afterEach((to) => {
+  const defaultTitle = 'Self eval'
+  document.title = to.meta.title || defaultTitle
 })
 
 export default router

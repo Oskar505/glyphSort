@@ -47,7 +47,7 @@
   }
 
   nav div {
-    padding: 15px;
+    padding: 17px;
     border-left: 1px solid #bbb;
     cursor: pointer;
   }
