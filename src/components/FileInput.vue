@@ -6,7 +6,7 @@
             <input type="file" id="fileInput" @change="handleFileSelect">
         </div>
 
-        <div id="filePreview">
+        <div id="filePreview" ref="targetElement">
             <div>
                 <h1 id="fileName">{{ name }}</h1>
                 <h2>{{ shortName }}</h2>
@@ -42,6 +42,19 @@
                 info: {},
             };
         },
+
+
+        mounted() {
+            document.addEventListener("mousedown", this.handleClickOutside);
+            document.addEventListener("keydown", this.handleEscKey);
+        },
+
+
+        beforeUnmount() {
+            document.removeEventListener("mousedown", this.handleClickOutside);
+            document.removeEventListener("keydown", this.handleEscKey);
+        },
+
 
 
         methods: {
@@ -147,10 +160,29 @@
                 new GlyphSet(this.shortName, images, this.info)
 
 
-                document.getElementById("dropZone").style.display = "flex";
-                document.getElementById("filePreview").style.display = "none";
+                this.closePopup()
 
                 this.$emit('setSaved')
+            },
+
+
+            handleClickOutside(event) {
+                const target = this.$refs.targetElement;
+                if (!target || !target.contains(event.target)) {
+                    this.closePopup()
+                }
+            },
+
+            handleEscKey(event) {
+                if (event.key === "Escape") {
+                    this.closePopup();
+                }
+            },
+
+
+            closePopup() {
+                document.getElementById("dropZone").style.display = "flex";
+                document.getElementById("filePreview").style.display = "none";
             }
         },
     };
@@ -163,8 +195,9 @@
 .fileInputWrapper {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
+    /* width: 100%; */
 }
 
 #dropZone {

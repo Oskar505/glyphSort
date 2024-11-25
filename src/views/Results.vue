@@ -1,6 +1,6 @@
 <template>
     <header>
-        <h1 @click="clearStorage()">Sort</h1>
+        <h1 @click="clearStorage()">Results</h1>
 
         <nav>
             <div @click="this.$router.push({path:'/'})"><h2>Home</h2></div>
@@ -13,7 +13,7 @@
 
 
     <main>
-        <section v-show="glyphSets.length > 0">
+        <section v-show="glyphSets.length > 0" style="width: 100%;">
             <div class="resultBox stats" v-for="glyphSet in glyphSets" :key="glyphSet.id">
                 <h2 class="setHeader">{{ glyphSet.id }}</h2>
 
@@ -211,7 +211,7 @@
         box-shadow: 0px 0px 15px #dedede;
         border: 3px solid #999;
         padding: 25px 30px;
-        width: 1000px;
+        width: 100%;
         display: flex;
         flex-direction: column;
         gap: 15px;
@@ -230,5 +230,17 @@
 
     .statsWrapper div {
         flex: 1;
+    }
+
+
+
+
+
+    /* MEDIA QUERIES */
+
+    @media screen and (max-width: 1100px) {
+        main {
+            width: 700px;
+        }
     }
 </style>

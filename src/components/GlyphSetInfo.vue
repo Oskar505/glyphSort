@@ -16,13 +16,13 @@
         </div>
 
         <div class="infoBox" title="Difference between glyph values (0 - 100)" v-if="live">
-            <p class="data">{{ (glyphSet.actualDistance / parseFloat(glyphSet.glyphStepsCount) * 100).toFixed(2) }}</p>
+            <p class="data">{{ difference }}</p>
             <p class="label">Difference</p>
         </div>
 
 
         <div class="infoBox" title="Smallest difference between glyph values (0 - 100)" v-if="!live">
-            <p class="data">{{ (glyphSet.smallestDistance / parseFloat(glyphSet.glyphStepsCount) * 100).toFixed(2) }}</p>
+            <p class="data">{{ difference }}</p>
             <p class="label">Difference</p>
         </div>
     </div>
@@ -30,6 +30,8 @@
 
 
 <script>
+import { nextTick } from 'vue';
+
 export default {
     props: {
         glyphSet: Object,
@@ -38,7 +40,7 @@ export default {
     
     data() {
         return {
-            
+            difference: 0
         }
     },
 
@@ -46,6 +48,23 @@ export default {
     mounted() {
         // get stats
         this.glyphSet.getStats()
+
+
+        nextTick(() => {
+            if (this.live) {
+                this.difference = (this.glyphSet.actualDistance / parseFloat(this.glyphSet.glyphStepsCount) * 100).toFixed(2)
+            }
+
+            else {
+                this.difference = (this.glyphSet.smallestDistance / parseFloat(this.glyphSet.glyphStepsCount) * 100).toFixed(2)
+            }
+
+
+            if (!isFinite(this.difference)) {
+                this.difference = 0
+            }
+        })
+        
     },
 }
 </script>

@@ -33,10 +33,15 @@
                     <img :src="glyphSet.decodeGlyph(glyphSet.glyphs[glyphSet.glyphs.length - 1])" alt="preview image" class="previewImage">
                 </div>
             </div>
+            
+            <div class="centerFileInput" :class="glyphSetList.length == 1 ? 'rightFileInput' : 'centerFileInput'">
+                <file-input class="fileInput" @setSaved="getSavedSets"/>
+            </div>
+            
         </div>
         
 
-        <file-input class="fileInput" @setSaved="getSavedSets"/>
+        
     </section>
 
 
@@ -206,11 +211,13 @@
         flex: 4;
         display: grid;
         gap: 30px;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(455px, 1fr));
     }
 
     .setPreviewWrapper {
         width: 100%;
+        max-width: 550px;
         border-radius: 15px;
         background-color: #fcfcfc;
         box-shadow: 0px 0px 15px #dedede;
@@ -218,6 +225,20 @@
         padding: 5px 15px 15px 15px;
         flex: 1;
         cursor: pointer;
+    }
+
+    .centerFileInput {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .rightFileInput {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: center;
     }
 
     .infoContent {
@@ -294,8 +315,8 @@
 
 
     .fileInput {
-        margin: 2% auto;
-        flex: 2;
+        /* margin: 2% auto; */
+        /* flex: 2; */
     }
 
 

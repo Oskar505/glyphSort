@@ -98,6 +98,7 @@
     font-size: 30px;
     font-weight: 500;
     color: #444;
+    margin-bottom: 1.3em;
   }
 
   .middlePageWarning a {

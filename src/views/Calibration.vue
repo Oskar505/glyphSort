@@ -47,9 +47,7 @@
 
 
         mounted() {
-            this.dpi = this.$getCookie('dpi')
-
-            console.log(this.dpi)
+            this.dpi = parseFloat(this.$getCookie('dpi'))
 
             if (this.dpi) {
                 this.cardWidth = 3.375 * this.dpi
@@ -60,9 +58,7 @@
 
         methods: {
             adjustWidth() {
-                let width = document.getElementById('slider').value
-
-                console.log(width)
+                let width = parseFloat(document.getElementById('slider').value)
 
                 this.cardWidth = width
                 this.cardHeight = width / 1.58577
@@ -75,8 +71,6 @@
 
                 // calculate DPI
                 const dpi = pixelWidth / (cardWidthCm / 2.54);
-
-                console.log(`${dpi.toFixed(2)} DPI`);
                 
                 // save cokie
                 document.cookie = `dpi=${dpi}; path=/; max-age=31536000; SameSite=Strict`;
