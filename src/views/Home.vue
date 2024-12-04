@@ -14,7 +14,7 @@
 
     <section class="pickSets" v-if="glyphSetList.length > 0">
         <div class="savedSetsWrapper">
-            <div class="setPreviewWrapper" v-for="glyphSet in glyphSetList" :key="glyphSet.id" @click="handleSetSelection(glyphSet.id)" :class="selectedGlyphs.includes(glyphSet.id) ? 'selected' : 'notSelected'">
+            <div class="setPreviewWrapper" v-for="(glyphSet, index) in glyphSetList" :key="glyphSet.id" @click="handleSetSelection(glyphSet.id)" :class="selectedGlyphs.includes(glyphSet.id) ? 'selected' : 'notSelected'">
                 <h2>{{ glyphSet.name }}</h2>
                 <h3>{{ glyphSet.id }}</h3>
 
@@ -30,7 +30,7 @@
                         <svg class="deleteBtn" @click.stop="deleteSet(glyphSet.id)" xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="#444"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                     </div>
 
-                    <img :src="glyphSet.decodeGlyph(glyphSet.glyphs[glyphSet.glyphs.length - 1])" alt="preview image" class="previewImage">
+                    <img :src="previewImages[index]" alt="preview image" class="previewImage">
                 </div>
             </div>
             
@@ -74,16 +74,38 @@
                 setIdList: [],
                 glyphSetList: [],
                 selectedGlyphs: [],
+                previewImages: [],
             }
         },
 
         methods: {
-            clearStorage() {
+            async clearStorage() {
                 console.log("clearing storage");
 
                 localStorage.clear();
                 sessionStorage.clear();
+
+
+                let db = await new Promise((resolve, reject) => {
+                    let request = indexedDB.open("glyphSortDB", 2);
+                    request.onsuccess = (event) => resolve(event.target.result);
+                    request.onerror = (event) => reject(event.target.error);
+                });
+
+                let transaction = db.transaction("glyphSetStore", "readwrite");
+                let objectStore = transaction.objectStore("glyphSetStore");
+
+                objectStore.clear();
+
+                transaction.oncomplete = () => {
+                    console.log("glyphSetStore cleared.");
+                };
+
+                transaction.onerror = (event) => {
+                    console.error("Error clearing glyphSetStore:", event.target.error);
+                };
             },
+
 
 
             getSavedSets() {
@@ -92,13 +114,24 @@
 
                 console.log(this.setIdList)
 
-                this.setIdList.forEach(glyphSetId => {
-                    console.log(glyphSetId)
+                this.setIdList.forEach(async glyphSetId => {
+                    try {
+                        console.log(glyphSetId)
 
-                    let glyphSet = new GlyphSet(glyphSetId)
+                        let glyphSet = new GlyphSet(glyphSetId)
+                        await glyphSet.init()
 
-                    this.glyphSetList.push(glyphSet)
-                    glyphSet.getStats()
+                        this.glyphSetList.push(glyphSet)
+                        glyphSet.getStats()
+
+                        this.previewImages.push(await glyphSet.decodeGlyph(glyphSet.glyphs[glyphSet.glyphs.length - 1]))
+                        console.log(this.previewImages)
+                    }
+
+
+                    catch (error) {
+                        console.error(error)
+                    } 
                 })
 
 

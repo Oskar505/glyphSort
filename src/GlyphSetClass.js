@@ -4,72 +4,114 @@ import pako from 'pako'
 class GlyphSet {
     constructor(id, glyphs=[], info={}, distance=undefined, gamma=0.7, equalChance=1) {
         this.id = id
-        this.data = this.getData()
+        this.info = info
+        this.glyphs = glyphs
 
-        console.log(this.data)
+        this.distance = distance
+        this.actualDistance = distance
+        this.gamma = gamma
+        this.glyphStepsCount = this.glyphs.length
+        this.equalChance = equalChance // 1 = 10%
 
-        if (this.data == null || !this.data) {
-            // TODO: get from zip
-            // this.glyphs = Array.from({ length: 100 }, (_, index) => index)
-            
-            
-
-            this.glyphs = glyphs
-
-            this.distance = distance
-            this.actualDistance = distance
-            this.gamma = gamma
-            this.glyphStepsCount = this.glyphs.length
-            this.equalChance = equalChance // 1 = 10%
-
-            if (distance == undefined) {
-                this.distance = this.glyphStepsCount * 0.2
-            }
+        if (distance == undefined) {
+            this.distance = this.glyphStepsCount * 0.2
+        }
 
 
-            console.log(info)
+        this.initPromise = null // state of initialization
+    }
 
-            // save
-            this.data = {
-                "id": this.id,
-                "name": info.name,
-                "author": info.author,
-                "version": info.version,
-                "glyphs": this.glyphs,
-                "distance": this.distance,
-                "gamma": this.gamma,
-                "glyphStepsCount": this.glyphStepsCount,
-                "equalChance": this.equalChance,
-                "answers": [],
-            }
 
-            this.saveData(this.data)
+    init() {
+        if (!this.initPromise) {
+            this.initPromise = new Promise(async (resolve, reject) => {
+                try {
+                    this.data = await this.getData()
+
+                    console.log(this.data)
+
+                    // Create new glyph set
+                    if (this.data == null || !this.data) {
+                        // // from blob to url
+                        // console.log(typeof this.glyphs, this.glyphs)
+
+                        // this.glyphs.forEach((glyph, index) => {
+                        //     console.log(glyph)
+
+                        //     this.glyphs[index] = URL.createObjectURL(glyph)
+                        // });
+
+
+                        // save
+                        this.data = {
+                            "id": this.id,
+                            "name": this.info.name,
+                            "author": this.info.author,
+                            "version": this.info.version,
+                            "glyphs": this.glyphs,
+                            "distance": this.distance,
+                            "gamma": this.gamma,
+                            "glyphStepsCount": this.glyphStepsCount,
+                            "equalChance": this.equalChance,
+                            "answers": [],
+                        }
+
+                        console.log(this.glyphs)
+
+                        this.saveData()
+                    }
+
+
+
+                    // Load glyph set
+                    else {
+                        this.glyphs = this.data.glyphs
+                        this.distance = this.data.distance
+                        this.actualDistance = this.distance
+                        this.gamma = this.data.gamma
+                        this.glyphStepsCount = this.glyphs.length
+                        this.equalChance = this.data.equalChance // 1 = 10%
+                        this.name = this.data.name
+                        this.author = this.data.author
+                        this.version = this.data.version
+                    }
+
+
+                    this.successRate = 0
+                    this.sortedCount = 0
+                    this.sortTime = 0
+                    this.sessionTime = 0
+                    this.smallestDistance = 0
+
+
+
+                    // mark as initialized
+                    resolve()
+                }
+
+
+                catch (error) {
+                    console.error("Error during initialization of GlyphSetClass:", error)
+                    reject(error)
+                }
+            })
         }
 
 
         else {
-            this.glyphs = this.data.glyphs
-            this.distance = this.data.distance
-            this.actualDistance = this.distance
-            this.gamma = this.data.gamma
-            this.glyphStepsCount = this.glyphs.length
-            this.equalChance = this.data.equalChance // 1 = 10%
-            this.name = this.data.name
-            this.author = this.data.author
-            this.version = this.data.version
+            console.log("Glyph set is already initialized")
         }
 
 
-        this.successRate = 0
-        this.sortedCount = 0
-        this.sortTime = 0
-        this.sessionTime = 0
-        this.smallestDistance = 0
+
+        return this.initPromise
     }
 
 
+
+
     //CRUD
-    saveGlyphsFromZip(glyphs) {
+    convertGlyphsToBase64(glyphs) {
         this.glyphs = []
         let base64Image;
 
@@ -86,41 +128,105 @@ class GlyphSet {
 
         console.log(this.glyphs[0])
 
-        // for(const glyph of glyphs) {
-        //     base64Image = new Promise((resolve, reject) => {
-        //         const reader = new FileReader()
-
-        //         console.log(typeof glyph)
-
-        //         reader.readAsDataURL(glyph)
-        //         reader.onload = () => resolve(reader.result)
-        //         reader.onerror = error => reject(error)
-        //     })
-
-        //     this.glyphs.push(base64Image)
-        // }
 
         this.data["glyphs"] = this.glyphs
 
-        return this.data
+        return this.glyphs
     }
 
-    saveData(data) {
-        data = this.saveGlyphsFromZip(data.glyphs)
+    saveData() {
+        this.convertGlyphsToBase64(this.data.glyphs)
 
-        console.log(data)
+        console.log(this.data)
 
-        localStorage.setItem(this.id, JSON.stringify(data))
+        // localStorage.setItem(this.id, JSON.stringify(this.data))
         
-
+        
+        // update glyph set list
         let glyphSetList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
         glyphSetList.push(this.id)
         localStorage.setItem("glyphSetList", JSON.stringify(glyphSetList))
+
+        console.log(glyphSetList)
+
+
+        // indexedDB
+
+        let request = indexedDB.open("glyphSortDB", 2)
+
+        request.onupgradeneeded = (event) => {
+            let db = event.target.result
+
+            if (!db.objectStoreNames.contains("glyphSetStore")) {
+                let objectStore = db.createObjectStore("glyphSetStore", { keyPath: "id" })
+                console.log("Object store created.")
+
+                objectStore.createIndex("setId", "id", { unique: false })
+            }
+        }
+
+
+        request.onsuccess = (event) => {
+            let db = event.target.result
+            
+            let transaction = db.transaction("glyphSetStore", "readwrite")
+            let objectStore = transaction.objectStore("glyphSetStore")
+
+            console.log(this.data)
+            
+            let putRequest = objectStore.put(this.data)
+
+            putRequest.onerror = (event) => {
+                console.error("Error adding data to object store:", event.target.error)
+            }
+
+            transaction.onerror = (event) => {
+                console.error("Error adding data to object store:", event.target.error)
+            }
+        }
+
+
+        request.onerror = (event) => {
+            // Error occurred while opening the database
+            console.error("Error opening database:", event.target.error)
+        }
     }
 
-    getData() {
-        let data = localStorage.getItem(this.id)
-        return data ? JSON.parse(data) : null
+    async getData() {
+        let db = await new Promise((resolve, reject) => {
+            let request = indexedDB.open("glyphSortDB", 2)
+            request.onupgradeneeded = (event) => {
+                let db = event.target.result
+    
+                if (!db.objectStoreNames.contains("glyphSetStore")) {
+                    let objectStore = db.createObjectStore("glyphSetStore", { keyPath: "id" })
+                    console.log("Object store created.")
+    
+                    objectStore.createIndex("setId", "id", { unique: false })
+                }
+
+                resolve(db)
+            }
+
+            request.onsuccess = (event) => resolve(event.target.result)
+            request.onerror = (event) => reject(event.target.error)
+        })
+
+
+
+        let data = await new Promise((resolve, reject) => {
+            let transaction = db.transaction("glyphSetStore", "readonly")
+            let objectStore = transaction.objectStore("glyphSetStore")
+            let getRequest = objectStore.get(this.id)
+
+            getRequest.onsuccess = (event) => resolve(event.target.result)
+            getRequest.onerror = (event) => reject(event.target.error)
+        })
+
+        console.log(data)
+
+        // data = localStorage.getItem(this.id)
+        return data
     }
 
     addAnswer(answer) {
@@ -144,10 +250,16 @@ class GlyphSet {
 
 
 
-    getGlyphPair(lastDistance, lastCorrect) {
+    async getGlyphPair(lastDistance, lastCorrect) {
+        await this.init()
+
+
+
         this.actualDistance = this.distance
         let val1;
         let val2;
+
+        console.log(lastDistance, this.gamma, this.actualDistance)
 
 
         // if last response was correct, decrease distance, otherwise increase distance
@@ -159,15 +271,17 @@ class GlyphSet {
         // if distance is too small, start over
         if (this.actualDistance < 1) {
             this.actualDistance = 20
-            console.warn("distance too small, starting over");
+            console.info("distance too small, starting over");
         }
 
         // distance cannot be higher than the starting distance
         else if (this.actualDistance > this.glyphStepsCount * 0.2) {
             this.actualDistance = this.glyphStepsCount * 0.2 
-            console.warn("distance too high, starting over");
+            console.info("distance too high, starting over");
         }
 
+
+        console.log(this.actualDistance)
 
 
         // chance of getting equal values
@@ -199,7 +313,7 @@ class GlyphSet {
 
 
         console.log(this.glyphs[0])
-        console.log(atob(this.glyphs[0]))
+        // console.log(atob(this.glyphs[0]))
 
 
         console.log(val1, val2)
@@ -210,7 +324,14 @@ class GlyphSet {
 
 
 
-    decodeGlyph(glyph) {
+    async decodeGlyph(glyph) {
+        await this.init()
+
+
+
+        console.log(glyph)
+        console.log(this.data)
+
         let compressedBinary = Uint8Array.from(atob(glyph), c => c.charCodeAt(0)); // Base64 to binary
         let decompressedBinary = pako.ungzip(compressedBinary); // decompress
         let base64Image = btoa(String.fromCharCode(...decompressedBinary)); // back to Base64
@@ -219,8 +340,14 @@ class GlyphSet {
     }
 
 
-    getStats() {
-        let allAnswers = this.getData().answers
+    async getStats() {
+        await this.init()
+
+
+        let allAnswers = await this.getData()
+        allAnswers = allAnswers.answers
+
+        console.log(allAnswers)
 
 
         // success rate
@@ -295,8 +422,11 @@ class GlyphSet {
     }
 
 
-    getChartData() {
-        let allAnswers = this.getData().answers
+    async getChartData() {
+        await this.init()
+
+        let allAnswers = await this.getData()
+        allAnswers = allAnswers.answers
 
         // get distances
         let distances = []

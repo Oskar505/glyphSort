@@ -23,9 +23,9 @@
                 <h3>Charts</h3>
 
                 <div class="chartsWrapper">
-                    <line-chart :datasets="this.charts[0].datasets" :labels="this.charts[0].labels" :average="glyphSet.successRate"></line-chart>
+                    <line-chart :datasets="charts[0].datasets" :labels="charts[0].labels" :average="glyphSet.successRate" v-if="charts.length > 0"></line-chart>
 
-                    <bar-chart :datasets="this.charts[1].datasets" :labels="this.charts[1].labels" :average="glyphSet.successRate"></bar-chart>
+                    <bar-chart :datasets="charts[1].datasets" :labels="charts[1].labels" :average="glyphSet.successRate" v-if="charts.length > 0"></bar-chart>
                 </div>
             </div>
         </section>
@@ -64,7 +64,7 @@
 
 
 
-        mounted() {
+        async mounted() {
             // chart line colors
             let lineColors1 = [
                 'rgba(54, 162, 235, 1)', // Modrá
@@ -86,9 +86,10 @@
             let chartDatasets2 = []
             let chartLabels2 = []
 
-            JSON.parse(this.$route.query.glyphSetIds).forEach(glyphSetId => {
+
+            for (const glyphSetId of JSON.parse(this.$route.query.glyphSetIds)) {
                 let newGlyphSet = new GlyphSet(glyphSetId)
-                newGlyphSet.getStats()
+                await newGlyphSet.getStats()
                 this.glyphSets.push(newGlyphSet)
 
 
@@ -96,7 +97,9 @@
                 this.chartDatasets = []
                 this.chartLabels = []
 
-                let chartData = newGlyphSet.getChartData()
+                let chartData = await newGlyphSet.getChartData()
+
+
 
                 chartData[0] = chartData[0].reverse()
                 let x = chartData[0].map(obj => obj.x)
@@ -148,11 +151,7 @@
 
                     console.log(chartLabels2)
                 }
-
-
-                
-
-            })
+            }
 
 
 
@@ -160,14 +159,6 @@
             this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2})
 
             console.log(this.charts)
-
-
-            // this.successRate = this.$route.query.successRate
-            // this.sortedCount = this.$route.query.sortedCount
-            // this.sortTime = this.$route.query.sortTime
-            // this.sessionTime = this.$route.query.sessionTime
-            // this.distance = this.$route.query.distance
-            // this.glyphStepsCount = this.$route.query.glyphStepsCount
         },
 
 

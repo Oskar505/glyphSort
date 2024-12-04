@@ -56,6 +56,7 @@
 
 <script>
     import GlyphSet from '../GlyphSetClass.js'
+    import { toRaw } from 'vue'
 
 
     export default {
@@ -95,7 +96,7 @@
 
 
 
-        mounted() {
+        async mounted() {
             window.addEventListener('keydown', this.handleKeydown)
 
 
@@ -107,33 +108,41 @@
             // let setIds = JSON.parse(JSON.stringify(this.glyphSetStore.glyphSets))
 
             console.log(setIds)
-
-            setIds.forEach(id => {
-                this.glyphSets.push(new GlyphSet(id));
-            });
-
             
+            for (const id of setIds) {
+                let newGlyphSet = new GlyphSet(id);
+                await newGlyphSet.init();
+
+                console.log(newGlyphSet)
+
+                this.glyphSets.push(newGlyphSet);
+            }
+
+
+            console.log(this.glyphSets)
+
+            let glyphSets = toRaw(this.glyphSets)
+
+            console.log(glyphSets, 'test')
+
             // get sets data
-            if (this.glyphSets.length > 0) {
-                this.glyphSetIds = this.glyphSets.map(glyphSet => glyphSet.id)
-                let newGlyphData = this.glyphSets[0].getGlyphPair(undefined, true)
+            if (glyphSets.length > 0) {
+                this.glyphSetIds = glyphSets.map(glyphSet => glyphSet.id)
+                let newGlyphData = await glyphSets[0].getGlyphPair(undefined, true)
                 this.distance = newGlyphData.distance
                 this.val1 = newGlyphData.val1
                 this.val2 = newGlyphData.val2
 
-                let pickedSet = this.glyphSets[this.pickedSet]
-
-                this.img1 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
-                this.img2 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
+                let pickedSet = glyphSets[this.pickedSet]
 
 
+                this.img1 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
+                this.img2 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
 
                 // get stats
-                let allAnswers = JSON.parse(localStorage.getItem("allAnswers")) || []
-                let sessionAnswers = JSON.parse(sessionStorage.getItem("sessionAnswers")) || []
-                this.glyphSets[0].getStats(allAnswers, sessionAnswers)
+                glyphSets[0].getStats()
 
-                console.log(this.glyphSets[this.pickedSet])
+                console.log(glyphSets[this.pickedSet])
             }
         },
 
@@ -201,7 +210,7 @@
 
 
                 // reset feedbacks and get new glyphs
-                setTimeout(() => {
+                setTimeout(async () => {
                     this.btn0Feedback = ''
                     this.btn1Feedback = ''
                     this.btn2Feedback = ''
@@ -210,15 +219,15 @@
 
                     // this.newGlyphs()
 
-                    let newGlyphData = glyphSet.getGlyphPair(this.distance, this.lastCorrect)
+                    let newGlyphData = await glyphSet.getGlyphPair(this.distance, this.lastCorrect)
                     this.distance = newGlyphData.distance
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
 
                     let pickedSet = this.glyphSets[this.pickedSet]
 
-                    this.img1 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
-                    this.img2 = pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
+                    this.img1 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
+                    this.img2 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
 
                     this.animationClass = ''
                 }, 500);

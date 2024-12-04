@@ -155,9 +155,11 @@
 
 
             saveSet() {
-                let images = JSON.parse(JSON.stringify(this.images))
+                // let images = JSON.parse(JSON.stringify(this.images))
 
-                new GlyphSet(this.shortName, images, this.info)
+                console.log('save set')
+
+                new GlyphSet(this.shortName, this.images, this.info).init()
 
 
                 this.closePopup()
