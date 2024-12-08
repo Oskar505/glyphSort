@@ -1,6 +1,6 @@
 <template>
     <header>
-        <h1 @click="clearStorage()">Calibration</h1>
+        <h1 @click="clearStorage()">Settings</h1>
 
         <nav>
             <div @click="this.$router.push({path:'/'})"><h2>Home</h2></div>
@@ -12,10 +12,49 @@
 
 
     <main>
-        <div class="cardCalibrationWrapper">
+        
+        <div class="generalSettingsWrapper settingsWrapper">
+            <h2>Settings</h2>
+
+            <div class="sortingBtns">
+                <h3 class="strong">Sorting buttons order</h3>
+                <div class="answerBtnWrapper" @click="saveSortingBtnsOrder(1)" :style="{ 'border-color': btnsOrder === 1 ? '#4a90e2' : '' }">
+                    <div class="answerBtn">
+                        <p><</p>
+                    </div>
+
+                    <div class="answerBtn">
+                        <p>=</p>
+                    </div>
+
+                    <div class="answerBtn">
+                        <p>></p>
+                    </div>
+                </div>
+
+                <div class="answerBtnWrapper" @click="saveSortingBtnsOrder(0)" :style="{ 'border-color': btnsOrder === 0 ? '#4a90e2' : '' }">
+                    <div class="answerBtn">
+                        <p>></p>
+                    </div>
+
+                    <div class="answerBtn">
+                        <p>=</p>
+                    </div>
+
+                    <div class="answerBtn">
+                        <p><</p>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+
+
+        <div class="cardCalibrationWrapper settingsWrapper">
             <div class="instructions">
-                <h2>Adjust this rectangle to match your credit card</h2>
-                <p>If you don't have a credit card, use a ruler to measure the width. It should be 8.56cm wide.</p>
+                <h2>Calibration</h2>
+                <p><span class="strong">Adjust this rectangle to match your credit card.</span class="strong"> <br> If you don't have a credit card, use a ruler to measure the width. It should be 8.56cm wide.</p>
             </div>
 
             <div class="cardContainer">
@@ -28,9 +67,7 @@
                 <input type="range" id="slider" min="50" max="500" :value=cardWidth @input="adjustWidth()">
                 <button id="confirmBtn" @click="calculateDPI()">Confirm</button>
             </div>
-            
         </div>
-
     </main>
 </template>
 
@@ -42,6 +79,7 @@
                 cardWidth: 300,
                 cardHeight: 189.18,
                 dpi: null,
+                btnsOrder: 0
             }
         },
 
@@ -53,6 +91,9 @@
                 this.cardWidth = 3.375 * this.dpi
                 this.cardHeight = this.cardWidth / 1.58577
             }
+
+
+            this.btnsOrder = Number(this.$getCookie('sortingBtnsOrder'))
         },
 
 
@@ -77,6 +118,12 @@
 
                 this.$router.push({path:'/'})
             },
+
+
+            saveSortingBtnsOrder(order) {
+                this.btnsOrder = order
+                document.cookie = `sortingBtnsOrder=${order}; path=/; max-age=31536000; SameSite=Strict`;
+            }
         },
     }
 </script>
@@ -84,7 +131,17 @@
 
 
 <style scoped>
-    .cardCalibrationWrapper {
+    main {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 40px;
+        padding: 0 50px;
+    }
+
+
+    .settingsWrapper {
+        flex: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -94,21 +151,76 @@
         box-shadow: 0px 0px 15px #dedede;
         border: 3px solid #999;
         margin-top: 3%;
-        padding: 30px 80px;
+        padding: 15px 30px;
         user-select: none;
         max-width: 90%;
         margin: 0 auto;
     }
 
+
+
+    .generalSettingsWrapper {
+        justify-content: start;
+        align-items: start;
+    }
+
+
+    .sortingBtns {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 20px 5px;
+    }
+
+    .sortingBtns h3 {
+        margin-bottom: 0px;
+    }
+
+
+    .answerBtnWrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        border: 3px solid #999;
+        padding: 10px;
+        border-radius: 15px;
+    }
+
+
+    .answerBtn {
+        font-size: 40px;
+        font-weight: 500;
+        border: 3px solid #444;
+        color: #444;
+        padding: 0 18px;
+        border-radius: 15px;
+        background-color: white;
+    }
+
+
+
     .instructions {
-        text-align: center;
+        text-align: left;
         color: #666;
         font-size: 22px;
     }
 
     h2 {
         color: #444;
-        font-size: 35px;
+        font-size: 32px;
+        margin: 0;
+    }
+
+    .instructions p {
+        margin-left: 5px;
+    }
+
+    .strong {
+        font-weight: 700;
+        color: #666;
+        font-size: 25px;
     }
 
 

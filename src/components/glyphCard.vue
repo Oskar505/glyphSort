@@ -10,12 +10,13 @@
         data() {
             return {
                 decodedImg: '',
-                glyphWidth: 1,
+                glyphWidth: 96,
             }
         },
 
         mounted() {
             const dpi = this.$getCookie('dpi')
+            // const dpi = dpiCookie ? dpiCookie : 1
 
             console.log(dpi)
 

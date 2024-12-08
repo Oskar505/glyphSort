@@ -154,12 +154,12 @@
             },
 
 
-            saveSet() {
+            async saveSet() {
                 // let images = JSON.parse(JSON.stringify(this.images))
 
                 console.log('save set')
 
-                new GlyphSet(this.shortName, this.images, this.info).init()
+                await new GlyphSet(this.shortName, this.images, this.info).init()
 
 
                 this.closePopup()

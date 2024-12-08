@@ -1,4 +1,5 @@
 import pako from 'pako'
+import { toRaw } from 'vue'
 
 
 class GlyphSet {
@@ -12,10 +13,26 @@ class GlyphSet {
         this.gamma = gamma
         this.glyphStepsCount = this.glyphs.length
         this.equalChance = equalChance // 1 = 10%
+        this.db = null
+        this.answers = []
 
         if (distance == undefined) {
             this.distance = this.glyphStepsCount * 0.2
         }
+
+
+        // this.data = {
+        //     "id": null,
+        //     "name": null,
+        //     "author": null,
+        //     "version": null,
+        //     "glyphs": null,
+        //     "distance": null,
+        //     "gamma": null,
+        //     "glyphStepsCount": null,
+        //     "equalChance": null,
+        //     "answers": null,
+        // }
 
 
         this.initPromise = null // state of initialization
@@ -26,6 +43,32 @@ class GlyphSet {
         if (!this.initPromise) {
             this.initPromise = new Promise(async (resolve, reject) => {
                 try {
+
+                    // Init DB
+                    this.db = await new Promise((resolve, reject) => {
+                        let request = indexedDB.open("glyphSortDB", 2)
+                        request.onupgradeneeded = (event) => {
+                            let db = event.target.result
+                
+                            if (!db.objectStoreNames.contains("glyphSetStore")) {
+                                let objectStore = db.createObjectStore("glyphSetStore", { keyPath: "id" })
+                                console.log("Object store created.")
+                
+                                objectStore.createIndex("setId", "id", { unique: false })
+                            }
+            
+                            resolve(db)
+                        }
+            
+                        request.onsuccess = (event) => resolve(event.target.result)
+                        request.onerror = (event) => reject(event.target.error)
+                    })
+
+
+
+
+
+
                     this.data = await this.getData()
 
                     console.log(this.data)
@@ -53,12 +96,12 @@ class GlyphSet {
                             "gamma": this.gamma,
                             "glyphStepsCount": this.glyphStepsCount,
                             "equalChance": this.equalChance,
-                            "answers": [],
+                            "answers": this.answers, // []
                         }
 
                         console.log(this.glyphs)
 
-                        this.saveData()
+                        await this.saveData()
                     }
 
 
@@ -74,6 +117,7 @@ class GlyphSet {
                         this.name = this.data.name
                         this.author = this.data.author
                         this.version = this.data.version
+                        this.answers = this.data.answers
                     }
 
 
@@ -102,7 +146,7 @@ class GlyphSet {
             console.log("Glyph set is already initialized")
         }
 
-
+        console.log('init finished')
 
         return this.initPromise
     }
@@ -134,16 +178,18 @@ class GlyphSet {
         return this.glyphs
     }
 
-    saveData() {
+    async saveData() {
+        // await this.init()
+
+
         this.convertGlyphsToBase64(this.data.glyphs)
 
         console.log(this.data)
 
-        // localStorage.setItem(this.id, JSON.stringify(this.data))
-        
-        
+
         // update glyph set list
         let glyphSetList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
+        console.log(glyphSetList)
         glyphSetList.push(this.id)
         localStorage.setItem("glyphSetList", JSON.stringify(glyphSetList))
 
@@ -151,100 +197,116 @@ class GlyphSet {
 
 
         // indexedDB
+        let transaction = this.db.transaction("glyphSetStore", "readwrite")
+        let objectStore = transaction.objectStore("glyphSetStore")
 
-        let request = indexedDB.open("glyphSortDB", 2)
+        console.log(this.data)
+        
+        let putRequest = objectStore.put(this.data)
 
-        request.onupgradeneeded = (event) => {
-            let db = event.target.result
-
-            if (!db.objectStoreNames.contains("glyphSetStore")) {
-                let objectStore = db.createObjectStore("glyphSetStore", { keyPath: "id" })
-                console.log("Object store created.")
-
-                objectStore.createIndex("setId", "id", { unique: false })
-            }
+        putRequest.onerror = (event) => {
+            console.error("Error adding data to object store:", event.target.error)
         }
 
-
-        request.onsuccess = (event) => {
-            let db = event.target.result
-            
-            let transaction = db.transaction("glyphSetStore", "readwrite")
-            let objectStore = transaction.objectStore("glyphSetStore")
-
-            console.log(this.data)
-            
-            let putRequest = objectStore.put(this.data)
-
-            putRequest.onerror = (event) => {
-                console.error("Error adding data to object store:", event.target.error)
-            }
-
-            transaction.onerror = (event) => {
-                console.error("Error adding data to object store:", event.target.error)
-            }
-        }
-
-
-        request.onerror = (event) => {
-            // Error occurred while opening the database
-            console.error("Error opening database:", event.target.error)
+        transaction.onerror = (event) => {
+            console.error("Error adding data to object store:", event.target.error)
         }
     }
 
     async getData() {
-        let db = await new Promise((resolve, reject) => {
-            let request = indexedDB.open("glyphSortDB", 2)
-            request.onupgradeneeded = (event) => {
-                let db = event.target.result
-    
-                if (!db.objectStoreNames.contains("glyphSetStore")) {
-                    let objectStore = db.createObjectStore("glyphSetStore", { keyPath: "id" })
-                    console.log("Object store created.")
-    
-                    objectStore.createIndex("setId", "id", { unique: false })
-                }
-
-                resolve(db)
+        try {
+            if (!this.db) {
+                await this.init(); // wait for indexedDB
             }
 
-            request.onsuccess = (event) => resolve(event.target.result)
-            request.onerror = (event) => reject(event.target.error)
-        })
 
+            let data = await new Promise((resolve, reject) => {
+                let transaction = this.db.transaction("glyphSetStore", "readonly")
+                let objectStore = transaction.objectStore("glyphSetStore")
+                let getRequest = objectStore.get(this.id)
+    
+                getRequest.onsuccess = (event) => resolve(event.target.result)
+                getRequest.onerror = (event) => reject(event.target.error)
+            })
+    
+            console.log(data)
 
-
-        let data = await new Promise((resolve, reject) => {
-            let transaction = db.transaction("glyphSetStore", "readonly")
-            let objectStore = transaction.objectStore("glyphSetStore")
-            let getRequest = objectStore.get(this.id)
-
-            getRequest.onsuccess = (event) => resolve(event.target.result)
-            getRequest.onerror = (event) => reject(event.target.error)
-        })
-
-        console.log(data)
-
-        // data = localStorage.getItem(this.id)
-        return data
-    }
-
-    addAnswer(answer) {
-        let data = localStorage.getItem(this.id)
-
-        if (!data) {
-            console.warn("no data found in local storage")
-            return false
+            return data
         }
 
-        data = JSON.parse(data)
-        data.answers.push(answer)
 
-        localStorage.setItem(this.id, JSON.stringify(data))
+        catch (error) {
+            console.error("Error getting data from object store:", error)
+
+            return null
+        }
     }
 
-    deleteData() {
-        localStorage.removeItem(this.id)
+    async addAnswer(answer) {
+        await this.init()
+
+
+        try {
+            // get data
+            this.data = await this.getData()
+
+            console.log(this.data.answers)
+
+            this.answers = toRaw(this.data).answers ? toRaw(this.data).answers : []
+
+            // update data
+            this.answers.push(answer)
+            this.data.answers = this.answers
+
+            // update db
+            const transaction = this.db.transaction("glyphSetStore", "readwrite")
+            const objectStore = transaction.objectStore("glyphSetStore")
+            const putRequest = objectStore.put(toRaw(this.data))
+
+
+            putRequest.onerror = (event) => {
+                console.error("Error adding answer DB:", event.target.error)
+                return false
+            }
+
+            putRequest.onsuccess = (event) => {
+                return true
+            }
+        }
+
+
+        catch (error) {
+            console.error("Error adding answer DB:", error)
+            return false
+        }
+    }
+
+    async deleteFromIndexedDB() {
+        console.log("deleting class")
+
+        try {
+            if (!this.db) {
+                await this.init(); // wait for indexedDB
+            }
+
+
+            let data = await new Promise((resolve, reject) => {
+                let transaction = this.db.transaction("glyphSetStore", "readwrite")
+                let objectStore = transaction.objectStore("glyphSetStore")
+                let getRequest = objectStore.delete(this.id)
+    
+                getRequest.onsuccess = (event) => resolve(event.target.result)
+                getRequest.onerror = (event) => reject(event.target.error)
+            })
+    
+            console.log(data)
+        }
+
+
+        catch (error) {
+            console.error("Error deleting data from object store:", error)
+        }
+        // Object.keys(this).forEach(key => delete this[key]);
     }
 
 
