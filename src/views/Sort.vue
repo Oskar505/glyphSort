@@ -130,8 +130,6 @@
                 let newGlyphSet = new GlyphSet(id);
                 await newGlyphSet.init();
 
-                console.log(newGlyphSet)
-
                 this.glyphSets.push(newGlyphSet);
             }
 
@@ -258,17 +256,20 @@
                     this.borderFeedback = ''
 
 
-                    // this.newGlyphs()
+                    // Select a new set
+                    this.pickedSet = getRandomInt(0, this.glyphSets.length -1)
+                    let newGlyphSet = this.glyphSets[this.pickedSet]
 
-                    let newGlyphData = await glyphSet.getGlyphPair(this.distance, this.lastCorrect)
+                    this.distance = newGlyphSet.answers[newGlyphSet.answers.length - 1].distance
+                    this.lastCorrect = newGlyphSet.answers[newGlyphSet.answers.length - 1].correct
+
+                    let newGlyphData = await newGlyphSet.getGlyphPair(this.distance, this.lastCorrect)
                     this.distance = newGlyphData.distance
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
 
-                    let pickedSet = this.glyphSets[this.pickedSet]
-
-                    this.img1 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
-                    this.img2 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
+                    this.img1 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val1])
+                    this.img2 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val2])
 
                     this.animationClass = ''
                 }, 500);
@@ -326,6 +327,12 @@
             },
         },
 
+    }
+
+
+
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1) ) + min;
     }
 </script>
 

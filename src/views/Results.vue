@@ -13,8 +13,8 @@
 
 
     <main>
-        <section v-show="glyphSets.length > 0" style="width: 100%;">
-            <div class="resultBox stats" v-for="glyphSet in glyphSets" :key="glyphSet.id">
+        <section v-show="glyphSets.length > 0" style="width: 100%;" class="results">
+            <div class="resultBox stats" v-for="(glyphSet, index) in glyphSets" :key="glyphSet.id">
                 <h2 class="setHeader">{{ glyphSet.id }}</h2>
 
                 <glyph-set-info style="max-width: 500px;" :glyphSet="glyphSet" :live="false" v-if="glyphSet"/>
@@ -42,6 +42,7 @@
 
 <script>
     import GlyphSet from '../GlyphSetClass.js'
+    import { toRaw } from 'vue'
 
 
 
@@ -87,15 +88,17 @@
             let chartLabels2 = []
 
 
+            // chart data
+            this.chartDatasets = []
+            this.chartLabels = []
+
             for (const glyphSetId of JSON.parse(this.$route.query.glyphSetIds)) {
                 let newGlyphSet = new GlyphSet(glyphSetId)
                 await newGlyphSet.getStats()
                 this.glyphSets.push(newGlyphSet)
 
 
-                // chart data
-                this.chartDatasets = []
-                this.chartLabels = []
+                
 
                 let chartData = await newGlyphSet.getChartData()
 
@@ -154,10 +157,37 @@
             }
 
 
+            
 
             this.charts.push({'datasets': this.chartDatasets, 'labels': this.chartLabels})
             this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2})
 
+
+            // Fix dataset length
+            let datasetLengths = []
+
+            toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
+                datasetLengths.push(dataset.data.length)
+            });
+
+
+            let maxLength = Math.max(...datasetLengths)
+
+            toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
+                let datasetLength = dataset.data.length
+
+                if (datasetLength < maxLength) {
+                    let diff = maxLength - datasetLength
+
+                    for (let i = 0; i < diff; i++) {
+                        dataset.data.unshift(null)
+                    }
+                }
+            });
+
+
+
+            console.log(toRaw(toRaw(this.charts)[0].datasets))
             console.log(this.charts)
         },
 
@@ -172,13 +202,25 @@
 
 <style scoped>
     main {
-        width: 1000px;
+        width: 1800px;
         margin: 0 auto;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 100px;
         flex-wrap: wrap;
+    }
+
+    .results {
+        width: 100%;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        flex-wrap: wrap;
+        /* margin: 0 100px; */
     }
 
     .setHeader {
