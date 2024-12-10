@@ -56,8 +56,6 @@ class GlyphSet {
                 
                                 objectStore.createIndex("setId", "id", { unique: false })
                             }
-            
-                            resolve(db)
                         }
             
                         request.onsuccess = (event) => resolve(event.target.result)
