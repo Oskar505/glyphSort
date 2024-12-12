@@ -77,6 +77,9 @@
                                 text: 'Succes'
                             },
 
+                            min: 0,
+                            max: 100,
+
                             ticks: {
                                 beginAtZero: true,
                                 max: 100,

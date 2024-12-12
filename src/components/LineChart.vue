@@ -77,6 +77,8 @@
                                 display: true,
                                 text: 'Error'
                             },
+                            min: 0,
+                            max: 100,
 
                             ticks: {
                                 beginAtZero: true,

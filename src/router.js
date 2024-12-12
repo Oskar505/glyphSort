@@ -27,7 +27,7 @@ const router = createRouter({
       path: '/calibration',
       name: 'Calibration',
       component: () => import('./views/Calibration.vue'),
-      meta: { title: 'Self eval - Calibration' }
+      meta: { title: 'Self eval - Settings' }
     },
   ]
 })

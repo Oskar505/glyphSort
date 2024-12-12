@@ -1,6 +1,6 @@
 <template>
     <div>
-        <img :src="value" alt="glyph" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px' }">
+        <img :src="value" alt="glyph" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px', transform: 'rotate(' + rotationValue + 'deg)' }">
     </div>
 </template>
 
@@ -30,6 +30,12 @@
             value: {
                 type: String,
                 required: true
+            },
+
+            rotationValue: {
+                type: Number,
+                default: 0
+
             }
         },
 

@@ -78,7 +78,7 @@ export default {
         align-items: center;
         flex-wrap: wrap;
         gap: 20px;
-        width: 110%;
+        width: 100%;
     }
 
 
@@ -91,19 +91,19 @@ export default {
         flex: 1;
         border: 2px solid #444;
         border-radius: 15px;
-        padding: 10px;
+        padding: 8px;
         cursor: help;
         background-color: #fcfcfc;
     }
 
     .infoBox .data {
-        font-size: 30px;
+        font-size: 28px;
         color: #444;
         font-weight: 500;
     }
 
     .infoBox .label {
-        font-size: 20px;
+        font-size: 19px;
         color: #666;
     }
 </style>

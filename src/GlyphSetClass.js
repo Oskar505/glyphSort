@@ -11,6 +11,7 @@ class GlyphSet {
         this.distance = distance
         this.actualDistance = distance
         this.gamma = gamma
+        this.rotation = false
         this.glyphStepsCount = this.glyphs.length
         this.equalChance = equalChance // 1 = 10%
         this.db = null
@@ -94,12 +95,13 @@ class GlyphSet {
                             "gamma": this.gamma,
                             "glyphStepsCount": this.glyphStepsCount,
                             "equalChance": this.equalChance,
+                            "rotation": this.rotation,
                             "answers": this.answers, // []
                         }
 
                         console.log(this.glyphs)
 
-                        await this.saveData()
+                        await this.saveData(true)
                     }
 
 
@@ -116,6 +118,7 @@ class GlyphSet {
                         this.author = this.data.author
                         this.version = this.data.version
                         this.answers = this.data.answers
+                        this.rotation = this.data.rotation
                     }
 
 
@@ -176,23 +179,21 @@ class GlyphSet {
         return this.glyphs
     }
 
-    async saveData() {
-        // await this.init()
+    async saveData(init=false) {
+        if (init) {
+            this.convertGlyphsToBase64(this.data.glyphs)
 
+            console.log(this.data)
 
-        this.convertGlyphsToBase64(this.data.glyphs)
+            // update glyph set list
+            let glyphSetList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
+            console.log(glyphSetList)
+            glyphSetList.push(this.id)
+            localStorage.setItem("glyphSetList", JSON.stringify(glyphSetList))
 
-        console.log(this.data)
-
-
-        // update glyph set list
-        let glyphSetList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
-        console.log(glyphSetList)
-        glyphSetList.push(this.id)
-        localStorage.setItem("glyphSetList", JSON.stringify(glyphSetList))
-
-        console.log(glyphSetList)
-
+            console.log(glyphSetList)
+        }
+        
 
         // indexedDB
         let transaction = this.db.transaction("glyphSetStore", "readwrite")
@@ -200,7 +201,7 @@ class GlyphSet {
 
         console.log(this.data)
         
-        let putRequest = objectStore.put(this.data)
+        let putRequest = objectStore.put(toRaw(this.data))
 
         putRequest.onerror = (event) => {
             console.error("Error adding data to object store:", event.target.error)
@@ -240,6 +241,23 @@ class GlyphSet {
         }
     }
 
+
+    async downloadAnswers() {
+        await this.getData()
+
+        const dataString = JSON.stringify(this.data.answers, null, 2)
+        const blob = new Blob([dataString], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${this.id.replaceAll(' ', '_')}_answers.json`
+        a.click()
+
+        URL.revokeObjectURL(url)
+    }
+
+
     async addAnswer(answer) {
         await this.init()
 
@@ -263,7 +281,7 @@ class GlyphSet {
 
 
             putRequest.onerror = (event) => {
-                console.error("Error adding answer DB:", event.target.error)
+                console.error("Error adding answer to DB:", event.target.error)
                 return false
             }
 
@@ -274,7 +292,7 @@ class GlyphSet {
 
 
         catch (error) {
-            console.error("Error adding answer DB:", error)
+            console.error("Error adding answer to DB:", error)
             return false
         }
     }
@@ -308,6 +326,41 @@ class GlyphSet {
     }
 
 
+    async deleteAnswers() {
+        await this.init()
+
+
+        try {
+            // get data
+            this.data = await this.getData()
+
+            // delete answers
+            this.data.answers = []
+
+            // update db
+            const transaction = this.db.transaction("glyphSetStore", "readwrite")
+            const objectStore = transaction.objectStore("glyphSetStore")
+            const putRequest = objectStore.put(toRaw(this.data))
+
+
+            putRequest.onerror = (event) => {
+                console.error("Error deleting answers from DB:", event.target.error)
+                return false
+            }
+
+            putRequest.onsuccess = (event) => {
+                return true
+            }
+        }
+
+
+        catch (error) {
+            console.error("Error deleting answers from DB:", error)
+            return false
+        }
+    }
+
+
 
 
     async getGlyphPair(lastDistance, lastCorrect) {
@@ -321,6 +374,17 @@ class GlyphSet {
 
         console.log(lastDistance, this.gamma, this.actualDistance)
 
+
+        // rotation
+        let rotationOptions = [0, 90, 180, 270]
+        let rotationValue = 0
+
+        if (this.rotation) {
+            rotationValue = rotationOptions[getRandomInt(0, rotationOptions.length - 1)]
+        }
+
+
+        console.log(rotationValue)
 
         // if last response was correct, decrease distance, otherwise increase distance
         if (lastDistance != undefined) {
@@ -379,7 +443,7 @@ class GlyphSet {
         console.log(val1, val2)
         
 
-        return {val1:val1, val2:val2, distance:this.actualDistance}
+        return {val1:val1, val2:val2, distance:this.actualDistance, rotation:this.rotation, rotationValue:rotationValue}
     }
 
 
@@ -550,6 +614,17 @@ class GlyphSet {
 
 
         return [diffsAndErrs, accuracyAndVal]
+    }
+
+
+
+    async toggleRotation() {
+        await this.getData()
+
+        this.rotation = !this.rotation
+        this.data.rotation = this.rotation
+
+        await this.saveData()
     }
 }
 

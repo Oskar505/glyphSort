@@ -3,10 +3,10 @@
         <h1 @click="clearStorage()">Sort</h1>
 
         <nav>
-            <div @click="this.$router.push({path:'/', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})"><h2>Home</h2></div>
+            <div @click="this.$router.push({path:'/', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2>Home</h2></div>
             <div @click="this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2 class="navActive">Sort</h2></div>
             <div @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2>Results</h2></div>
-            <div @click="this.$router.push({path:'/calibration', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})" class="secondaryNavBtn"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#666"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg></div>
+            <div @click="this.$router.push({path:'/calibration', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})" class="secondaryNavBtn"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#666"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg></div>
         </nav>
     </header>
 
@@ -14,8 +14,8 @@
         <section v-show="glyphSets.length > 0">
             <div class="sortWrapper" :class="borderFeedback">
                 <div class="glyphCardWrapper">
-                    <glyph-card :value="img1" :class="animationClass"></glyph-card>
-                    <glyph-card :value="img2" :class="animationClass"></glyph-card>
+                    <glyph-card :value="img1" :rotationValue="rotationValue" :class="animationClass"></glyph-card>
+                    <glyph-card :value="img2" :rotationValue="rotationValue" :class="animationClass"></glyph-card>
                 </div>
                 
 
@@ -92,6 +92,10 @@
 
                 btnsOrder: 0,
 
+                rotation: false,
+                rotationValue: 0,
+
+
                 gamma: 0.7,
                 lastCorrect: true,
                 glyphStepsCount: 100,
@@ -143,10 +147,14 @@
             // get sets data
             if (glyphSets.length > 0) {
                 this.glyphSetIds = glyphSets.map(glyphSet => glyphSet.id)
+
                 let newGlyphData = await glyphSets[0].getGlyphPair(undefined, true)
+
                 this.distance = newGlyphData.distance
                 this.val1 = newGlyphData.val1
                 this.val2 = newGlyphData.val2
+                this.rotation = newGlyphData.rotation
+                this.rotationValue = newGlyphData.rotationValue
 
                 let pickedSet = glyphSets[this.pickedSet]
 
@@ -237,7 +245,9 @@
                     "val2": this.val2,
                     "correct": this.lastCorrect,
                     'distance': this.distance,
-                    "time": Date.now()
+                    "time": Date.now(),
+                    "rotation": this.rotation,
+                    "rotationValue": this.rotationValue
                 }
 
                 glyphSet.addAnswer(answerData)
@@ -260,13 +270,26 @@
                     this.pickedSet = getRandomInt(0, this.glyphSets.length -1)
                     let newGlyphSet = this.glyphSets[this.pickedSet]
 
-                    this.distance = newGlyphSet.answers[newGlyphSet.answers.length - 1].distance
-                    this.lastCorrect = newGlyphSet.answers[newGlyphSet.answers.length - 1].correct
+                    try {
+                        this.distance = newGlyphSet.answers[newGlyphSet.answers.length - 1].distance
+                        this.lastCorrect = newGlyphSet.answers[newGlyphSet.answers.length - 1].correct
+                    }
+
+                    catch (error) {
+                        this.distance = 20
+                        this.lastCorrect = true
+
+                        console.log('catch')
+                    }
+                    
 
                     let newGlyphData = await newGlyphSet.getGlyphPair(this.distance, this.lastCorrect)
+
                     this.distance = newGlyphData.distance
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
+                    this.rotation = newGlyphData.rotation
+                    this.rotationValue = newGlyphData.rotationValue
 
                     this.img1 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val1])
                     this.img2 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val2])
