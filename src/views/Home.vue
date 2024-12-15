@@ -143,9 +143,14 @@
                         await glyphSet.init()
 
                         this.glyphSetList.push(glyphSet)
-                        glyphSet.getStats()
+                        await glyphSet.getStats()
 
-                        this.previewImages.push(await glyphSet.decodeGlyph(glyphSet.glyphs[glyphSet.glyphs.length - 1]))
+                        let previewImage = await glyphSet.decodeGlyph(glyphSet.glyphs[glyphSet.glyphs.length - 1])
+
+                        if (!this.previewImages.includes(previewImage)) {
+                            this.previewImages.push(previewImage)
+                        }
+                        
                         console.log(this.previewImages)
                     }
 
