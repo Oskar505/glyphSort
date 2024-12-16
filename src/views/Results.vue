@@ -23,7 +23,7 @@
                 <h3>Charts</h3>
 
                 <div class="chartsWrapper">
-                    <line-chart :datasets="[charts[0].datasets[index]]" :labels="charts[0].labels" :average="glyphSet.successRate" v-if="charts.length > 0"></line-chart>
+                    <line-chart :datasets="[...charts[0].datasets[index]]" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0"></line-chart>
 
                     <bar-chart :datasets="[charts[1].datasets[index]]" :labels="charts[1].labels" :average="glyphSet.successRate" v-if="charts.length > 0"></bar-chart>
                 </div>
@@ -67,20 +67,7 @@
 
         async mounted() {
             // chart line colors
-            let lineColors1 = [
-                'rgba(54, 162, 235, 1)', // Modrá
-                'rgba(255, 99, 132, 1)', // Červená
-                'rgba(75, 192, 192, 1)', // Zelená
-                'rgba(255, 159, 64, 1)', // Oranžová
-                'rgba(153, 102, 255, 1)', // Fialová
-                'rgba(63, 191, 191, 1)', // Tyrkysová
-                'rgba(255, 0, 0, 1)', // Tmavě červená
-                'rgba(255, 255, 0, 1)', // Žlutá
-                'rgba(255, 105, 180, 1)', // Růžová
-                'rgba(25, 25, 112, 1)'  // Tmavě modrá
-            ];
-
-            let lineColors2 = [...lineColors1]
+            
 
 
             // re-init glyph sets and get stats
@@ -88,64 +75,105 @@
             let chartLabels2 = []
 
 
+            let x
+            let y
+
+
             // chart data
             this.chartDatasets = []
             this.chartLabels = []
 
             for (const glyphSetId of JSON.parse(this.$route.query.glyphSetIds)) {
+                let lineColors1 = [
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 112, 188, 0.5)',
+                    'rgba(75, 192, 192, 0.5)', 
+                    'rgba(255, 159, 64, 0.5)',
+                    'rgba(255, 0, 0, 1)',
+                ];
+
+
                 let newGlyphSet = new GlyphSet(glyphSetId)
                 await newGlyphSet.getStats()
                 this.glyphSets.push(newGlyphSet)
-
-
-                
 
                 let chartData = await newGlyphSet.getChartData()
 
 
 
-                chartData[0] = chartData[0].reverse()
-                let x = chartData[0].map(obj => obj.x)
-                let y = chartData[0].map(obj => obj.y)
+
+                console.log(chartData[0][0])
+
+                x = chartData[0][0].map(obj => obj.x)
+
+                console.log(x)
+
+                let rotations = []
+
+                for (let i = 0; i < 5; i++) {
+                    let color = lineColors1[0]
+                    lineColors1.shift()
+
+                    let label = i == 4 ? 'All' : i * 90 + '°'
+
+                    let y = chartData[0][i].map(obj => obj.y)
+                    y = y.map(value => isNaN(value) ? null : value)
+
+
+                    if ((i != 4 && !y.every(value => value === null)) || (i == 4 && rotations.length != 1)) {
+                        let chartDataset = {
+                            label: label,
+                            data: y,
+                            borderColor: color,
+                            backgroundColor: color,
+                            tension: 0.4
+                        }
+
+                        rotations.push(chartDataset)
+                    }
+
+                    else if (i == 4 && rotations.length == 1) {
+                        rotations[0].borderColor = 'rgba(54, 162, 235, 1)'
+                        rotations[0].backgroundColor = 'rgba(54, 162, 235, 1)'
+                    }
+                }
+
+                this.chartDatasets.push(rotations)
+
+                
+                // lineColors1.shift()
+
+
+                // Labels
+                this.chartLabels.push(x)
+
+                // if (x.length > this.chartLabels.length) {
+                //     this.chartLabels = x
+                //     // this.chartLabels = this.chartLabels.map(label => label / 10)
+
+                //     console.log(this.chartLabels)
+                // }
+
+
+
+
+                // Acc and val chart
+                console.log(chartData)
+
+                x = chartData[1].map(obj => obj.x)
+                y = chartData[1].map(obj => obj.y)
 
 
                 let chartDataset = {
                     label: glyphSetId,
                     data: y,
-                    borderColor: lineColors1[0],
-                    backgroundColor: lineColors1[0],
-                    tension: 0.4
-                }
-
-                this.chartDatasets.push(chartDataset)
-                lineColors1.shift()
-
-
-                if (x.length > this.chartLabels.length) {
-                    this.chartLabels = x
-                    // this.chartLabels = this.chartLabels.map(label => label / 10)
-
-                    console.log(this.chartLabels)
-                }
-
-
-
-                // Acc and val chart
-                x = chartData[1].map(obj => obj.x)
-                y = chartData[1].map(obj => obj.y)
-
-
-                chartDataset = {
-                    label: glyphSetId,
-                    data: y,
-                    borderColor: lineColors2[0],
-                    backgroundColor: lineColors2[0],
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    backgroundColor: 'rgba(54, 162, 235, 1)',
                     tension: 0.4
                 }
 
                 
                 chartDatasets2.push(chartDataset)
-                lineColors2.shift()
 
 
                 if (x.length > chartLabels2.length) {
@@ -164,31 +192,33 @@
 
 
             // Fix dataset length
-            let datasetLengths = []
+            // let datasetLengths = []
 
-            toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
-                datasetLengths.push(dataset.data.length)
-            });
+            // toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
+            //     datasetLengths.push(dataset.data.length)
+            // });
 
 
-            let maxLength = Math.max(...datasetLengths)
+            // let maxLength = Math.max(...datasetLengths)
 
-            toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
-                let datasetLength = dataset.data.length
+            // toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
+            //     let datasetLength = dataset.data.length
 
-                if (datasetLength < maxLength) {
-                    let diff = maxLength - datasetLength
+            //     if (datasetLength < maxLength) {
+            //         let diff = maxLength - datasetLength
 
-                    for (let i = 0; i < diff; i++) {
-                        dataset.data.unshift(null)
-                    }
-                }
-            });
+            //         for (let i = 0; i < diff; i++) {
+            //             dataset.data.unshift(null)
+            //         }
+            //     }
+            // });
 
 
 
             console.log(toRaw(toRaw(this.charts)[0].datasets))
             console.log(this.charts)
+
+            
         },
 
 

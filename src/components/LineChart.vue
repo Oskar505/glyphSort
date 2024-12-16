@@ -12,7 +12,6 @@
 
     import chartAnnotation from 'chartjs-plugin-annotation'
 
-    // Zaregistrujeme prvky pro čárový graf
     ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, chartAnnotation)
 
     export default {

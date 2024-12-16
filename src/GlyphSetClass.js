@@ -561,11 +561,38 @@ class GlyphSet {
             }
         });
 
+        distances.sort((a, b) => a - b)
 
-        // sort answers
-        let diffsAndErrs = []
+        console.log(distances)
+
+
+        // sort answers 
+
+        // 0, 90, 180, 270, all
+        let diffsAndErrs = [[], [], [], [], []]
+
 
         distances.forEach(distance => {
+            for (let i = 0; i < 4; i++) {
+                let correctCount = 0
+                let count = 0
+                let rotationVal = i * 90
+
+
+                allAnswers.filter(item => item.distance == distance && item.rotationValue == rotationVal).forEach(answer => {
+                    if (answer.correct) {
+                        correctCount++
+                    }
+
+                    count++
+                })
+
+                // diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
+                diffsAndErrs[i].push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
+            }
+
+
+            // all
             let correctCount = 0
             let count = 0
 
@@ -578,7 +605,8 @@ class GlyphSet {
             })
 
             // diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
-            diffsAndErrs.push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
+            diffsAndErrs[4].push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
+            
         });
 
 
