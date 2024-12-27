@@ -205,14 +205,14 @@
 #dropZone {
     width: 400px;
     height: 200px;
-    border: 2px dashed #999;
+    border: 2px dashed var(--border2);
     border-radius: 8px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #444;
-    background-color: #fcfcfc;
+    color: var(--text);
+    background-color: var(--element-bg);
     font-size: 18px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -220,7 +220,7 @@
 
 #dropZone.dragover {
     background-color: hsl(0, 0%, 95%);
-    border-color: #4a90e2;
+    border-color: var(--enabled);
     color: #222;
 }
 
@@ -251,9 +251,9 @@ label {
     flex-wrap: wrap;
     gap: 50px;
     border-radius: 15px;
-    background-color: #fcfcfc;
+    background-color: var(--element-bg);
     box-shadow: 0px 0px 50px hsl(0, 0%, 73%);
-    border: 3px solid #999;
+    border: 3px solid var(--border2);
     display: none;
     padding: 15px 30px;
     /* position: relative; */
@@ -270,13 +270,13 @@ label {
 
 
 h2 {
-    color: #444;
+    color: var(--text);
     margin: 5px 0 2px 5px;
     font-weight: 700;
 }
 
 .info {
-    color: #444;
+    color: var(--text);
     margin-left: 5px;
     font-size: 20px;
     font-weight: 500;
@@ -289,7 +289,7 @@ h2 {
 #previewImage {
     width: 250px;
     height: 250px;
-    border: 3px solid #444;
+    border: 3px solid var(--text);
     border-radius: 15px;
 }
 
@@ -297,9 +297,9 @@ h2 {
 .saveBtn {
     font-size: 27px;
     font-weight: 700;
-    color: #444;
-    background-color: #fcfcfc;
-    border: 3px solid #444;
+    color: var(--text);
+    background-color: var(--element-bg);
+    border: 3px solid var(--text);
     border-radius: 27px;
     cursor: pointer;
     position: absolute;
@@ -313,9 +313,9 @@ h2 {
 
 
 .saveBtn:hover {
-    border-color: #4a90e2;
-    background-color: #4a90e2;
-    color: #fff;
+    border-color: var(--enabled);
+    background-color: var(--enabled);
+    color: var(--page-bg);
     transition: 0.3s ease;
 }
 </style>

@@ -6,7 +6,7 @@
             <div @click="this.$router.push({path:'/', query: {glyphSetIds: this.$route.query.glyphSetIds}})"><h2>Home</h2></div>
             <div @click="this.$router.push({path:'/sort', query: {glyphSetIds: this.$route.query.glyphSetIds}})"><h2>Sort</h2></div>
             <div @click="this.$router.push({path:'/results', query: {glyphSetIds: this.$route.query.glyphSetIds}})"><h2 class="navActive">Results</h2></div>
-            <div @click="this.$router.push({path:'/calibration', query: {glyphSetIds: this.$route.query.glyphSetIds}})" class="secondaryNavBtn"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#666"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg></div>
+            <div @click="this.$router.push({path:'/calibration', query: {glyphSetIds: this.$route.query.glyphSetIds}})" class="secondaryNavBtn"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" style="fill: var(--text2);"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg></div>
         </nav>
     </header>
 
@@ -23,9 +23,14 @@
                 <h3>Charts</h3>
 
                 <div class="chartsWrapper">
-                    <line-chart :datasets="[...charts[0].datasets[index]]" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0"></line-chart>
-
-                    <bar-chart :datasets="[charts[1].datasets[index]]" :labels="charts[1].labels" :average="glyphSet.successRate" v-if="charts.length > 0"></bar-chart>
+                    <div class="chart">
+                        <line-chart :datasets="[...charts[0].datasets[index]]" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0"></line-chart>
+                    </div>
+                    
+                    <div class="chart">
+                        <bar-chart :datasets="[charts[1].datasets[index]]" :labels="charts[1].labels" :average="glyphSet.successRate" v-if="charts.length > 0"></bar-chart>
+                    </div>
+                    
                 </div>
             </div>
         </section>
@@ -255,14 +260,14 @@
 
     .setHeader {
         font-size: 35px;
-        color: #444;
+        color: var(--text);
         margin: -10px 0 5px -10px;
         font-weight: 800;
     }
 
     h3 {
         font-size: 29px;
-        color: #444;
+        color: var(--text);
         margin-top: 10px;
         font-weight: 700;
     }
@@ -270,9 +275,9 @@
 
     .resultBox {
         border-radius: 15px;
-        background-color: #fcfcfc;
-        box-shadow: 0px 0px 15px #dedede;
-        border: 3px solid #999;
+        background-color: var(--element-bg);
+        box-shadow: 0px 0px 15px var(--shadow2);
+        border: 3px solid var(--border2);
         padding: 25px 30px;
         width: 100%;
         display: flex;
@@ -293,6 +298,13 @@
 
     .statsWrapper div {
         flex: 1;
+    }
+
+
+    .chart { 
+        background-color: #ffffff;
+        margin-bottom: 20px;
+        padding: 20px 5px;
     }
 
 

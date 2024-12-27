@@ -21,7 +21,7 @@
         </div>
 
 
-        <div class="infoBox" title="Smallest difference between glyph values (0 - 100)" v-if="!live">
+        <div class="infoBox" title="The lowest difference between glyph values (0 - 100)" v-if="!live">
             <p class="data">{{ difference }}</p>
             <p class="label">Difference</p>
         </div>
@@ -89,21 +89,21 @@ export default {
         align-items: center;
         gap: 4px;
         flex: 1;
-        border: 2px solid #444;
+        border: 2px solid var(--text);
         border-radius: 15px;
         padding: 8px;
         cursor: help;
-        background-color: #fcfcfc;
+        background-color: var(--element-bg);
     }
 
     .infoBox .data {
         font-size: 28px;
-        color: #444;
+        color: var(--text);
         font-weight: 500;
     }
 
     .infoBox .label {
         font-size: 19px;
-        color: #666;
+        color: var(--text2);
     }
 </style>

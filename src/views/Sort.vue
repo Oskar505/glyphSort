@@ -6,7 +6,7 @@
             <div @click="this.$router.push({path:'/', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2>Home</h2></div>
             <div @click="this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2 class="navActive">Sort</h2></div>
             <div @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2>Results</h2></div>
-            <div @click="this.$router.push({path:'/calibration', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})" class="secondaryNavBtn"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" fill="#666"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg></div>
+            <div @click="this.$router.push({path:'/calibration', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})" class="secondaryNavBtn"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" style="fill: var(--text2);"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg></div>
         </nav>
     </header>
 
@@ -63,7 +63,7 @@
 
 
     <div class="floatingBtn" @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})">
-        <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#444"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="var(--text)"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
     </div>
     
 </template>
@@ -378,9 +378,9 @@
         align-items: center;
         gap: 50px;
         border-radius: 15px;
-        background-color: #fcfcfc;
-        box-shadow: 0px 0px 15px #dedede;
-        border: 3px solid #999;
+        background-color: var(--element-bg);
+        box-shadow: 0px 0px 15px var(--shadow2);
+        border: 3px solid var(--border2);
         margin-top: 13%;
         padding: 50px 90px;
         user-select: none;
@@ -406,11 +406,11 @@
     .answerBtn {
         font-size: 49px;
         font-weight: 500;
-        border: 3px solid #444;
-        color: #444;
+        border: 3px solid var(--text);
+        color: var(--text);
         padding: 0 25px;
         border-radius: 15px;
-        background-color: white;
+        background-color: var(--element-bg);
     }
 
 
@@ -420,24 +420,24 @@
         bottom: 60px;
         right: 60px;
         background-color: transparent;
-        border: 3px solid #444;
+        border: 3px solid var(--text);
         border-radius: 50%;
         padding: 7px;
         cursor: pointer;
         transition: 0.2s;
-        background-color: #fcfcfc;
-        box-shadow: 0px 0px 10px #ddd;
+        background-color: var(--element-bg);
+        box-shadow: 0px 0px 10px var(--shadow2);
         transition: 0.3s ease;
     }
 
     .floatingBtn:hover {
-        border-color: #4a90e2;
-        background-color: #4a90e2;
+        border-color: var(--enabled);
+        background-color: var(--enabled);
         transition: 0.3s ease;
     }
 
     .floatingBtn:hover svg{
-        fill: #fff;
+        fill: var(--page-bg);
         transition: 0.3s ease;
     }
 
@@ -448,7 +448,7 @@
     @keyframes correctBtnKeyframe {
         0% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 3px solid var(--text)
         }
 
         50% {
@@ -458,14 +458,14 @@
 
         100% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 3px solid var(--text)
         }
     }
 
     @keyframes wrongBtnKeyframe {
         0% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 3px solid var(--text)
         }
 
         50% {
@@ -475,7 +475,7 @@
 
         100% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 3px solid var(--text)
         }
     }
 
@@ -483,24 +483,24 @@
     @keyframes neutralBtnKeyframe {
         0% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 3px solid var(--text)
         }
 
         50% {
-            background-color: #4a90e2;
-            border: 3px solid #4a90e2;
+            background-color: var(--enabled);
+            border: 3px solid var(--enabled);
         }
 
         100% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 3px solid var(--text)
         }
     }
 
 
     @keyframes correctBorderKeyframe {
         0% {
-            border: 3px solid #999
+            border: 3px solid var(--border2)
         }
 
         50% {
@@ -508,13 +508,13 @@
         }
 
         100% {
-            border: 3px solid #999
+            border: 3px solid var(--border2)
         }
     }
 
     @keyframes wrongBorderKeyframe {
         0% {
-            border: 3px solid #999
+            border: 3px solid var(--border2)
         }
 
         50% {
@@ -522,22 +522,22 @@
         }
 
         100% {
-            border: 3px solid #999
+            border: 3px solid var(--border2)
         }
     }
 
 
     @keyframes neutralBorderKeyframe {
         0% {
-            border: 3px solid #999
+            border: 3px solid var(--border2)
         }
 
         50% {
-            border: 3px solid #4a90e2;
+            border: 3px solid var(--enabled);
         }
 
         100% {
-            border: 3px solid #999
+            border: 3px solid var(--border2)
         }
     }
 
@@ -576,17 +576,17 @@
 
     .correctBorder {
         animation: correctBorderKeyframe 500ms ease-in;
-        background-color: #fcfcfc !important;
+        background-color: var(--element-bg) !important;
     }
     
     .wrongBorder {
         animation: wrongBorderKeyframe 500ms ease-in;
-        background-color: #fcfcfc !important;
+        background-color: var(--element-bg) !important;
     }
 
     .neutralBorder {
         animation: neutralBorderKeyframe 500ms ease-in;
-        background-color: #fcfcfc !important;
+        background-color: var(--element-bg) !important;
     }
 
 
