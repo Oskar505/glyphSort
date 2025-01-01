@@ -44,7 +44,7 @@
                                 <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
                             </svg>
 
-                            <svg :class="glyphSet.rotation ? 'normalBtnOn' : 'normalBtnOff'" @click.stop="glyphSet.toggleRotation()" xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="var(--text)">
+                            <svg :class="glyphSet.rotationClass" @click.stop="glyphSet.toggleRotation()" @mouseenter="glyphSet.toggleRotationClass(true)" @mouseleave="glyphSet.toggleRotationClass(false)" xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="var(--text)">
                                 <title>Toggle rotation</title>
                                 <path d="M522-80v-82q34-5 66.5-18t61.5-34l56 58q-42 32-88 51.5T522-80Zm-80 0Q304-98 213-199.5T122-438q0-75 28.5-140.5t77-114q48.5-48.5 114-77T482-798h6l-62-62 56-58 160 160-160 160-56-56 64-64h-8q-117 0-198.5 81.5T202-438q0 104 68 182.5T442-162v82Zm322-134-58-56q21-29 34-61.5t18-66.5h82q-5 50-24.5 96T764-214Zm76-264h-82q-5-34-18-66.5T706-606l58-56q32 39 51 86t25 98Z"/>
                             </svg>
@@ -96,6 +96,7 @@
                 glyphSetList: [],
                 selectedGlyphs: [],
                 previewImages: [],
+                rotationHover: false,
             }
         },
 

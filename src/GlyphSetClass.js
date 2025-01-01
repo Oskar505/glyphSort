@@ -17,6 +17,8 @@ class GlyphSet {
         this.db = null
         this.answers = []
 
+        this.rotationClass = 'normalBtnOff'
+
         if (distance == undefined) {
             this.distance = this.glyphStepsCount * 0.2
         }
@@ -127,6 +129,8 @@ class GlyphSet {
                     this.sortTime = 0
                     this.sessionTime = 0
                     this.smallestDistance = 0
+
+                    this.rotationClass = this.rotation ? 'normalBtnOn' : 'normalBtnOff'
 
 
 
@@ -653,6 +657,19 @@ class GlyphSet {
         this.data.rotation = this.rotation
 
         await this.saveData()
+    }
+
+
+    toggleRotationClass(hover) {
+        if (this.rotation && this.rotationClass == 'normalBtnOff' && !hover) {
+            this.rotationClass = 'normalBtnOn'
+            console.log(this.rotationClass)
+        }
+
+        else if (!this.rotation && this.rotationClass == 'normalBtnOn' && !hover) {
+            this.rotationClass = 'normalBtnOff'
+            console.log(this.rotationClass)
+        }
     }
 }
 
