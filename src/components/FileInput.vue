@@ -219,9 +219,9 @@
 }
 
 #dropZone.dragover {
-    background-color: hsl(0, 0%, 95%);
+    background-color: var(--element-bg);
     border-color: var(--enabled);
-    color: #222;
+    color: var(--header);
 }
 
 .dropText {
@@ -230,7 +230,7 @@
 
 label {
     cursor: pointer;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border2);
     padding: 3px 5px;
     border-radius: 5px;
     margin-top: 5px;
@@ -252,7 +252,7 @@ label {
     gap: 50px;
     border-radius: 15px;
     background-color: var(--element-bg);
-    box-shadow: 0px 0px 50px hsl(0, 0%, 73%);
+    box-shadow: 0px 0px 50px var(--shadow3);
     border: 3px solid var(--border2);
     display: none;
     padding: 15px 30px;
@@ -265,7 +265,7 @@ label {
 
 
 #fileName {
-    color: #333;
+    color: var(--header);
 }
 
 

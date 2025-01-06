@@ -24,7 +24,21 @@
 
                 <div class="chartsWrapper">
                     <div class="chart">
-                        <line-chart :datasets="[...charts[0].datasets[index]]" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0"></line-chart>
+                        <div v-if="charts[0] && charts.length">
+                            <!-- <pre>{{ Object.keys(charts[0].datasets[index][0]) }}</pre> -->
+                            <!-- <pre>{{ charts[0].datasets[index][0].disabled }}</pre> -->
+                        </div>
+                        <!-- charts[0].datasets[index][curveIndex].disabled = !charts[0].datasets[index][curveIndex].disabled; charts[0].datasets = [...charts[0].datasets]; -->
+
+
+                        <!-- FIXME: -->
+                        <!-- <div class="legend">
+                            <div class="curve" v-for="(rotation, curveIndex) in charts[0].datasets[index]" @click="toggleCurve(index, curveIndex)" v-if="charts[0] && charts.length">
+                                <div class="colorCircle" :style="'background-color: ' + rotation.backgroundColor"></div> {{ rotation.label }}
+                            </div>
+                        </div> -->
+                        
+                        <line-chart :datasets="charts[0].datasets[index].filter(dataset => !dataset.disabled)" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0" :ref="'lineChart' + index"></line-chart>
                     </div>
                     
                     <div class="chart">
@@ -131,7 +145,8 @@
                             data: y,
                             borderColor: color,
                             backgroundColor: color,
-                            tension: 0.4
+                            tension: 0.4,
+                            disabled: false
                         }
 
                         rotations.push(chartDataset)
@@ -228,7 +243,20 @@
 
 
         methods: {
+            toggleCurve(index, curveIndex) {
+                //FIXME:
+                // this.charts[0].datasets[index][curveIndex].disabled = !this.charts[0].datasets[index][curveIndex].disabled;
 
+                // // Vynucení reaktivity, pokud změna není zachycena
+                // this.charts[0].datasets = [...this.charts[0].datasets];
+
+                // this.$nextTick(() => {
+                //     this.$refs['lineChart' + index].update();
+                // })
+                
+
+                // console.log(this.charts[0].datasets)
+            }
         }
     }
 </script>
@@ -304,9 +332,37 @@
     .chart { 
         background-color: #ffffff;
         margin-bottom: 20px;
-        padding: 20px 5px;
+        padding: 15px 5px 20px 5px;
     }
 
+
+
+    .legend {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+    }
+
+    .curve {
+        display: flex;
+        flex-direction: row;
+        font-size: 15px;
+        color: #666;
+        border: 2px solid #666;
+        padding: 5px 10px;
+        border-radius: 30px;
+        cursor: pointer;
+    }
+
+    .colorCircle {
+        width: 19px;
+        height: 19px;
+        border-radius: 50%;
+        margin-right: 5px;
+        display: inline-block;
+    }
 
 
 

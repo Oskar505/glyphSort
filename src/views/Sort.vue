@@ -82,7 +82,6 @@
                 pickedSet: 0,
                 animationClass: '',
 
-                glyphName: "a",
                 distance: undefined,
                 val1: 0,
                 val2: 0,
@@ -95,18 +94,7 @@
                 rotation: false,
                 rotationValue: 0,
 
-
-                gamma: 0.7,
                 lastCorrect: true,
-                glyphStepsCount: 100,
-                equalChance: 1, // 1 = 10%
-
-                successRate: 0,
-                sortedCount: 0,
-                sortTime: 0,
-                sessionTime: 0,
-
-                clickCooldown: false,
 
                 btn0Feedback: '',
                 btn1Feedback: '',
@@ -150,7 +138,6 @@
 
                 let newGlyphData = await glyphSets[0].getGlyphPair(undefined, true)
 
-                this.distance = newGlyphData.distance
                 this.val1 = newGlyphData.val1
                 this.val2 = newGlyphData.val2
                 this.rotation = newGlyphData.rotation
@@ -182,10 +169,12 @@
 
         methods: {
             checkAnswer(buttonId, glyphSet, inverted) {
+                let correct = false
+
                 // check
                 if (inverted) {
                     if (buttonId == 0) {
-                        this.lastCorrect = this.val1 < this.val2
+                        correct = this.val1 < this.val2
 
                         // show neutral feedback
                         this.btn0Feedback = "neutralBtn"
@@ -193,7 +182,7 @@
                     }
 
                     else if (buttonId == 1) {
-                        this.lastCorrect = this.val1 == this.val2
+                        correct = this.val1 == this.val2
 
                         // show neutral feedback
                         this.btn1Feedback = "neutralBtn"
@@ -201,7 +190,7 @@
                     }
 
                     else if (buttonId == 2) {
-                        this.lastCorrect = this.val1 > this.val2
+                        correct = this.val1 > this.val2
 
                         // show neutral feedback
                         this.btn2Feedback = "neutralBtn"
@@ -212,7 +201,7 @@
 
                 else {
                     if (buttonId == 0) {
-                        this.lastCorrect = this.val1 > this.val2
+                        correct = this.val1 > this.val2
 
                         // show neutral feedback
                         this.btn0Feedback = "neutralBtn"
@@ -220,7 +209,7 @@
                     }
 
                     else if (buttonId == 1) {
-                        this.lastCorrect = this.val1 == this.val2
+                        correct = this.val1 == this.val2
 
                         // show neutral feedback
                         this.btn1Feedback = "neutralBtn"
@@ -228,7 +217,7 @@
                     }
 
                     else if (buttonId == 2) {
-                        this.lastCorrect = this.val1 < this.val2
+                        correct = this.val1 < this.val2
 
                         // show neutral feedback
                         this.btn2Feedback = "neutralBtn"
@@ -236,15 +225,18 @@
                     }
                 }
                 
-                console.log(this.lastCorrect, inverted)
+                console.log(correct, inverted)
+
+
+                console.log('DISTANCE', glyphSet.distance, glyphSet.actualDistance)
 
 
                 // Save new answer
                 let answerData = {
                     "val1": this.val1,
                     "val2": this.val2,
-                    "correct": this.lastCorrect,
-                    'distance': this.distance,
+                    "correct": correct,
+                    'distance': glyphSet.actualDistance,
                     "time": Date.now(),
                     "rotation": this.rotation,
                     "rotationValue": this.rotationValue
@@ -268,24 +260,37 @@
 
                     // Select a new set
                     this.pickedSet = getRandomInt(0, this.glyphSets.length -1)
-                    let newGlyphSet = this.glyphSets[this.pickedSet]
+                    let newGlyphSet = toRaw(this.glyphSets[this.pickedSet])
+
+                    let lastCorrect
+                    let distance
 
                     try {
-                        this.distance = newGlyphSet.answers[newGlyphSet.answers.length - 1].distance
-                        this.lastCorrect = newGlyphSet.answers[newGlyphSet.answers.length - 1].correct
+                        console.log(newGlyphSet, newGlyphSet.answers.length, newGlyphSet.answers[newGlyphSet.answers.length - 1])
+
+                        if (newGlyphSet.answers.length == 0) {
+                            distance = undefined
+                            lastCorrect = true
+                        }
+
+                        else {
+                            distance = newGlyphSet.answers[newGlyphSet.answers.length - 1].distance
+                            lastCorrect = newGlyphSet.answers[newGlyphSet.answers.length - 1].correct
+                        }
+
+                        console.log('TEST', distance, lastCorrect)
                     }
 
                     catch (error) {
-                        this.distance = 20
-                        this.lastCorrect = true
+                        distance = undefined
+                        lastCorrect = true
 
-                        console.log('catch')
+                        console.error('Could not get last correct and distance from new glyph set', error)
                     }
                     
 
-                    let newGlyphData = await newGlyphSet.getGlyphPair(this.distance, this.lastCorrect)
+                    let newGlyphData = await newGlyphSet.getGlyphPair(distance, lastCorrect)
 
-                    this.distance = newGlyphData.distance
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
                     this.rotation = newGlyphData.rotation
