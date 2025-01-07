@@ -102,8 +102,6 @@
 
         methods: {
             async clearStorage() {
-                console.log("clearing storage");
-
                 localStorage.clear();
                 sessionStorage.clear();
 
@@ -120,7 +118,7 @@
                 objectStore.clear();
 
                 transaction.oncomplete = () => {
-                    console.log("glyphSetStore cleared.");
+                    console.info("glyphSetStore cleared.");
                 };
 
                 transaction.onerror = (event) => {
@@ -134,12 +132,9 @@
                 this.setIdList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
                 this.glyphSetList = []
 
-                console.log(this.setIdList)
 
                 this.setIdList.forEach(async glyphSetId => {
                     try {
-                        console.log(glyphSetId)
-
                         let glyphSet = new GlyphSet(glyphSetId)
                         await glyphSet.init()
 
@@ -150,9 +145,7 @@
 
                         if (!this.previewImages.includes(previewImage)) {
                             this.previewImages.push(previewImage)
-                        }
-                        
-                        console.log(this.previewImages)
+                        }   
                     }
 
 
@@ -160,40 +153,6 @@
                         console.error(error)
                     } 
                 })
-
-
-                // TEST
-                // this.setIdList.forEach(glyphSetId => {
-                //     console.log(glyphSetId)
-
-                //     let glyphSet = new GlyphSet(glyphSetId)
-
-                //     this.glyphSetList.push(glyphSet)
-                //     glyphSet.getStats()
-                // })
-
-                // this.setIdList.forEach(glyphSetId => {
-                //     console.log(glyphSetId)
-
-                //     let glyphSet = new GlyphSet(glyphSetId)
-
-                //     this.glyphSetList.push(glyphSet)
-                //     glyphSet.getStats()
-                // })
-
-
-                let total = 0;
-                for (let key in localStorage) {
-                    if (localStorage.hasOwnProperty(key)) {
-                        total += ((localStorage[key].length + key.length) * 2);
-                    }
-                }
-                console.log(`Použité místo: ${total / 1024} KB`);
-
-
-                for (let key in localStorage) {
-                    console.log(key, localStorage.getItem(key));
-                }
             },
 
 
@@ -203,8 +162,6 @@
                 let compressedBinary = Uint8Array.from(atob(compressedImage), c => c.charCodeAt(0)); // Base64 to binary
                 let decompressedBinary = pako.ungzip(compressedBinary); // decompress
                 let base64Image = btoa(String.fromCharCode(...decompressedBinary)); // back to Base64
-
-                console.log(base64Image)
 
                 return `data:image/png;base64,${base64Image}`
             },
@@ -254,16 +211,9 @@
 
 
             reloadSets() {
-                console.log("reloading sets")
-
                 this.setIdList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
 
-                console.log(this.setIdList)
-                
                 this.getSavedSets()
-                
-
-                console.log(this.selectedGlyphs)
             },
         },
 
@@ -273,13 +223,8 @@
             this.setIdList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
             
             this.selectedGlyphs = this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []
-            console.log(this.selectedGlyphs, this.$route.query)
-
-            console.log(this.setIdList)
 
             this.getSavedSets()
-
-            console.log(this.selectedGlyphs)
         }
     }
 </script>

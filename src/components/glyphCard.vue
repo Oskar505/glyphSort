@@ -18,8 +18,6 @@
             const dpi = this.$getCookie('dpi')
             // const dpi = dpiCookie ? dpiCookie : 1
 
-            console.log(dpi)
-
             if (dpi) {
                 this.glyphWidth = dpi
             }
@@ -39,17 +37,9 @@
             }
         },
 
-        // watch: {
-        //     value(newValue) {
-        //         this.decodedImg = atob(newValue)
-        //         console.log(this.decodedImg)
-        //     }
-        // },
 
         methods: {
-            test() {
-                console.log(atob(this.value))
-            }
+            
         }
     }
 </script>
@@ -68,7 +58,7 @@
     div img {
         width: 1in;
         height: 1in;
-        border: 3px solid black;
+        /* border: 3px solid black; */
     }
 
 

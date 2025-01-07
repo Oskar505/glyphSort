@@ -25,16 +25,6 @@
         },
 
         data() {
-            // dont show disabled datasets
-            // this.datasets.forEach(dataset => {
-            //     if (dataset.disabled) {
-            //         this.datasets.splice(this.datasets.indexOf(dataset), 1)
-            //     }
-            // })
-
-            console.log(this.datasets)
-
-
             return {
                 chartData: {
                     labels: this.labels,

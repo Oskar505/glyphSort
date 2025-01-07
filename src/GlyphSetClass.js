@@ -3,7 +3,7 @@ import { toRaw } from 'vue'
 
 
 class GlyphSet {
-    constructor(id, glyphs=[], info={}, distance=undefined, gamma=0.7, equalChance=1) {
+    constructor(id, glyphs=[], info={}, distance=undefined, gamma=0.7, equalChance=3.3) {
         this.id = id
         this.info = info
         this.glyphs = glyphs
@@ -55,8 +55,6 @@ class GlyphSet {
                 
                             if (!db.objectStoreNames.contains("glyphSetStore")) {
                                 let objectStore = db.createObjectStore("glyphSetStore", { keyPath: "id" })
-                                console.log("Object store created.")
-                
                                 objectStore.createIndex("setId", "id", { unique: false })
                             }
                         }
@@ -72,20 +70,8 @@ class GlyphSet {
 
                     this.data = await this.getData()
 
-                    console.log(this.data)
-
                     // Create new glyph set
                     if (this.data == null || !this.data) {
-                        // // from blob to url
-                        // console.log(typeof this.glyphs, this.glyphs)
-
-                        // this.glyphs.forEach((glyph, index) => {
-                        //     console.log(glyph)
-
-                        //     this.glyphs[index] = URL.createObjectURL(glyph)
-                        // });
-
-
                         // save
                         this.data = {
                             "id": this.id,
@@ -100,8 +86,6 @@ class GlyphSet {
                             "rotation": this.rotation,
                             "answers": this.answers, // []
                         }
-
-                        console.log(this.glyphs)
 
                         await this.saveData(true)
                     }
@@ -147,12 +131,6 @@ class GlyphSet {
         }
 
 
-        else {
-            console.log("Glyph set is already initialized")
-        }
-
-        console.log('init finished')
-
         return this.initPromise
     }
 
@@ -175,9 +153,6 @@ class GlyphSet {
             this.glyphs.push(btoa(String.fromCharCode(...compressed))); // back to Base64
         }
 
-        console.log(this.glyphs[0])
-
-
         this.data["glyphs"] = this.glyphs
 
         return this.glyphs
@@ -187,15 +162,10 @@ class GlyphSet {
         if (init) {
             this.convertGlyphsToBase64(this.data.glyphs)
 
-            console.log(this.data)
-
             // update glyph set list
             let glyphSetList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
-            console.log(glyphSetList)
             glyphSetList.push(this.id)
             localStorage.setItem("glyphSetList", JSON.stringify(glyphSetList))
-
-            console.log(glyphSetList)
         }
         
 
@@ -203,8 +173,6 @@ class GlyphSet {
         let transaction = this.db.transaction("glyphSetStore", "readwrite")
         let objectStore = transaction.objectStore("glyphSetStore")
 
-        console.log(this.data)
-        
         let putRequest = objectStore.put(toRaw(this.data))
 
         putRequest.onerror = (event) => {
@@ -231,8 +199,6 @@ class GlyphSet {
                 getRequest.onsuccess = (event) => resolve(event.target.result)
                 getRequest.onerror = (event) => reject(event.target.error)
             })
-    
-            console.log(data)
 
             return data
         }
@@ -270,8 +236,6 @@ class GlyphSet {
             // get data
             this.data = await this.getData()
 
-            console.log(this.data.answers)
-
             this.answers = toRaw(this.data).answers ? toRaw(this.data).answers : []
 
             // update data
@@ -302,8 +266,6 @@ class GlyphSet {
     }
 
     async deleteFromIndexedDB() {
-        console.log("deleting class")
-
         try {
             if (!this.db) {
                 await this.init(); // wait for indexedDB
@@ -318,8 +280,6 @@ class GlyphSet {
                 getRequest.onsuccess = (event) => resolve(event.target.result)
                 getRequest.onerror = (event) => reject(event.target.error)
             })
-    
-            console.log(data)
         }
 
 
@@ -371,12 +331,9 @@ class GlyphSet {
         await this.init()
 
 
-
         this.actualDistance = this.distance
         let val1;
         let val2;
-
-        console.log(lastDistance, this.gamma, this.actualDistance)
 
 
         // rotation
@@ -388,63 +345,47 @@ class GlyphSet {
         }
 
 
-        console.log(rotationValue)
-
         // if last response was correct, decrease distance, otherwise increase distance
         if (lastDistance != undefined) {
-            this.actualDistance = lastCorrect ? lastDistance * this.gamma : lastDistance / this.gamma;
+            this.actualDistance = lastCorrect ? lastDistance * this.gamma : lastDistance / this.gamma / this.gamma / this.gamma;
         }
 
 
         // if distance is too small, start over
         if (this.actualDistance < 1) {
             this.actualDistance = 20
-            console.info("distance too small, starting over");
         }
 
         // distance cannot be higher than the starting distance
         else if (this.actualDistance > this.glyphStepsCount * 0.2) {
             this.actualDistance = this.glyphStepsCount * 0.2 
-            console.info("distance too high, starting over");
         }
 
 
-        console.log(this.actualDistance)
 
+        let offset = this.actualDistance / 2
 
-        // chance of getting equal values
-        if (getRandomInt(0, 9) > this.equalChance) {
-            let offset = this.actualDistance / 2
+        // Get the middle value. After adding or subtracting the offset, it cannot be lower than 0 or higher than the highest glyph.
+        let midVal = getRandomInt(offset, this.glyphStepsCount - offset - 1)
 
-            // Get the middle value. After adding or subtracting the offset, it cannot be lower than 0 or higher than the highest glyph.
-            let midVal = getRandomInt(offset, this.glyphStepsCount - offset - 1)
- 
-            // higher of lower
-            if (getRandomInt(0,1) == 0) {
-                val1 = Math.round(midVal - offset);
-                val2 = Math.round(midVal + offset);
-            }
+        let randomVal = getRandomInt(0,2)
 
-            else {
-                val1 = Math.round(midVal + offset);
-                val2 = Math.round(midVal - offset);
-            }
+        // higher, lower or equal
+        if (randomVal == 0) {
+            val1 = Math.round(midVal - offset);
+            val2 = Math.round(midVal + offset);
         }
 
+        else if (randomVal == 1) {
+            val1 = Math.round(midVal + offset);
+            val2 = Math.round(midVal - offset);
+        }
 
         else {
             val1 = getRandomInt(0, this.glyphStepsCount - 1);
             val2 = val1;
         }
 
-
-
-
-        console.log(this.glyphs[0])
-        // console.log(atob(this.glyphs[0]))
-
-
-        console.log(val1, val2)
         
 
         return {val1:val1, val2:val2, distance:this.actualDistance, rotation:this.rotation, rotationValue:rotationValue}
@@ -456,9 +397,6 @@ class GlyphSet {
         await this.init()
 
 
-
-        console.log(glyph)
-        console.log(this.data)
 
         let compressedBinary = Uint8Array.from(atob(glyph), c => c.charCodeAt(0)); // Base64 to binary
         let decompressedBinary = pako.ungzip(compressedBinary); // decompress
@@ -474,8 +412,6 @@ class GlyphSet {
 
         let allAnswers = await this.getData()
         allAnswers = allAnswers.answers
-
-        console.log(allAnswers)
 
 
         // success rate
@@ -538,9 +474,7 @@ class GlyphSet {
 
         // smallest distance
         try {
-            console.log(...allAnswers.map(x => x.distance))
             this.smallestDistance = Math.min(...allAnswers.map(x => x.distance))
-            console.log(this.smallestDistance)
         }
 
         catch (error) {
@@ -566,8 +500,6 @@ class GlyphSet {
         });
 
         distances.sort((a, b) => a - b)
-
-        console.log(distances)
 
 
         // sort answers 
@@ -622,8 +554,6 @@ class GlyphSet {
         
         for (let i = 0; i < this.glyphStepsCount / valueGroup; i++) {
             let answerGroup = allAnswers.filter(answer => (answer.val1 + answer.val2) / 2 > valueGroup * i && (answer.val1 + answer.val2) / 2 <= valueGroup * (i + 1))
-            console.log(answerGroup)
-
 
             let correctCount = 0
 
@@ -640,9 +570,6 @@ class GlyphSet {
 
             accuracyAndVal.push({'x': ((valueGroup * i) / this.glyphStepsCount) * 100, 'y':accuracy})
         }
-
-
-        console.log(accuracyAndVal)
 
 
         return [diffsAndErrs, accuracyAndVal]
@@ -663,12 +590,10 @@ class GlyphSet {
     toggleRotationClass(hover) {
         if (this.rotation && this.rotationClass == 'normalBtnOff' && !hover) {
             this.rotationClass = 'normalBtnOn'
-            console.log(this.rotationClass)
         }
 
         else if (!this.rotation && this.rotationClass == 'normalBtnOn' && !hover) {
             this.rotationClass = 'normalBtnOff'
-            console.log(this.rotationClass)
         }
     }
 }

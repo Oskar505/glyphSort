@@ -81,8 +81,6 @@
             async processFiles(files) {
                 let file = files[0];
 
-                console.log(files)
-
 
                 if (files.length !== 1) {
                     console.warn("Loadng only the first file.");
@@ -115,8 +113,6 @@
                             reader.readAsText(fileBlob);
 
                             reader.onload = () => {
-                                // console.log(reader.result)
-
                                 this.metadata = JSON.parse(reader.result);
                                 this.name = this.metadata.name;
                                 this.shortName = this.metadata.short_name;
@@ -155,15 +151,9 @@
 
 
             async saveSet() {
-                // let images = JSON.parse(JSON.stringify(this.images))
-
-                console.log('save set')
-
                 await new GlyphSet(this.shortName, this.images, this.info).init()
 
-
                 this.closePopup()
-
                 this.$emit('setSaved')
             },
 

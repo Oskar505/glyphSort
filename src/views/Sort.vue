@@ -110,14 +110,9 @@
 
 
             // get glyph sets
-            console.log(this.$route.query.glyphSetIds + ' test')
             let setIds = this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []
-            console.log(setIds);  // ["Cool line"]
 
-            // let setIds = JSON.parse(JSON.stringify(this.glyphSetStore.glyphSets))
 
-            console.log(setIds)
-            
             for (const id of setIds) {
                 let newGlyphSet = new GlyphSet(id);
                 await newGlyphSet.init();
@@ -126,11 +121,8 @@
             }
 
 
-            console.log(this.glyphSets)
-
             let glyphSets = toRaw(this.glyphSets)
 
-            console.log(glyphSets, 'test')
 
             // get sets data
             if (glyphSets.length > 0) {
@@ -151,8 +143,6 @@
 
                 // get stats
                 glyphSets[0].getStats()
-
-                console.log(glyphSets[this.pickedSet])
             }
 
 
@@ -225,10 +215,6 @@
                     }
                 }
                 
-                console.log(correct, inverted)
-
-
-                console.log('DISTANCE', glyphSet.distance, glyphSet.actualDistance)
 
 
                 // Save new answer
@@ -266,8 +252,6 @@
                     let distance
 
                     try {
-                        console.log(newGlyphSet, newGlyphSet.answers.length, newGlyphSet.answers[newGlyphSet.answers.length - 1])
-
                         if (newGlyphSet.answers.length == 0) {
                             distance = undefined
                             lastCorrect = true
@@ -277,8 +261,6 @@
                             distance = newGlyphSet.answers[newGlyphSet.answers.length - 1].distance
                             lastCorrect = newGlyphSet.answers[newGlyphSet.answers.length - 1].correct
                         }
-
-                        console.log('TEST', distance, lastCorrect)
                     }
 
                     catch (error) {
@@ -348,7 +330,7 @@
 
 
             clearStorage() {
-                console.log("clearing storage");
+                console.info("clearing storage");
 
                 localStorage.clear();
                 sessionStorage.clear();
@@ -389,6 +371,8 @@
         margin-top: 13%;
         padding: 50px 90px;
         user-select: none;
+
+        background-color: white;
     }
 
     .glyphCardWrapper {
@@ -411,11 +395,11 @@
     .answerBtn {
         font-size: 49px;
         font-weight: 500;
-        border: 3px solid var(--text);
-        color: var(--text);
+        border: 3px solid #444;
+        color: #444;
         padding: 0 25px;
         border-radius: 15px;
-        background-color: var(--element-bg);
+        background-color: #fcfcfc;
     }
 
 
@@ -488,7 +472,7 @@
     @keyframes neutralBtnKeyframe {
         0% {
             background-color: transparent;
-            border: 3px solid var(--text)
+            border: 3px solid #444
         }
 
         50% {
@@ -498,7 +482,7 @@
 
         100% {
             background-color: transparent;
-            border: 3px solid var(--text)
+            border: 3px solid #444
         }
     }
 
@@ -554,7 +538,7 @@
         }
 
         50% {
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
 
         100% {
@@ -591,7 +575,7 @@
 
     .neutralBorder {
         animation: neutralBorderKeyframe 500ms ease-in;
-        background-color: var(--element-bg) !important;
+        background-color: #fff !important;
     }
 
 

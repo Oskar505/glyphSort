@@ -120,13 +120,7 @@
 
 
 
-
-                console.log(chartData[0][0])
-
                 x = chartData[0][0].map(obj => obj.x)
-
-                console.log(x)
-
                 let rotations = []
 
                 for (let i = 0; i < 5; i++) {
@@ -160,26 +154,13 @@
 
                 this.chartDatasets.push(rotations)
 
-                
-                // lineColors1.shift()
 
 
                 // Labels
                 this.chartLabels.push(x)
 
-                // if (x.length > this.chartLabels.length) {
-                //     this.chartLabels = x
-                //     // this.chartLabels = this.chartLabels.map(label => label / 10)
-
-                //     console.log(this.chartLabels)
-                // }
-
-
-
 
                 // Acc and val chart
-                console.log(chartData)
-
                 x = chartData[1].map(obj => obj.x)
                 y = chartData[1].map(obj => obj.y)
 
@@ -198,9 +179,6 @@
 
                 if (x.length > chartLabels2.length) {
                     chartLabels2 = x
-                    // this.chartLabels = this.chartLabels.map(label => label / 10)
-
-                    console.log(chartLabels2)
                 }
             }
 
@@ -232,13 +210,6 @@
             //         }
             //     }
             // });
-
-
-
-            console.log(toRaw(toRaw(this.charts)[0].datasets))
-            console.log(this.charts)
-
-            
         },
 
 
