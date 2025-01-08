@@ -1,5 +1,6 @@
 import pako from 'pako'
 import { toRaw } from 'vue'
+import { logMessage } from './views/Sort.vue'
 
 
 class GlyphSet {
@@ -22,20 +23,6 @@ class GlyphSet {
         if (distance == undefined) {
             this.distance = this.glyphStepsCount * 0.2
         }
-
-
-        // this.data = {
-        //     "id": null,
-        //     "name": null,
-        //     "author": null,
-        //     "version": null,
-        //     "glyphs": null,
-        //     "distance": null,
-        //     "gamma": null,
-        //     "glyphStepsCount": null,
-        //     "equalChance": null,
-        //     "answers": null,
-        // }
 
 
         this.initPromise = null // state of initialization
@@ -358,7 +345,7 @@ class GlyphSet {
 
         // distance cannot be higher than the starting distance
         else if (this.actualDistance > this.glyphStepsCount * 0.2) {
-            this.actualDistance = this.glyphStepsCount * 0.2 
+            this.actualDistance = this.glyphStepsCount * 0.2
         }
 
 
@@ -386,6 +373,8 @@ class GlyphSet {
             val2 = val1;
         }
 
+        logMessage('-')
+        logMessage(`New glyph pair: ${this.id}, values: ${val1}, ${val2}, distance: ${this.actualDistance}, rotation: ${rotationValue}, gamma: ${this.gamma}`)
         
 
         return {val1:val1, val2:val2, distance:this.actualDistance, rotation:this.rotation, rotationValue:rotationValue}

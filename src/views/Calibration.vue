@@ -34,6 +34,25 @@
             </div>
 
 
+            <div class="downloadData generalSettingWrapper">
+                <h3 class="strong">Export data</h3>
+                <p>Downloads all imported sets and sorting data in JSON.</p>
+
+                <div class="exportBtn" @click="exportData(exportGlyphs)">
+                    <p>Export</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="var(--text)">
+                        <title>Download JSON</title>
+                        <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                    </svg>
+                </div>
+
+                <label class="exportCheckboxLabel" for="exportGlyphs">
+                    <input class="exportCheckbox" v-model="exportGlyphs" type="checkbox" name="exportGlyphs" id="exportGlyphs">
+                    Include glyphs in base64
+                </label>
+            </div>
+
+
 
             <div class="sortingBtns generalSettingWrapper">
                 <h3 class="strong">Sorting buttons order</h3>
@@ -100,6 +119,7 @@
                 btnsOrder: 0,
                 glyphSetIds: [],
                 theme: 'light',
+                exportGlyphs: false
             }
         },
 
@@ -163,6 +183,57 @@
             saveSortingBtnsOrder(order) {
                 this.btnsOrder = order
                 document.cookie = `sortingBtnsOrder=${order}; path=/; max-age=31536000; SameSite=Strict`;
+            },
+
+
+            async exportData(exportGlyphs) {
+                // Init DB
+                this.db = await new Promise((resolve, reject) => {
+                    let request = indexedDB.open("glyphSortDB", 2)
+                    request.onupgradeneeded = (event) => {
+                        let db = event.target.result
+            
+                        if (!db.objectStoreNames.contains("glyphSetStore")) {
+                            let objectStore = db.createObjectStore("glyphSetStore", { keyPath: "id" })
+                            objectStore.createIndex("setId", "id", { unique: false })
+                        }
+                    }
+        
+                    request.onsuccess = (event) => resolve(event.target.result)
+                    request.onerror = (event) => reject(event.target.error)
+                })
+
+
+
+                // Get all data
+                let data = await new Promise((resolve, reject) => {
+                    let transaction = this.db.transaction("glyphSetStore", "readonly")
+                    let objectStore = transaction.objectStore("glyphSetStore")
+                    let getRequest = objectStore.getAll()
+        
+                    getRequest.onsuccess = (event) => resolve(event.target.result)
+                    getRequest.onerror = (event) => reject(event.target.error)
+                })
+
+
+                // remove glyphs
+                if (!exportGlyphs) {
+                    data.forEach(glyphSet => {
+                        glyphSet.glyphs = []
+                    });
+                } 
+
+
+                const jsonString = JSON.stringify(data, null, 4)
+                const blob = new Blob([jsonString], { type: 'application/json' })
+                const url = URL.createObjectURL(blob)
+
+                const a = document.createElement('a')
+                a.href = url
+                a.download = 'glyphSortData.json'
+                a.click()
+
+                URL.revokeObjectURL(url)
             }
         },
     }
@@ -207,6 +278,9 @@
 
     .generalSettingWrapper {
         margin-left: 5px;
+        color: var(--text2);
+        font-size: 22px;
+        margin-top: 20px;
     }
 
 
@@ -369,6 +443,49 @@
         transition: fill 0.3s ease;
     }
 
+
+
+
+    /* Export data */
+    .downloadData h3 {
+        margin-bottom: 2px;
+    }
+
+    .exportBtn {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        border-radius: 15px;
+        background-color: var(--element-bg);
+        box-shadow: 0px 0px 15px var(--shadow2);
+        border: 3px solid var(--border2);
+        color: var(--text);
+        padding: 4px 5px;
+        font-size: 20px;
+        cursor: pointer;
+        max-width: 150px;
+        font-size: 21px;
+        margin-top: 10px;
+    }
+
+    .exportBtn:hover {
+        border-color: var(--enabled);
+        transition: border-color 0.3s ease;
+    }
+
+    .exportCheckboxLabel {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-top: 5px;
+    }
+
+    .exportCheckbox {
+        width: 17px;
+        height: 17px;
+    }
 
 
 

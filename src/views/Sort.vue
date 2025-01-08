@@ -52,6 +52,12 @@
 
             <!-- <glyph-set-info :glyphSet="glyphSets[pickedSet]" :live="true" style="margin-top: 6%;" v-if="glyphSets[pickedSet]"/> -->
         </section>
+
+
+
+        <section class="log" id="log" v-if="showLog">
+
+        </section>
         
 
         
@@ -100,6 +106,9 @@
                 btn1Feedback: '',
                 btn2Feedback: '',
                 borderFeedback: '',
+
+                log: [],
+                showLog: false,
             }
         },
 
@@ -122,6 +131,8 @@
 
 
             let glyphSets = toRaw(this.glyphSets)
+
+            logMessage(`Testing ${glyphSets.length} sets`)
 
 
             // get sets data
@@ -221,6 +232,7 @@
                 let answerData = {
                     "val1": this.val1,
                     "val2": this.val2,
+                    "btnId": buttonId,
                     "correct": correct,
                     'distance': glyphSet.actualDistance,
                     "time": Date.now(),
@@ -234,6 +246,9 @@
                 glyphSet.getStats()
 
                 this.animationClass = 'newGlyphs'
+
+
+                logMessage(`ANSWER: ${glyphSet.id} – ${glyphSet.actualDistance} (${this.val1} – ${this.val2}) – ${correct ? '✓' : '✗'}`)
 
 
                 // reset feedbacks and get new glyphs
@@ -287,6 +302,14 @@
 
 
             handleKeydown(e) {
+                // toggle log
+                if (e.shiftKey && e.key == "L") {
+                    this.showLog = !this.showLog
+                    console.log(this.showLog)
+                }
+
+
+
                 // ignore if cooldown
                 if (this.clickCooldown) return;
 
@@ -344,6 +367,38 @@
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) ) + min;
     }
+
+
+    export function logMessage(message) {
+        // let logData = sessionStorage.getItem("logData") ? JSON.parse(sessionStorage.getItem("logData")) : [];
+
+        let logEl = document.getElementById("log")
+
+        if (logEl == null) return
+
+
+        const currentTime = new Date()
+        const timeString = currentTime.getHours().toString().padStart(2, '0') + ":" + 
+            currentTime.getMinutes().toString().padStart(2, '0') + ":" + 
+            currentTime.getSeconds().toString().padStart(2, '0');
+        
+        let newLine = document.createElement("div")
+
+        if (message == '-') {
+            newLine.textContent = '–––––––––'
+        }
+
+        else {
+            newLine.textContent = `[${timeString}] ${message}`
+        }
+        
+        logEl.appendChild(newLine)
+
+
+        logEl.scrollTop = logEl.scrollHeight
+    }
+
+    
 </script>
 
 
@@ -428,6 +483,21 @@
     .floatingBtn:hover svg{
         fill: var(--page-bg);
         transition: 0.3s ease;
+    }
+
+
+
+    .log{
+        background-color: var(--element-bg);
+        padding: 10px;
+        border-radius: 15px;
+        color: var(--text2);
+        min-height: 200px;
+        max-height: 300px;
+        width: 700px;
+        overflow-y: scroll;
+        border: 3px solid var(--border2);
+        margin-top: 50px;
     }
 
     
