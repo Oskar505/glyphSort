@@ -33,36 +33,38 @@
                 
                 chartOptions: {
                     responsive: true,
+                    animation: false,
                     plugins: {
                         legend: {
                             position: 'bottom',
                             labels: {
                                 usePointStyle: true,
-                            }
+                            },
+                            display:false,
                         },
                         tooltip: {
                             enabled: true
                         },
 
-                        annotation: {
-                            annotations: {
-                                average: {
-                                    type: 'line',
-                                    yMin: 100 - this.average,
-                                    yMax: 100 -this.average,
-                                    borderColor: 'black',
-                                    borderWidth: 2,
-                                    label: {
-                                        content: 'Y = 50', // Popis čáry
-                                        enabled: true,
-                                        position: 'center',
-                                        font: {
-                                            size: 12
-                                        }
-                                    }
-                                }
-                            }
-                        },
+                        // annotation: {
+                        //     annotations: {
+                        //         average: {
+                        //             type: 'line',
+                        //             yMin: 100 - this.average,
+                        //             yMax: 100 -this.average,
+                        //             borderColor: 'black',
+                        //             borderWidth: 2,
+                        //             label: {
+                        //                 content: 'Y = 50', // Popis čáry
+                        //                 enabled: true,
+                        //                 position: 'center',
+                        //                 font: {
+                        //                     size: 12
+                        //                 }
+                        //             }
+                        //         }
+                        //     }
+                        // },
                     },
                     scales: {
                         x: {

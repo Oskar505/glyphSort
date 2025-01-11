@@ -14,6 +14,28 @@
 
     <main>
         <section v-show="glyphSets.length > 0" style="width: 100%;" class="results">
+            <div class="setList">
+                <div class="setSelection resultBox" v-for="(glyphSet, index) in glyphSets" @click="toggleCurve(charts[0].datasets.filter(dataset => dataset.setId == glyphSet.id).map(dataset => dataset.label))" :key="glyphSet.id">
+                    <h2 class="setHeader">{{ glyphSet.id.charAt(0).toUpperCase() + glyphSet.id.slice(1) }}</h2>
+                    <div class="legend">
+                        <div class="curve" v-for="(rotation, curveIndex) in charts[0].datasets.filter(dataset => dataset.setId == glyphSet.id)" :class="rotation.disabled ? '' : 'curveEnabled'" @click.stop="toggleCurve([rotation.label])" v-if="charts[0] && charts.length">
+                            <div class="colorCircle" :style="'background-color: ' + (rotation.disabled ? rotation.disabledColor : rotation.backgroundColor)"></div> {{ rotation.rotation }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="chart resultBox">
+                <line-chart :datasets="charts[0].datasets.filter(dataset => !dataset.disabled)" :labels="charts[0].labels" v-if="charts.length > 0" :key="lineChartKey"></line-chart>
+            </div>
+        </section>
+
+
+
+
+
+        <!-- <section v-show="glyphSets.length > 0" style="width: 100%;" class="results">
             <div class="resultBox stats" v-for="(glyphSet, index) in glyphSets" :key="glyphSet.id">
                 <h2 class="setHeader">{{ glyphSet.id.charAt(0).toUpperCase() + glyphSet.id.slice(1) }}</h2>
 
@@ -24,21 +46,13 @@
 
                 <div class="chartsWrapper">
                     <div class="chart">
-                        <div v-if="charts[0] && charts.length">
-                            <!-- <pre>{{ Object.keys(charts[0].datasets[index][0]) }}</pre> -->
-                            <!-- <pre>{{ charts[0].datasets[index][0].disabled }}</pre> -->
-                        </div>
-                        <!-- charts[0].datasets[index][curveIndex].disabled = !charts[0].datasets[index][curveIndex].disabled; charts[0].datasets = [...charts[0].datasets]; -->
-
-
-                        <!-- FIXME: -->
-                        <!-- <div class="legend">
+                        <div class="legend">
                             <div class="curve" v-for="(rotation, curveIndex) in charts[0].datasets[index]" @click="toggleCurve(index, curveIndex)" v-if="charts[0] && charts.length">
                                 <div class="colorCircle" :style="'background-color: ' + rotation.backgroundColor"></div> {{ rotation.label }}
                             </div>
-                        </div> -->
+                        </div>
                         
-                        <line-chart :datasets="charts[0].datasets[index].filter(dataset => !dataset.disabled)" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0" :ref="'lineChart' + index"></line-chart>
+                        <line-chart :datasets="charts[0].datasets[index].filter(dataset => !dataset.disabled)" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0" :key="lineChartKey"></line-chart>
                     </div>
                     
                     <div class="chart">
@@ -47,7 +61,7 @@
                     
                 </div>
             </div>
-        </section>
+        </section> -->
         
 
 
@@ -79,6 +93,8 @@
                 sessionTime: null,
                 distance: null,
                 glyphStepsCount: null,
+
+                lineChartKey: 0,
             }
         },
 
@@ -102,7 +118,7 @@
             this.chartDatasets = []
             this.chartLabels = []
 
-            for (const glyphSetId of JSON.parse(this.$route.query.glyphSetIds)) {
+            for (const [index, glyphSetId] of JSON.parse(this.$route.query.glyphSetIds).entries()) {
                 let lineColors1 = [
                     'rgba(54, 162, 235, 0.5)',
                     'rgba(255, 112, 188, 0.5)',
@@ -110,6 +126,11 @@
                     'rgba(255, 159, 64, 0.5)',
                     'rgba(255, 0, 0, 1)',
                 ];
+
+
+                let colorHue = [240, 0, 120, 30, 270, 60, 180]
+                let colorSaturation = [95, 90, 85, 50, 100]
+                let colorLightness = [85, 75, 65, 55, 45]
 
 
                 let newGlyphSet = new GlyphSet(glyphSetId)
@@ -124,10 +145,11 @@
                 let rotations = []
 
                 for (let i = 0; i < 5; i++) {
-                    let color = lineColors1[0]
-                    lineColors1.shift()
+                    let color = `hsla(${colorHue[index]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 1)`
+                    let disabledColor = `hsla(${colorHue[index]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 0.7)`
 
-                    let label = i == 4 ? 'All' : i * 90 + '°'
+
+                    let rotation = i == 4 ? 'All' : i * 90 + '°'
 
                     let y = chartData[0][i].map(obj => obj.y)
                     y = y.map(value => isNaN(value) ? null : value)
@@ -135,20 +157,27 @@
 
                     if ((i != 4 && !y.every(value => value === null)) || (i == 4 && rotations.length != 1)) {
                         let chartDataset = {
-                            label: label,
+                            setId: glyphSetId,
+                            rotation: rotation,
+                            label: `${glyphSetId}: ${rotation}`,
                             data: y,
                             borderColor: color,
                             backgroundColor: color,
+                            disabledColor: disabledColor,
                             tension: 0.4,
-                            disabled: false
+                            disabled: i != 4
                         }
 
                         rotations.push(chartDataset)
                     }
 
+
+                    // no rotations
                     else if (i == 4 && rotations.length == 1) {
-                        rotations[0].borderColor = 'rgba(54, 162, 235, 1)'
-                        rotations[0].backgroundColor = 'rgba(54, 162, 235, 1)'
+                        rotations[0].borderColor = color
+                        rotations[0].backgroundColor = color
+                        rotations[0].disabledColor = disabledColor
+                        rotations[0].disabled = false
                     }
                 }
 
@@ -160,7 +189,9 @@
                 this.chartLabels.push(x)
 
 
-                // Acc and val chart
+
+
+                // ACC AND VAL CHART
                 x = chartData[1].map(obj => obj.x)
                 y = chartData[1].map(obj => obj.y)
 
@@ -183,50 +214,74 @@
             }
 
 
+
+            // unpack sets
+            let unpackedDatasets = []
+
+            this.chartDatasets.forEach(set => {
+                unpackedDatasets.push(...set)
+            })
+
+            this.chartDatasets = unpackedDatasets
             
 
+
+            // get labels for all sets
+            let lowestLabel
+
+            this.chartLabels.forEach(label => {
+                if (!lowestLabel || lowestLabel.length < label.length) {
+                    lowestLabel = label
+                }
+            })
+
+            this.chartLabels = lowestLabel
+
+
+            // Push data
             this.charts.push({'datasets': this.chartDatasets, 'labels': this.chartLabels})
             this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2})
 
 
+
             // Fix dataset length
-            // let datasetLengths = []
+            let datasetLengths = []
 
-            // toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
-            //     datasetLengths.push(dataset.data.length)
-            // });
+            toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
+                datasetLengths.push(dataset.data.length)
+            });
 
 
-            // let maxLength = Math.max(...datasetLengths)
+            let maxLength = Math.max(...datasetLengths)
 
-            // toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
-            //     let datasetLength = dataset.data.length
+            toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
+                let datasetLength = dataset.data.length
 
-            //     if (datasetLength < maxLength) {
-            //         let diff = maxLength - datasetLength
+                if (datasetLength < maxLength) {
+                    let diff = maxLength - datasetLength
 
-            //         for (let i = 0; i < diff; i++) {
-            //             dataset.data.unshift(null)
-            //         }
-            //     }
-            // });
+                    for (let i = 0; i < diff; i++) {
+                        dataset.data.unshift(null)
+                    }
+                }
+            });
         },
 
 
         methods: {
-            toggleCurve(index, curveIndex) {
-                //FIXME:
-                // this.charts[0].datasets[index][curveIndex].disabled = !this.charts[0].datasets[index][curveIndex].disabled;
+            toggleCurve(labels) {
+                let disabled = labels.every(label => !this.charts[0].datasets.filter(dataset => dataset.label == label)[0].disabled)
 
-                // // Vynucení reaktivity, pokud změna není zachycena
-                // this.charts[0].datasets = [...this.charts[0].datasets];
+                labels.forEach(label => {
+                    this.charts[0].datasets.filter(dataset => dataset.label == label)[0].disabled = disabled
 
-                // this.$nextTick(() => {
-                //     this.$refs['lineChart' + index].update();
-                // })
-                
+                    // Force update
+                    this.charts[0].datasets = [...this.charts[0].datasets];
 
-                // console.log(this.charts[0].datasets)
+                    this.$nextTick(() => {
+                        this.lineChartKey++
+                    })
+                })
             }
         }
     }
@@ -235,6 +290,11 @@
 
 
 <style scoped>
+    header {
+        margin-bottom: 40px;
+    }
+
+
     main {
         width: 1800px;
         margin: 0 auto;
@@ -248,19 +308,19 @@
     .results {
         width: 100%;
         margin: 0 auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        align-items: center;
-        justify-content: center;
-        gap: 40px;
-        flex-wrap: wrap;
-        /* margin: 0 100px; */
+        
+    }
+
+    .resultBox {
+        border-radius: 15px;
+        background-color: var(--element-bg);
+        box-shadow: 0px 0px 15px var(--shadow2);
+        border: 3px solid var(--border2);
     }
 
     .setHeader {
-        font-size: 35px;
+        font-size: 28px;
         color: var(--text);
-        margin: -10px 0 5px -10px;
         font-weight: 800;
     }
 
@@ -271,18 +331,19 @@
         font-weight: 700;
     }
 
+    .setList {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
 
-    .resultBox {
-        border-radius: 15px;
-        background-color: var(--element-bg);
-        box-shadow: 0px 0px 15px var(--shadow2);
-        border: 3px solid var(--border2);
-        padding: 25px 30px;
-        width: 100%;
+    .setSelection {
         display: flex;
         flex-direction: column;
-        gap: 15px;
-        margin-top: 6%;
+        gap: 10px;
+        padding: 5px 10px;
+        cursor: pointer;
     }
 
 
@@ -304,6 +365,9 @@
         background-color: #ffffff;
         margin-bottom: 20px;
         padding: 15px 5px 20px 5px;
+        width: 85%;
+        max-height: 780px;
+        margin: 0 auto;
     }
 
 
@@ -313,18 +377,27 @@
         flex-direction: row;
         gap: 10px;
         margin-bottom: 10px;
-        margin-left: 20px;
+        margin-left: 5px;
     }
 
     .curve {
         display: flex;
         flex-direction: row;
         font-size: 15px;
-        color: #666;
-        border: 2px solid #666;
+        color: var(--text3);
+        border: 2px solid var(--border2);
         padding: 5px 10px;
         border-radius: 30px;
         cursor: pointer;
+        background-color: var(--page-bg);
+        transition: border-color 0.3s ease, color 0.3s ease;
+        user-select: none;
+    }
+
+    .curveEnabled {
+        border-color: var(--enabled);
+        color: var(--text);
+        transition: border-color 0.3s ease, color 0.3s ease;
     }
 
     .colorCircle {
@@ -333,6 +406,7 @@
         border-radius: 50%;
         margin-right: 5px;
         display: inline-block;
+        transition: background-color 0.3s ease;
     }
 
 

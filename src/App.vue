@@ -29,6 +29,7 @@
     --header: #333;
     --text: #444;
     --text2: #666;
+    --text3: #808080;
 
     /* border */
     --border2: #999;
@@ -54,6 +55,7 @@
     --header: #eee;
     --text: #dedede;
     --text2: #ccc;
+    --text3: #919191;
 
     /* border */
     --border2: #555;
@@ -103,6 +105,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    user-select: none;
   }
 
   h1 {
