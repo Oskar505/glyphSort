@@ -43,11 +43,6 @@
                                 <title>Download answers</title>
                                 <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
                             </svg>
-
-                            <svg :class="glyphSet.rotationClass" @click.stop="glyphSet.toggleRotation()" @mouseenter="glyphSet.toggleRotationClass(true)" @mouseleave="glyphSet.toggleRotationClass(false)" xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="var(--text)">
-                                <title>Toggle rotation</title>
-                                <path d="M522-80v-82q34-5 66.5-18t61.5-34l56 58q-42 32-88 51.5T522-80Zm-80 0Q304-98 213-199.5T122-438q0-75 28.5-140.5t77-114q48.5-48.5 114-77T482-798h6l-62-62 56-58 160 160-160 160-56-56 64-64h-8q-117 0-198.5 81.5T202-438q0 104 68 182.5T442-162v82Zm322-134-58-56q21-29 34-61.5t18-66.5h82q-5 50-24.5 96T764-214Zm76-264h-82q-5-34-18-66.5T706-606l58-56q32 39 51 86t25 98Z"/>
-                            </svg>
                         </div>
                     </div>
 
@@ -75,11 +70,25 @@
 
 
     
-    <transition name="fade">
-        <div class="floatingBtn" v-show="JSON.parse(JSON.stringify(selectedGlyphs.length)) > 0" @click="this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})">
-            <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="var(--text)"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
-        </div>
-    </transition>
+    
+    <div class="floatingBtnWrapper" @mouseover="floatingBtnHover = true" @mouseleave="floatingBtnHover = false">
+        <transition name="fade">
+            <div class="floatingBtn" 
+                v-show="JSON.parse(JSON.stringify(selectedGlyphs.length)) > 0" 
+                @click="this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="var(--text)"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
+            </div>
+        </transition>
+
+        <transition name="fade">
+            <div class="rotationSelect" v-show="floatingBtnHover && JSON.parse(JSON.stringify(selectedGlyphs.length)) > 0">
+                <div class="rotationChoice" :class="rotationMode === 1 ? 'choiceSelected' : ''" @click="toggleRotationModes(1)">Rotate</div>
+                <div class="rotationChoice" :class="rotationMode === 2 ? 'choiceSelected' : ''" @click="toggleRotationModes(2)">Rotate 180°</div>
+                <div class="rotationChoice" :class="rotationMode === 3 ? 'choiceSelected' : ''" @click="toggleRotationModes(3)">Rotate same</div>
+            </div>
+        </transition>
+    </div>
 </template>
 
 
@@ -97,6 +106,8 @@
                 selectedGlyphs: [],
                 previewImages: [],
                 rotationHover: false,
+                floatingBtnHover: false,
+                rotationMode: 0,
             }
         },
 
@@ -128,7 +139,7 @@
 
 
 
-            getSavedSets() {
+            async getSavedSets() {
                 this.setIdList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
                 this.glyphSetList = []
 
@@ -145,7 +156,13 @@
 
                         if (!this.previewImages.includes(previewImage)) {
                             this.previewImages.push(previewImage)
-                        }   
+                        }
+
+
+                        // get rotation settings
+                        if (this.selectedGlyphs.includes(glyphSetId)) {
+                            this.rotationMode = glyphSet.rotation
+                        }
                     }
 
 
@@ -215,6 +232,23 @@
 
                 this.getSavedSets()
             },
+
+
+            toggleRotationModes(mode) {
+                if (this.rotationMode === mode) {
+                    this.rotationMode = 0
+                }
+
+                else {
+                    this.rotationMode = mode
+                }
+                
+                console.log(this.rotationMode)
+
+                this.glyphSetList.forEach(glyphSet => {
+                    glyphSet.toggleRotation(this.rotationMode)
+                })
+            }
         },
 
 
@@ -329,7 +363,7 @@
 
 
     .setBtnWrapper {
-        width: 88%;
+        width: 66%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -384,11 +418,20 @@
     }
 
 
-    .floatingBtn {
+    .floatingBtnWrapper {
         position: fixed;
         bottom: 60px;
-        right: 60px;
-        background-color: transparent;
+        right: 40px;
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 10px;
+        width: 155px;
+        padding: 10px;
+        padding-bottom: 0;
+    }
+
+    .floatingBtn {
         border: 3px solid var(--text);
         border-radius: 50%;
         padding: 7px;
@@ -397,6 +440,7 @@
         background-color: var(--element-bg);
         box-shadow: 0px 0px 10px var(--shadow2);
         transition: 0.3s ease;
+        width: 60px;
     }
 
     .floatingBtn:hover {
@@ -408,6 +452,32 @@
     .floatingBtn:hover svg{
         fill: var(--page-bg);
         transition: 0.3s ease;
+    }
+
+    .rotationSelect {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rotationChoice {
+        border: 2px solid var(--border3);
+        border-radius: 12px;
+        padding: 5px 8px;
+        cursor: pointer;
+        font-size: 20px;
+        width: 100%;
+        margin-bottom: 7px;
+        color: var(--text2);
+        background-color: var(--element-bg);
+        transition: border-color 0.3s ease, color 0.3s ease, font-weight 0.3s ease;
+    }
+
+    .choiceSelected {
+        border-color: var(--enabled);
+        color: var(--text);
+        font-weight: 500;
+        transition: border-color 0.3s ease, color 0.3s ease, font-weight 0.3s ease;
     }
 
     .fade-enter-active,

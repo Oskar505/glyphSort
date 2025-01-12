@@ -324,11 +324,38 @@ class GlyphSet {
 
 
         // rotation
-        let rotationOptions = [0, 90, 180, 270]
-        let rotationValue = 0
+        let rotationOptions
+        let rotationValue1 = 0
+        let rotationValue2 = 0
 
-        if (this.rotation) {
-            rotationValue = rotationOptions[getRandomInt(0, rotationOptions.length - 1)]
+        if (this.rotation === 1) {
+            rotationOptions = [0, 90, 180, 270]
+            
+            let rotationIndex = getRandomInt(0, rotationOptions.length - 1)
+            rotationValue1 = rotationOptions[rotationIndex]
+            rotationOptions.splice(rotationIndex, 1)
+
+            rotationIndex = getRandomInt(0, rotationOptions.length - 1)
+            rotationValue2 = rotationOptions[rotationIndex]
+        }
+
+        else if (this.rotation === 2) {
+            rotationOptions = [0, 180]
+            
+            let rotationIndex = getRandomInt(0, rotationOptions.length - 1)
+            rotationValue1 = rotationOptions[rotationIndex]
+            rotationOptions.splice(rotationIndex, 1)
+
+            rotationIndex = getRandomInt(0, rotationOptions.length - 1)
+            rotationValue2 = rotationOptions[rotationIndex]
+        }
+
+        else if (this.rotation === 3) {
+            rotationOptions = [0, 90, 180, 270]
+            
+            let rotationIndex = getRandomInt(0, rotationOptions.length - 1)
+            rotationValue1 = rotationOptions[rotationIndex]
+            rotationValue2 = rotationValue1
         }
 
 
@@ -374,10 +401,10 @@ class GlyphSet {
         }
 
         logMessage('-')
-        logMessage(`New glyph pair: ${this.id}, values: ${val1}, ${val2}, distance: ${this.actualDistance}, rotation: ${rotationValue}, gamma: ${this.gamma}`)
+        logMessage(`New glyph pair: ${this.id}, values: ${val1}, ${val2}, distance: ${this.actualDistance}, rotations: ${rotationValue1}, ${rotationValue2}, gamma: ${this.gamma}`)
         
 
-        return {val1:val1, val2:val2, distance:this.actualDistance, rotation:this.rotation, rotationValue:rotationValue}
+        return {val1:val1, val2:val2, distance:this.actualDistance, rotation:this.rotation, rotationValue1:rotationValue1, rotationValue2:rotationValue2}
     }
 
 
@@ -485,7 +512,7 @@ class GlyphSet {
         allAnswers.forEach(answer => {
             if (!distances.includes(answer.distance)) {
                 distances.push(answer.distance)
-            }
+            } 
         });
 
         distances.sort((a, b) => a - b)
@@ -503,8 +530,8 @@ class GlyphSet {
                 let count = 0
                 let rotationVal = i * 90
 
-
-                allAnswers.filter(item => item.distance == distance && item.rotationValue == rotationVal).forEach(answer => {
+                // TODO: add rotation val 2
+                allAnswers.filter(item => item.distance == distance && item.rotationValue1 == rotationVal).forEach(answer => {
                     if (answer.correct) {
                         correctCount++
                     }
@@ -566,11 +593,13 @@ class GlyphSet {
 
 
 
-    async toggleRotation() {
+    async toggleRotation(mode) {
         await this.getData()
 
-        this.rotation = !this.rotation
+        this.rotation = mode
         this.data.rotation = this.rotation
+
+        console.log(mode)
 
         await this.saveData()
     }

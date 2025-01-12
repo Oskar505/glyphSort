@@ -308,7 +308,7 @@
     .results {
         width: 100%;
         margin: 0 auto;
-        
+        padding-bottom: 50px;
     }
 
     .resultBox {

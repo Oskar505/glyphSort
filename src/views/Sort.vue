@@ -14,8 +14,8 @@
         <section v-show="glyphSets.length > 0">
             <div class="sortWrapper" :class="borderFeedback">
                 <div class="glyphCardWrapper">
-                    <glyph-card :value="img1" :rotationValue="rotationValue" :class="animationClass"></glyph-card>
-                    <glyph-card :value="img2" :rotationValue="rotationValue" :class="animationClass"></glyph-card>
+                    <glyph-card :value="img1" :rotationValue="rotationValue1" :class="animationClass"></glyph-card>
+                    <glyph-card :value="img2" :rotationValue="rotationValue2" :class="animationClass"></glyph-card>
                 </div>
                 
 
@@ -98,7 +98,8 @@
                 btnsOrder: 0,
 
                 rotation: false,
-                rotationValue: 0,
+                rotationValue1: 0,
+                rotationValue2: 0,
 
                 lastCorrect: true,
 
@@ -144,7 +145,8 @@
                 this.val1 = newGlyphData.val1
                 this.val2 = newGlyphData.val2
                 this.rotation = newGlyphData.rotation
-                this.rotationValue = newGlyphData.rotationValue
+                this.rotationValue1 = newGlyphData.rotationValue1
+                this.rotationValue2 = newGlyphData.rotationValue2
 
                 let pickedSet = glyphSets[this.pickedSet]
 
@@ -229,6 +231,7 @@
 
 
                 // Save new answer
+                // TODO: add rotation val 2
                 let answerData = {
                     "val1": this.val1,
                     "val2": this.val2,
@@ -237,7 +240,7 @@
                     'distance': glyphSet.actualDistance,
                     "time": Date.now(),
                     "rotation": this.rotation,
-                    "rotationValue": this.rotationValue
+                    "rotationValue1": this.rotationValue1
                 }
 
                 glyphSet.addAnswer(answerData)
@@ -291,7 +294,8 @@
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
                     this.rotation = newGlyphData.rotation
-                    this.rotationValue = newGlyphData.rotationValue
+                    this.rotationValue1 = newGlyphData.rotationValue1
+                    this.rotationValue2 = newGlyphData.rotationValue2
 
                     this.img1 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val1])
                     this.img2 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val2])
@@ -491,10 +495,11 @@
         background-color: var(--element-bg);
         padding: 10px;
         border-radius: 15px;
-        color: var(--text2);
+        color: var(--text);
+        font-size: 17px;
         min-height: 200px;
         max-height: 300px;
-        width: 700px;
+        width: 800px;
         overflow-y: scroll;
         border: 3px solid var(--border2);
         margin-top: 50px;
