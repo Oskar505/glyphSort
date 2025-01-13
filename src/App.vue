@@ -176,7 +176,7 @@
   }
 
   .middlePageWarning a {
-    color: #333;
+    color: var(--header);
     font-weight: 700;
   }
 </style>

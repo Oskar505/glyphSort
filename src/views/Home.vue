@@ -139,7 +139,7 @@
 
 
 
-            async getSavedSets() {
+            async  getSavedSets() {
                 this.setIdList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
                 this.glyphSetList = []
 
@@ -256,7 +256,17 @@
         mounted() {
             this.setIdList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
             
+
+            // selected sets
             this.selectedGlyphs = this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []
+
+            this.selectedGlyphs.forEach((setId, index) => {
+                if (!this.setIdList.includes(setId)) {
+                    this.selectedGlyphs.splice(index, 1)
+                }
+            })
+
+
 
             this.getSavedSets()
         }

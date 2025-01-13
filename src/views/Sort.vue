@@ -120,10 +120,18 @@
 
 
             // get glyph sets
-            let setIds = this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []
+            const allGlyphSetIds = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
+            const glyphSetIds = JSON.parse(this.$route.query.glyphSetIds)
+
+            glyphSetIds.forEach((setId, index) => {
+                if (!allGlyphSetIds.includes(setId)) {
+                    glyphSetIds.splice(index, 1)
+                }
+            })
+            
 
 
-            for (const id of setIds) {
+            for (const id of glyphSetIds) {
                 let newGlyphSet = new GlyphSet(id);
                 await newGlyphSet.init();
 

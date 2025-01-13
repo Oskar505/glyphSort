@@ -136,8 +136,14 @@
             this.btnsOrder = Number(this.$getCookie('sortingBtnsOrder'))
 
 
+            const allGlyphSetIds = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
+            this.glyphSetIds = JSON.parse(this.$route.query.glyphSetIds)
 
-            this.glyphSetIds = this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []
+            this.glyphSetIds.forEach((setId, index) => {
+                if (!allGlyphSetIds.includes(setId)) {
+                    this.glyphSetIds.splice(index, 1)
+                }
+            })
 
 
             // get preferred theme

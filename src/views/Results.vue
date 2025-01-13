@@ -33,38 +33,6 @@
 
 
 
-
-
-        <!-- <section v-show="glyphSets.length > 0" style="width: 100%;" class="results">
-            <div class="resultBox stats" v-for="(glyphSet, index) in glyphSets" :key="glyphSet.id">
-                <h2 class="setHeader">{{ glyphSet.id.charAt(0).toUpperCase() + glyphSet.id.slice(1) }}</h2>
-
-                <glyph-set-info style="max-width: 500px;" :glyphSet="glyphSet" :live="false" v-if="glyphSet"/>
-                
-
-                <h3>Charts</h3>
-
-                <div class="chartsWrapper">
-                    <div class="chart">
-                        <div class="legend">
-                            <div class="curve" v-for="(rotation, curveIndex) in charts[0].datasets[index]" @click="toggleCurve(index, curveIndex)" v-if="charts[0] && charts.length">
-                                <div class="colorCircle" :style="'background-color: ' + rotation.backgroundColor"></div> {{ rotation.label }}
-                            </div>
-                        </div>
-                        
-                        <line-chart :datasets="charts[0].datasets[index].filter(dataset => !dataset.disabled)" :labels="charts[0].labels[index]" :average="glyphSet.successRate" v-if="charts.length > 0" :key="lineChartKey"></line-chart>
-                    </div>
-                    
-                    <div class="chart">
-                        <bar-chart :datasets="[charts[1].datasets[index]]" :labels="charts[1].labels" :average="glyphSet.successRate" v-if="charts.length > 0"></bar-chart>
-                    </div>
-                    
-                </div>
-            </div>
-        </section> -->
-        
-
-
         <section class="middlePageWarning" v-if="glyphSets.length == 0">
             <h1>No set selected</h1>
             <h2>Select set on the <a href="/">home page</a></h2>
@@ -118,7 +86,19 @@
             this.chartDatasets = []
             this.chartLabels = []
 
-            for (const [index, glyphSetId] of JSON.parse(this.$route.query.glyphSetIds).entries()) {
+            const allGlyphSetIds = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
+            const glyphSetIds = JSON.parse(this.$route.query.glyphSetIds)
+
+            glyphSetIds.forEach((setId, index) => {
+                if (!allGlyphSetIds.includes(setId)) {
+                    glyphSetIds.splice(index, 1)
+                }
+            })
+
+
+            let colorIndex = -1
+
+            for (const [index, glyphSetId] of allGlyphSetIds.entries()) {
                 let lineColors1 = [
                     'rgba(54, 162, 235, 0.5)',
                     'rgba(255, 112, 188, 0.5)',
@@ -127,6 +107,9 @@
                     'rgba(255, 0, 0, 1)',
                 ];
 
+
+                colorIndex = colorIndex == 7 ? 0 : colorIndex + 1
+                console.log(colorIndex)
 
                 let colorHue = [240, 0, 120, 30, 270, 60, 180]
                 let colorSaturation = [95, 90, 85, 50, 100]
@@ -145,8 +128,8 @@
                 let rotations = []
 
                 for (let i = 0; i < 5; i++) {
-                    let color = `hsla(${colorHue[index]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 1)`
-                    let disabledColor = `hsla(${colorHue[index]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 0.7)`
+                    let color = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 1)`
+                    let disabledColor = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 0.7)`
 
 
                     let rotation = i == 4 ? 'All' : i * 90 + '°'
@@ -165,7 +148,7 @@
                             backgroundColor: color,
                             disabledColor: disabledColor,
                             tension: 0.4,
-                            disabled: i != 4
+                            disabled: !(i == 4 && glyphSetIds.includes(glyphSetId))
                         }
 
                         rotations.push(chartDataset)
@@ -177,7 +160,7 @@
                         rotations[0].borderColor = color
                         rotations[0].backgroundColor = color
                         rotations[0].disabledColor = disabledColor
-                        rotations[0].disabled = false
+                        rotations[0].disabled = !glyphSetIds.includes(glyphSetId)
                     }
                 }
 
@@ -309,6 +292,8 @@
         width: 100%;
         margin: 0 auto;
         padding-bottom: 50px;
+        display: flex;
+        gap: 30px;
     }
 
     .resultBox {
@@ -316,6 +301,7 @@
         background-color: var(--element-bg);
         box-shadow: 0px 0px 15px var(--shadow2);
         border: 3px solid var(--border2);
+        flex-grow: 3;
     }
 
     .setHeader {
@@ -333,9 +319,11 @@
 
     .setList {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 30px;
         margin-bottom: 30px;
+        flex-grow: 1;
+        max-height: 100px;
     }
 
     .setSelection {
