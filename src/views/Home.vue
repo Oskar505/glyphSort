@@ -345,6 +345,7 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        width: 70%;
     }
 
     .info {
@@ -373,7 +374,7 @@
 
 
     .setBtnWrapper {
-        width: 66%;
+        width: 40%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
