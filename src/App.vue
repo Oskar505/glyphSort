@@ -74,6 +74,11 @@
 
 
 
+  html {
+    font-size: 62.5%;
+    /* font-size: 60%; */
+  }
+
 
   * {
     margin: 0;
@@ -94,65 +99,9 @@
   
 
 
-  header {
-    padding-left: 40px;
-    /* border-bottom: 1px solid #ddd; */
-    border-bottom: 1px solid var(--border3); 
-    background-color: var(--page-bg);
-    box-shadow: 0px 0px 10px var(--shadow1);
-    background-color: var(--element-bg);
-    margin-bottom: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    user-select: none;
-  }
-
-  h1 {
-    font-size: 37px;
-    color: var(--header);
-  }
-
-  nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-  }
-
-  nav div {
-    padding: 17px;
-    border-left: 1px solid var(--border3);
-    cursor: pointer;
-  }
-
-  /* nav div:first-of-type {
-    border-left: 1px solid #444;
-  } */
-
-  nav div h2 {
-    font-size: 26px !important;
-    color: var(--text2) !important;
-    line-height: 1;
-    font-weight: 400;
-  }
-
-  .secondaryNavBtn {
-    height: 60px;
-  }
-
-  .secondaryNavBtn svg {
-    height: 30px;
-  }
-
-  .navActive {
-    color: #333;
-    font-weight: 700;
-  }
-
 
   .wideContainer {
-    max-width: 1900px;
+    max-width: 190rem;
     margin: 0 auto
   }
 
@@ -165,11 +114,11 @@
   }
 
   .middlePageWarning h1 {
-    font-size: 45px;
+    font-size: 4.5rem;
   }
 
   .middlePageWarning h2 {
-    font-size: 30px;
+    font-size: 3rem;
     font-weight: 500;
     color: var(--text);
     margin-bottom: 1.3em;
@@ -178,5 +127,37 @@
   .middlePageWarning a {
     color: var(--header);
     font-weight: 700;
+  }
+
+
+
+
+
+  @media only screen and (max-width: 1700px) {
+    html {
+      font-size: 58%;
+    }
+  }
+
+  @media only screen and (max-width: 1500px) {
+    html {
+      font-size: 55%;
+    }
+  }
+
+  @media only screen and (max-width: 1250px) {
+    html {
+      font-size: 50%;
+    }
+  }
+
+  @media only screen and (max-width: 1000px) {
+    html {
+      font-size: 48%;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+
   }
 </style>

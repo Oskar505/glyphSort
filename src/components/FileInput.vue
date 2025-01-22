@@ -193,17 +193,17 @@
 }
 
 #dropZone {
-    width: 400px;
-    height: 200px;
-    border: 2px dashed var(--border2);
-    border-radius: 8px;
+    width: 40rem;
+    height: 20rem;
+    border: 0.2rem dashed var(--border2);
+    border-radius: 0.8rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: var(--text);
     background-color: var(--element-bg);
-    font-size: 18px;
+    font-size: 1.8rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -220,10 +220,10 @@
 
 label {
     cursor: pointer;
-    border: 1px solid var(--border2);
-    padding: 3px 5px;
-    border-radius: 5px;
-    margin-top: 5px;
+    border: 0.1rem solid var(--border2);
+    padding: 0.3rem 0.5rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 #fileInput {
@@ -232,20 +232,20 @@ label {
 
 
 #filePreview {
-    width: 1000px;
-    height: 500px;
+    width: 100rem;
+    height: 50rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: top;
     flex-wrap: wrap;
-    gap: 50px;
-    border-radius: 15px;
+    gap: 5rem;
+    border-radius: 1.5rem;
     background-color: var(--element-bg);
-    box-shadow: 0px 0px 50px var(--shadow3);
-    border: 3px solid var(--border2);
+    box-shadow: 0 0 5rem var(--shadow3);
+    border: 0.3rem solid var(--border2);
     display: none;
-    padding: 15px 30px;
+    padding: 1.5rem 3rem;
     /* position: relative; */
     position: absolute;
     left: 50%;
@@ -261,14 +261,15 @@ label {
 
 h2 {
     color: var(--text);
-    margin: 5px 0 2px 5px;
+    margin: 0.5rem 0 0.2rem 0.5rem;
     font-weight: 700;
+    font-size: 2.5rem;
 }
 
 .info {
     color: var(--text);
-    margin-left: 5px;
-    font-size: 20px;
+    margin-left: 0.5rem;
+    font-size: 2rem;
     font-weight: 500;
 }
 
@@ -277,27 +278,27 @@ h2 {
 }
 
 #previewImage {
-    width: 250px;
-    height: 250px;
-    border: 3px solid var(--text);
-    border-radius: 15px;
+    width: 25rem;
+    height: 25rem;
+    border: 0.3rem solid var(--text);
+    border-radius: 1.5rem;
 }
 
 
 .saveBtn {
-    font-size: 27px;
+    font-size: 2.7rem;
     font-weight: 700;
     color: var(--text);
     background-color: var(--element-bg);
-    border: 3px solid var(--text);
-    border-radius: 27px;
+    border: 0.3rem solid var(--text);
+    border-radius: 2.7rem;
     cursor: pointer;
     position: absolute;
     bottom: 0;
     left: 100%;
     transform: translateX(-133%);
     padding: 0.3em 0.7em;
-    margin-bottom: 15px;
+    margin-bottom: 1.5rem;
     transition: 0.3s ease;
 }
 

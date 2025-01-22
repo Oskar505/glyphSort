@@ -1,14 +1,5 @@
 <template>
-    <header>
-        <h1 @click="clearStorage()">Sort</h1>
-
-        <nav>
-            <div @click="this.$router.push({path:'/', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2>Home</h2></div>
-            <div @click="this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2 class="navActive">Sort</h2></div>
-            <div @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})"><h2>Results</h2></div>
-            <div @click="this.$router.push({path:'/calibration', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})" class="secondaryNavBtn"><svg xmlns="http://www.w3.org/2000/svg" height="30px" viewBox="0 -960 960 960" width="30px" style="fill: var(--text2);"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg></div>
-        </nav>
-    </header>
+    <header-bar :activeBtn="1" :selectedGlyphs="glyphSetIds"></header-bar>
 
     <main>
         <section v-show="glyphSets.length > 0">
@@ -69,7 +60,7 @@
 
 
     <div class="floatingBtn" @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})">
-        <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="var(--text)"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="4rem" viewBox="0 -960 960 960" width="4rem" fill="var(--text)"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
     </div>
     
 </template>
@@ -121,7 +112,7 @@
 
             // get glyph sets
             const allGlyphSetIds = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
-            const glyphSetIds = JSON.parse(this.$route.query.glyphSetIds)
+            const glyphSetIds = this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []
 
             glyphSetIds.forEach((setId, index) => {
                 if (!allGlyphSetIds.includes(setId)) {
@@ -416,7 +407,7 @@
 
 <style scoped>
     main {
-       max-width: 700px;
+       max-width: 70rem;
        width: 100%;
        margin: 0 auto;
        display: flex;
@@ -430,13 +421,13 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 50px;
-        border-radius: 15px;
+        gap: 5rem;
+        border-radius: 1.5rem;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 15px var(--shadow2);
-        border: 3px solid var(--border2);
+        box-shadow: 0px 0px 1.5rem var(--shadow2);
+        border: 0.3rem solid var(--border2);
         margin-top: 13%;
-        padding: 50px 90px;
+        padding: 5rem 9rem;
         user-select: none;
 
         background-color: white;
@@ -447,7 +438,7 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 100px;
+        gap: 10rem;
     }
 
     .answerBtnWrapper {
@@ -455,17 +446,17 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 40px;
+        gap: 4rem;
     }
 
 
     .answerBtn {
-        font-size: 49px;
+        font-size: 4.9rem;
         font-weight: 500;
-        border: 3px solid #444;
+        border: 0.3rem solid #444;
         color: #444;
-        padding: 0 25px;
-        border-radius: 15px;
+        padding: 0 2.5rem;
+        border-radius: 1.5rem;
         background-color: #fcfcfc;
     }
 
@@ -473,16 +464,16 @@
 
     .floatingBtn {
         position: fixed;
-        bottom: 60px;
-        right: 60px;
+        bottom: 6rem;
+        right: clamp(1rem, 3.2vw, 6rem);
         background-color: transparent;
-        border: 3px solid var(--text);
+        border: 0.3rem solid var(--text);
         border-radius: 50%;
-        padding: 7px;
+        padding: 0.7rem;
         cursor: pointer;
         transition: 0.2s;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 10px var(--shadow2);
+        box-shadow: 0px 0px 1rem var(--shadow2);
         transition: 0.3s ease;
     }
 
@@ -501,16 +492,16 @@
 
     .log{
         background-color: var(--element-bg);
-        padding: 10px;
-        border-radius: 15px;
+        padding: 1rem;
+        border-radius: 1.5rem;
         color: var(--text);
-        font-size: 17px;
-        min-height: 200px;
-        max-height: 300px;
-        width: 800px;
+        font-size: 1.7rem;
+        min-height: 20rem;
+        max-height: 30rem;
+        width: 80rem;
         overflow-y: scroll;
-        border: 3px solid var(--border2);
-        margin-top: 50px;
+        border: 0.3rem solid var(--border2);
+        margin-top: 5rem;
     }
 
     
@@ -520,34 +511,34 @@
     @keyframes correctBtnKeyframe {
         0% {
             background-color: transparent;
-            border: 3px solid var(--text)
+            border: 0.3rem solid var(--text)
         }
 
         50% {
             background-color: #2dba3a;
-            border: 3px solid #279f33;
+            border: 0.3rem solid #279f33;
         }
 
         100% {
             background-color: transparent;
-            border: 3px solid var(--text)
+            border: 0.3rem solid var(--text)
         }
     }
 
     @keyframes wrongBtnKeyframe {
         0% {
             background-color: transparent;
-            border: 3px solid var(--text)
+            border: 0.3rem solid var(--text)
         }
 
         50% {
             background-color: #ff0000;
-            border: 3px solid #ae0000;
+            border: 0.3rem solid #ae0000;
         }
 
         100% {
             background-color: transparent;
-            border: 3px solid var(--text)
+            border: 0.3rem solid var(--text)
         }
     }
 
@@ -555,61 +546,61 @@
     @keyframes neutralBtnKeyframe {
         0% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 0.3rem solid #444
         }
 
         50% {
             background-color: var(--enabled);
-            border: 3px solid var(--enabled);
+            border: 0.3rem solid var(--enabled);
         }
 
         100% {
             background-color: transparent;
-            border: 3px solid #444
+            border: 0.3rem solid #444
         }
     }
 
 
     @keyframes correctBorderKeyframe {
         0% {
-            border: 3px solid var(--border2)
+            border: 0.3rem solid var(--border2)
         }
 
         50% {
-            border: 4px solid #2dba3a;
+            border: 0.4rem solid #2dba3a;
         }
 
         100% {
-            border: 3px solid var(--border2)
+            border: 0.3rem solid var(--border2)
         }
     }
 
     @keyframes wrongBorderKeyframe {
         0% {
-            border: 3px solid var(--border2)
+            border: 0.3rem solid var(--border2)
         }
 
         50% {
-            border: 4px solid #ff0000;
+            border: 0.4rem solid #ff0000;
         }
 
         100% {
-            border: 3px solid var(--border2)
+            border: 0.3rem solid var(--border2)
         }
     }
 
 
     @keyframes neutralBorderKeyframe {
         0% {
-            border: 3px solid var(--border2)
+            border: 0.3rem solid var(--border2)
         }
 
         50% {
-            border: 3px solid var(--enabled);
+            border: 0.3rem solid var(--enabled);
         }
 
         100% {
-            border: 3px solid var(--border2)
+            border: 0.3rem solid var(--border2)
         }
     }
 

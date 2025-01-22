@@ -9,6 +9,7 @@ import LineChart from './components/LineChart.vue'
 import BarChart from './components/BarChart.vue'
 import FileInput from './components/FileInput.vue'
 import GlyphSetInfo from './components/GlyphSetInfo.vue'
+import HeaderBar from './components/HeaderBar.vue'
 
 const app = createApp(App)
 
@@ -17,6 +18,7 @@ app.component('line-chart', LineChart)
 app.component('bar-chart', BarChart)
 app.component('file-input', FileInput)
 app.component('glyph-set-info', GlyphSetInfo)
+app.component('header-bar', HeaderBar)
 
 app.use(createPinia())
 app.use(router)
