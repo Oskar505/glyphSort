@@ -265,64 +265,66 @@
 
 <style scoped>
     header {
-        margin-bottom: 40px;
+        margin-bottom: 4rem;
     }
 
 
     main {
-        width: 1800px;
+        max-width: 95%;
         margin: 0 auto;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 100px;
+        gap: 10rem;
         flex-wrap: wrap;
     }
 
     .results {
         width: 100%;
+        height: 100%;
+        min-height: calc(100dvh - 10rem);
         margin: 0 auto;
-        padding-bottom: 50px;
+        /* padding-bottom: 5rem; */
         display: flex;
-        gap: 30px;
+        gap: 3rem;
     }
 
     .resultBox {
-        border-radius: 15px;
+        border-radius: 1.5rem;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 15px var(--shadow2);
-        border: 3px solid var(--border2);
-        flex-grow: 3;
+        box-shadow: 0 0 1.5rem var(--shadow2);
+        border: 0.3rem solid var(--border2);
     }
 
     .setHeader {
-        font-size: 28px;
+        font-size: 2.8rem;
         color: var(--text);
         font-weight: 800;
     }
 
     h3 {
-        font-size: 29px;
+        font-size: 2.9rem;
         color: var(--text);
-        margin-top: 10px;
+        margin-top: 1rem;
         font-weight: 700;
     }
 
     .setList {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 30px;
-        margin-bottom: 30px;
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 3rem;
         flex-grow: 1;
-        max-height: 100px;
     }
 
     .setSelection {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        padding: 5px 10px;
+        gap: 1rem;
+        padding: 0.5rem 1rem;
         cursor: pointer;
+        max-width: 30rem;
+        min-width: 27rem;
     }
 
 
@@ -331,8 +333,8 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 10px;
-        width: 500px;
+        gap: 1rem;
+        width: 50rem;
     }
 
     .statsWrapper div {
@@ -342,10 +344,11 @@
 
     .chart { 
         background-color: #ffffff;
-        margin-bottom: 20px;
-        padding: 15px 5px 20px 5px;
-        width: 85%;
-        max-height: 780px;
+        margin-bottom: 2rem;
+        padding: 1.5rem 0.5rem;
+        width: 100%;
+        max-width: 149rem;
+        max-height: 78rem;
         margin: 0 auto;
     }
 
@@ -354,19 +357,20 @@
     .legend {
         display: flex;
         flex-direction: row;
-        gap: 10px;
-        margin-bottom: 10px;
-        margin-left: 5px;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        margin-left: 0.5rem;
+        flex-wrap: wrap;
     }
 
     .curve {
         display: flex;
         flex-direction: row;
-        font-size: 15px;
+        font-size: 1.5rem;
         color: var(--text3);
-        border: 2px solid var(--border2);
-        padding: 5px 10px;
-        border-radius: 30px;
+        border: 0.2rem solid var(--border2);
+        padding: 0.5rem 1rem;
+        border-radius: 3rem;
         cursor: pointer;
         background-color: var(--page-bg);
         transition: border-color 0.3s ease, color 0.3s ease;
@@ -380,10 +384,10 @@
     }
 
     .colorCircle {
-        width: 19px;
-        height: 19px;
+        width: 1.9rem;
+        height: 1.9rem;
         border-radius: 50%;
-        margin-right: 5px;
+        margin-right: 0.5rem;
         display: inline-block;
         transition: background-color 0.3s ease;
     }
@@ -393,9 +397,48 @@
 
     /* MEDIA QUERIES */
 
-    @media screen and (max-width: 1100px) {
-        main {
-            width: 700px;
+    @media screen and (max-width: 1500px) {
+        .results {
+            flex-direction: column;
+        }
+
+        .chart {
+            max-width: none;
+            max-height: none;
+            flex-grow: 1;
+        }
+
+        .setList {
+            flex-direction: row;
+            gap: 2.5rem;
+        }
+
+        .setSelection {
+            max-width: none;
+        }
+    }
+
+
+    @media screen and (max-width: 1300px) {
+        .results {
+            min-height: calc(80dvh - 10rem);
+        }
+    }
+
+
+    @media screen and (max-width: 1000px) {
+        .results {
+            min-height: calc(60dvh - 10rem);
+        }
+
+        .chart {
+            padding: 1rem 0;
+        }
+    }
+
+    @media screen and (max-width: 600px) {
+        .setSelection {
+            width: 100%;
         }
     }
 </style>
