@@ -465,7 +465,7 @@
     .floatingBtn {
         position: fixed;
         bottom: 6rem;
-        right: clamp(1rem, 3.2vw, 6rem);
+        right: clamp(3rem, 5.2vw, 8rem);
         background-color: transparent;
         border: 0.3rem solid var(--text);
         border-radius: 50%;
@@ -655,5 +655,17 @@
 
     .newGlyphs {
         animation: newGlyphPairKeyFrame 400ms ease-in;
+    }
+
+
+
+
+
+
+    @media only screen and (max-width: 600px) {
+        .sortWrapper {
+            padding: 2rem 5rem;
+            gap: 3rem;
+        }
     }
 </style>

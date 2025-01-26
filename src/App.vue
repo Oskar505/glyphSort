@@ -115,6 +115,7 @@
 
   .middlePageWarning h1 {
     font-size: 4.5rem;
+    color: var(--header);
   }
 
   .middlePageWarning h2 {

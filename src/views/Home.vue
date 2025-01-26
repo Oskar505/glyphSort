@@ -72,7 +72,7 @@
         </transition>
 
         <transition name="fade">
-            <div class="rotationSelect" v-show="floatingBtnHover && JSON.parse(JSON.stringify(selectedGlyphs.length)) > 0">
+            <div class="rotationSelect" id="rotationSelect" v-show="floatingBtnHover && JSON.parse(JSON.stringify(selectedGlyphs.length)) > 0">
                 <div class="rotationChoice" :class="rotationMode === 1 ? 'choiceSelected' : ''" @click="toggleRotationModes(1)">Rotate</div>
                 <div class="rotationChoice" :class="rotationMode === 2 ? 'choiceSelected' : ''" @click="toggleRotationModes(2)">Rotate 180°</div>
                 <div class="rotationChoice" :class="rotationMode === 3 ? 'choiceSelected' : ''" @click="toggleRotationModes(3)">Rotate same</div>
@@ -217,20 +217,19 @@
 
 
             handleFloatingBtnClick(selectedGlyphs) {
-                // if (this.floatingBtnClicks = 1) {
-                //     console.log('true')
-                //     this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})
-                //     this.floatingBtnClicks = 0
-                // }
+                if (matchMedia('(hover: hover)').matches || this.floatingBtnClicks == 1) {
+                    console.log('true')
+                    this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})
+                    this.floatingBtnClicks = 0
+                }
 
-                // else {
-                //     console.log('false')
-                //     this.floatingBtnHover = true
-                //     this.floatingBtnClicks = 1
-                // }
 
-                
-                this.$router.push({path:'/sort', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})
+                // on touchscreens
+                else {
+                    console.log('false')
+                    this.floatingBtnHover = true
+                    this.floatingBtnClicks = 1
+                }
             }
         },
 
