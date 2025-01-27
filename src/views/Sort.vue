@@ -139,7 +139,7 @@
             if (glyphSets.length > 0) {
                 this.glyphSetIds = glyphSets.map(glyphSet => glyphSet.id)
 
-                let newGlyphData = await glyphSets[0].getGlyphPair(undefined, true)
+                let newGlyphData = await glyphSets[0].getGlyphPair(undefined, true, false)
 
                 this.val1 = newGlyphData.val1
                 this.val2 = newGlyphData.val2
@@ -172,6 +172,9 @@
         methods: {
             checkAnswer(buttonId, glyphSet, inverted) {
                 let correct = false
+                let logBtnId = buttonId
+                let equalValues = this.val1 == this.val2
+
 
                 // check
                 if (inverted) {
@@ -181,6 +184,8 @@
                         // show neutral feedback
                         this.btn0Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
+
+                        logBtnId = 2
                     }
 
                     else if (buttonId == 1) {
@@ -189,6 +194,8 @@
                         // show neutral feedback
                         this.btn1Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
+
+                        logBtnId = 1
                     }
 
                     else if (buttonId == 2) {
@@ -197,6 +204,8 @@
                         // show neutral feedback
                         this.btn2Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
+
+                        logBtnId = 0
                     }
                 }
 
@@ -234,7 +243,7 @@
                 let answerData = {
                     "val1": this.val1,
                     "val2": this.val2,
-                    "btnId": buttonId,
+                    "btnId": logBtnId,
                     "correct": correct,
                     'distance': glyphSet.actualDistance,
                     "time": Date.now(),
@@ -250,7 +259,7 @@
                 this.animationClass = 'newGlyphs'
 
 
-                logMessage(`ANSWER: ${glyphSet.id} – ${glyphSet.actualDistance} (${this.val1} – ${this.val2}) – ${correct ? '✓' : '✗'}`)
+                logMessage(`ANSWER: ${glyphSet.id} – ${Math.round(glyphSet.actualDistance)} (${this.val1} – ${this.val2}) – button: ${logBtnId} – ${correct ? '✓' : '✗'}`)
 
 
                 // reset feedbacks and get new glyphs
@@ -288,7 +297,7 @@
                     }
                     
 
-                    let newGlyphData = await newGlyphSet.getGlyphPair(distance, lastCorrect)
+                    let newGlyphData = await newGlyphSet.getGlyphPair(distance, lastCorrect, equalValues)
 
                     this.val1 = newGlyphData.val1
                     this.val2 = newGlyphData.val2
@@ -373,8 +382,6 @@
 
 
     export function logMessage(message) {
-        // let logData = sessionStorage.getItem("logData") ? JSON.parse(sessionStorage.getItem("logData")) : [];
-
         let logEl = document.getElementById("log")
 
         if (logEl == null) return

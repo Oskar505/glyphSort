@@ -4,17 +4,25 @@ import { logMessage } from './views/Sort.vue'
 
 
 class GlyphSet {
-    constructor(id, glyphs=[], info={}, distance=undefined, gamma=0.7, equalChance=3.3) {
+    constructor(id, glyphs=[], info={}, distance=undefined) {
         this.id = id
         this.info = info
         this.glyphs = glyphs
 
+        // ALGORITHM VALUES
+        // right answer - lastDistance * (this.gamma ** this.progressStep)
+        // wrong answer - lastDistance / (this.gamma ** this.regressStep)
+
+        this.gamma = 0.7
+        this.progressStep = 1
+        this.regressStep = 3
+        this.rewardEqual = true
+
+
         this.distance = distance
         this.actualDistance = distance
-        this.gamma = gamma
         this.rotation = false
         this.glyphStepsCount = this.glyphs.length
-        this.equalChance = equalChance // 1 = 10%
         this.db = null
         this.answers = []
 
@@ -69,7 +77,6 @@ class GlyphSet {
                             "distance": this.distance,
                             "gamma": this.gamma,
                             "glyphStepsCount": this.glyphStepsCount,
-                            "equalChance": this.equalChance,
                             "rotation": this.rotation,
                             "answers": this.answers, // []
                         }
@@ -86,7 +93,6 @@ class GlyphSet {
                         this.actualDistance = this.distance
                         this.gamma = this.data.gamma
                         this.glyphStepsCount = this.glyphs.length
-                        this.equalChance = this.data.equalChance // 1 = 10%
                         this.name = this.data.name
                         this.author = this.data.author
                         this.version = this.data.version
@@ -314,7 +320,7 @@ class GlyphSet {
 
 
 
-    async getGlyphPair(lastDistance, lastCorrect) {
+    async getGlyphPair(lastDistance, lastCorrect, lastValsEqual) {
         await this.init()
 
 
@@ -323,7 +329,7 @@ class GlyphSet {
         let val2;
 
 
-        // rotation
+        // ROTATIONS
         let rotationOptions
         let rotationValue1 = 0
         let rotationValue2 = 0
@@ -359,12 +365,22 @@ class GlyphSet {
         }
 
 
+
+        // GET DISTANCE
         // if last response was correct, decrease distance, otherwise increase distance
-        if (lastDistance != undefined) {
-            this.actualDistance = lastCorrect ? lastDistance * this.gamma : lastDistance / this.gamma / this.gamma / this.gamma;
+
+        // dont reward equal
+        if (!this.rewardEqual && lastValsEqual && lastDistance != undefined) {
+            this.actualDistance = lastCorrect ? lastDistance : lastDistance / (this.gamma ** this.regressStep);
+        }
+
+        // reward equal (normal)
+        else if (lastDistance != undefined) {
+            this.actualDistance = lastCorrect ? lastDistance * (this.gamma ** this.progressStep) : lastDistance / (this.gamma ** this.regressStep);
         }
 
 
+        // Control distance
         // if distance is too small, start over
         if (this.actualDistance < 1) {
             this.actualDistance = 20
@@ -376,7 +392,7 @@ class GlyphSet {
         }
 
 
-
+        // GET VALUES
         let offset = this.actualDistance / 2
 
         // Get the middle value. After adding or subtracting the offset, it cannot be lower than 0 or higher than the highest glyph.
@@ -400,10 +416,11 @@ class GlyphSet {
             val2 = val1;
         }
 
-        logMessage('-')
-        logMessage(`New glyph pair: ${this.id}, values: ${val1}, ${val2}, distance: ${this.actualDistance}, rotations: ${rotationValue1}, ${rotationValue2}, gamma: ${this.gamma}`)
-        
 
+
+        logMessage('-')
+        logMessage(`New glyph pair: ${this.id}, values: ${val1}, ${val2}, distance: ${Math.round(this.actualDistance)}, rotations: ${rotationValue1}, ${rotationValue2}, gamma: ${this.gamma}`)
+        
         return {val1:val1, val2:val2, distance:this.actualDistance, rotation:this.rotation, rotationValue1:rotationValue1, rotationValue2:rotationValue2}
     }
 

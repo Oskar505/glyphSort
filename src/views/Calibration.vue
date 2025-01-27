@@ -14,12 +14,12 @@
                 <div class="themeBtnWrapper">
                     <div class="themeBtn" :class="theme === 'light' ? 'lightEnabled' : ''" @click="toggleTheme('light')" >
                         <p>Light</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#444"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="2.4rem" viewBox="0 -960 960 960" width="2.4rem" fill="#444"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"/></svg>
                     </div>
 
                     <div class="themeBtn" :class="theme === 'dark' ? 'darkEnabled' : ''" @click="toggleTheme('dark')">
                         <p>Dark</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#444"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="2.4rem" viewBox="0 -960 960 960" width="2.4rem" fill="#444"><path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Zm0-80q88 0 158-48.5T740-375q-20 5-40 8t-40 3q-123 0-209.5-86.5T364-660q0-20 3-40t8-40q-78 32-126.5 102T200-480q0 116 82 198t198 82Zm-10-270Z"/></svg>
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
 
                 <div class="exportBtn" @click="exportData(exportGlyphs)">
                     <p>Export</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="var(--text)">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="2.8rem" viewBox="0 -960 960 960" width="2.8rem" fill="var(--text)">
                         <title>Download JSON</title>
                         <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
                     </svg>
@@ -243,8 +243,8 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 40px;
-        padding: 0 50px;
+        gap: 4rem;
+        padding: 0 5rem;
     }
 
 
@@ -254,15 +254,16 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        border-radius: 15px;
+        border-radius: 1.5rem;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 15px var(--shadow2);
-        border: 3px solid var(--border2);
+        box-shadow: 0 0 1.5rem var(--shadow2);
+        border: 0.3rem solid var(--border2);
         margin-top: 3%;
-        padding: 15px 30px;
+        padding: 1.5rem 2rem;
         user-select: none;
         max-width: 90%;
         margin: 0 auto;
+        min-width: 600px;
     }
 
 
@@ -274,18 +275,18 @@
 
 
     .generalSettingWrapper {
-        margin-left: 5px;
+        margin-left: 0.5rem;
         color: var(--text2);
-        font-size: 22px;
-        margin-top: 20px;
+        font-size: 2.2rem;
+        margin-top: 2rem;
     }
 
 
     .sortingBtns {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        margin: 20px 5px;
+        gap: 1rem;
+        margin: 2rem 0.5rem;
     }
 
 
@@ -295,21 +296,21 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 30px;
-        border: 3px solid var(--border2);
-        padding: 10px;
-        border-radius: 15px;
+        gap: 3rem;
+        border: 0.3rem solid var(--border2);
+        padding: 1rem;
+        border-radius: 1.5rem;
         cursor: pointer;
     }
 
 
     .answerBtn {
-        font-size: 40px;
+        font-size: 4rem;
         font-weight: 500;
-        border: 3px solid var(--text);
+        border: 0.3rem solid var(--text);
         color: var(--text);
-        padding: 0 18px;
-        border-radius: 15px;
+        padding: 0 1.8rem;
+        border-radius: 1.5rem;
         background-color: var(--element-bg);
     }
 
@@ -318,32 +319,33 @@
     .instructions {
         text-align: left;
         color: var(--text2);
-        font-size: 22px;
+        font-size: 2.2rem;
+        width: 100%;
     }
 
     h2 {
         color: var(--text);
-        font-size: 32px;
+        font-size: 3.2rem;
         margin: 0;
     }
 
     .instructions p {
-        margin-left: 5px;
-        margin-top: 20px;
+        margin-left: 0.5rem;
+        margin-top: 2rem;
     }
 
     .strong {
         font-weight: 700;
         color: var(--text);
-        font-size: 25px;
-        margin-bottom: 5px;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
     }
 
 
     .cardContainer {
-        width: 501px;
-        height: 317px;
-        margin: 20px 0;
+        width: 50.1rem;
+        height: 31.7rem;
+        margin: 2rem 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -352,11 +354,12 @@
     .card {
         width: 200px;
         height: 200px;
-        padding-bottom: 5px;
+        padding-bottom: 0.5rem;
         background-color: #888;
         display: flex;
         align-items: flex-end;
         justify-content: center;
+        font-size: 1.4rem;
     }
 
     .card p {
@@ -369,11 +372,11 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 20px;
+        gap: 2rem;
     }
 
     #slider {
-        width: 300px;
+        width: 30rem;
         background: var(--enabled);
     }
 
@@ -387,7 +390,7 @@
     /* theme switch */
 
     .theme {
-        margin-top: 20px;
+        margin-top: 2rem;
     }
 
     .themeBtnWrapper {
@@ -395,8 +398,8 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 15px;
-        margin: 10px 0;
+        gap: 1.5rem;
+        margin: 1rem 0;
     }
 
     .themeBtn {
@@ -404,14 +407,14 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 10px;
-        border-radius: 15px;
+        gap: 1rem;
+        border-radius: 1.5rem;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 15px var(--shadow2);
-        border: 3px solid var(--border2);
+        box-shadow: 0 0 1.5rem var(--shadow2);
+        border: 0.3rem solid var(--border2);
         color: var(--text);
-        padding: 5px 10px;
-        font-size: 20px;
+        padding: 0.5rem 1rem;
+        font-size: 2rem;
         cursor: pointer;
     }
 
@@ -445,7 +448,7 @@
 
     /* Export data */
     .downloadData h3 {
-        margin-bottom: 2px;
+        margin-bottom: 0.2rem;
     }
 
     .exportBtn {
@@ -453,18 +456,18 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        gap: 10px;
-        border-radius: 15px;
+        gap: 1rem;
+        border-radius: 1.5rem;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 15px var(--shadow2);
-        border: 3px solid var(--border2);
+        box-shadow: 0 0 1.5rem var(--shadow2);
+        border: 0.3rem solid var(--border2);
         color: var(--text);
-        padding: 4px 5px;
-        font-size: 20px;
+        padding: 0.4rem 0.5rem;
+        font-size: 2rem;
         cursor: pointer;
-        max-width: 150px;
-        font-size: 21px;
-        margin-top: 10px;
+        max-width: 15rem;
+        font-size: 2.1rem;
+        margin-top: 1rem;
     }
 
     .exportBtn:hover {
@@ -474,29 +477,29 @@
 
     .exportCheckboxLabel {
         display: flex;
-        gap: 10px;
+        gap: 1rem;
         align-items: center;
-        margin-top: 5px;
+        margin-top: 0.5rem;
     }
 
     .exportCheckbox {
-        width: 17px;
-        height: 17px;
+        width: 1.7rem;
+        height: 1.7rem;
     }
 
 
 
 
     #confirmBtn {
-        font-size: 27px;
+        font-size: 2.7rem;
         font-weight: 700;
         color: var(--text);
         background-color: var(--element-bg);
-        border: 3px solid var(--text);
-        border-radius: 27px;
+        border: 0.3rem solid var(--text);
+        border-radius: 2.7rem;
         cursor: pointer;
         padding: 0.3em 0.7em;
-        margin-bottom: 15px;
+        margin-bottom: 1.5rem;
         transition: 0.3s ease;
     }
 
@@ -506,5 +509,18 @@
         background-color: var(--enabled);
         color: var(--page-bg);
         transition: 0.3s ease;
+    }
+
+
+    @media screen and (max-width: 1300px) {
+        .settingsWrapper {
+            min-width: 100%;
+            padding: 1% 2.5%;
+        }
+    }
+
+
+    @media screen and (max-width: 700px) {
+
     }
 </style>

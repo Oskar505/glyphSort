@@ -17,9 +17,16 @@
             </div>
             
 
-            <div class="chart resultBox">
-                <line-chart :datasets="charts[0].datasets.filter(dataset => !dataset.disabled)" :labels="charts[0].labels" v-if="charts.length > 0" :key="lineChartKey"></line-chart>
-            </div>
+            <section class="charts">
+                <div class="chart resultBox">
+                    <line-chart :datasets="charts[0].datasets.filter(dataset => !dataset.disabled)" :labels="charts[0].labels" v-if="charts.length > 0" :key="lineChartKey"></line-chart>
+                </div>
+
+                <div class="chart resultBox">
+                    <bar-chart :datasets="charts[1].datasets" :labels="charts[1].labels" v-if="charts.length > 0"></bar-chart>
+                </div>
+            </section>
+            
         </section>
 
 
@@ -239,6 +246,9 @@
                     }
                 }
             });
+
+
+            console.log(this.charts)
         },
 
 
@@ -315,6 +325,10 @@
         flex-direction: column;
         gap: 3rem;
         flex-grow: 1;
+        position: sticky;
+        top: 5rem;
+        width: 15%;
+        height: 100%;
     }
 
     .setSelection {
@@ -342,11 +356,21 @@
     }
 
 
+    .charts {
+        width: 100%;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+    }
+
     .chart { 
         background-color: #ffffff;
         margin-bottom: 2rem;
         padding: 1.5rem 0.5rem;
         width: 100%;
+        height: 100%;
+        min-height: calc(50dvh - 10rem);
         max-width: 149rem;
         max-height: 78rem;
         margin: 0 auto;
