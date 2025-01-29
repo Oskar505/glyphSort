@@ -391,6 +391,9 @@ class GlyphSet {
             this.actualDistance = this.glyphStepsCount * 0.2
         }
 
+        this.actualDistance = Math.round(this.actualDistance)
+
+        console.log(this.actualDistance)
 
         // GET VALUES
         let offset = this.actualDistance / 2
@@ -539,6 +542,7 @@ class GlyphSet {
 
         // 0, 90, 180, 270, all
         let diffsAndErrs = [[], [], [], [], []]
+        let diffsAndAnswerCount = []
 
 
         distances.forEach(distance => {
@@ -565,7 +569,11 @@ class GlyphSet {
             let correctCount = 0
             let count = 0
 
-            allAnswers.filter(item => item.distance == distance).forEach(answer => {
+            let distanceAnswers = allAnswers.filter(item => item.distance == distance)
+
+
+
+            distanceAnswers.forEach(answer => {
                 if (answer.correct) {
                     correctCount++
                 }
@@ -573,9 +581,11 @@ class GlyphSet {
                 count++
             })
 
+            console.log(distance / this.glyphStepsCount * 100)
+
             // diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
             diffsAndErrs[4].push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
-            
+            diffsAndAnswerCount.push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':distanceAnswers.length})
         });
 
 
@@ -605,7 +615,7 @@ class GlyphSet {
         }
 
 
-        return [diffsAndErrs, accuracyAndVal]
+        return [diffsAndErrs, accuracyAndVal, diffsAndAnswerCount]
     }
 
 

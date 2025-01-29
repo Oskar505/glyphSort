@@ -23,7 +23,11 @@
                 </div>
 
                 <div class="chart resultBox">
-                    <bar-chart :datasets="charts[1].datasets" :labels="charts[1].labels" v-if="charts.length > 0"></bar-chart>
+                    <bar-chart :datasets="charts[1].datasets" :labels="charts[1].labels" :annotations="charts[1].annotations" :percentageY="true" v-if="charts.length > 0"></bar-chart>
+                </div>
+
+                <div class="chart resultBox">
+                    <bar-chart :datasets="charts[2].datasets" :labels="charts[2].labels" :annotations="charts[2].annotations" :percentageY="false" v-if="charts.length > 0"></bar-chart>
                 </div>
             </section>
             
@@ -74,6 +78,12 @@
             // re-init glyph sets and get stats
             let chartDatasets2 = []
             let chartLabels2 = []
+            let chartAnnotations2 = []
+
+            let chartDatasets3 = []
+            let chartLabels3 = []
+            let chartAnnotations3 = []
+
 
 
             let x
@@ -126,8 +136,8 @@
                 let rotations = []
 
                 for (let i = 0; i < 5; i++) {
-                    let color = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 1)`
-                    let disabledColor = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 0.7)`
+                    const color = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 1)`
+                    const disabledColor = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 0.7)`
 
 
                     let rotation = i == 4 ? 'All' : i * 90 + '°'
@@ -177,20 +187,72 @@
                 y = chartData[1].map(obj => obj.y)
 
 
+                const color = `hsla(${colorHue[colorIndex]}, 100%, 45%, 1)`
+
+
                 let chartDataset = {
                     label: glyphSetId,
                     data: y,
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    backgroundColor: 'rgba(54, 162, 235, 1)',
+                    borderColor: color,
+                    backgroundColor: color,
                     tension: 0.4
                 }
 
                 
+                let average = y.reduce((a, b) => a + b, 0) / y.length
+
+                let chartAnnotation = {
+                    type: 'line',
+                    yMin: average,
+                    yMax: average,
+                    borderColor: `hsla(${colorHue[colorIndex]}, 100%, 30%, 1)`,
+                    borderWidth: 2,
+                }
+
+                
                 chartDatasets2.push(chartDataset)
+                chartAnnotations2.push(chartAnnotation)
 
 
                 if (x.length > chartLabels2.length) {
                     chartLabels2 = x
+                }
+
+
+
+
+                // DIFFS AND ANSWER COUNT CHART
+                x = chartData[2].map(obj => obj.x)
+                y = chartData[2].map(obj => obj.y)
+
+
+
+                chartDataset = {
+                    label: glyphSetId,
+                    data: y,
+                    borderColor: color,
+                    backgroundColor: color,
+                    tension: 0.4
+                }
+
+                
+                average = y.reduce((a, b) => a + b, 0) / y.length
+
+                chartAnnotation = {
+                    type: 'line',
+                    yMin: average,
+                    yMax: average,
+                    borderColor: `hsla(${colorHue[colorIndex]}, 100%, 30%, 1)`,
+                    borderWidth: 2,
+                }
+
+                
+                chartDatasets3.push(chartDataset)
+                chartAnnotations3.push(chartAnnotation)
+
+
+                if (x.length > chartLabels3.length) {
+                    chartLabels3 = x
                 }
             }
 
@@ -221,7 +283,8 @@
 
             // Push data
             this.charts.push({'datasets': this.chartDatasets, 'labels': this.chartLabels})
-            this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2})
+            this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2, 'annotations': chartAnnotations2})
+            this.charts.push({'datasets': chartDatasets3, 'labels': chartLabels3, 'annotations': chartAnnotations3})
 
 
 
@@ -292,9 +355,7 @@
     .results {
         width: 100%;
         height: 100%;
-        min-height: calc(100dvh - 10rem);
         margin: 0 auto;
-        /* padding-bottom: 5rem; */
         display: flex;
         gap: 3rem;
     }
@@ -327,7 +388,7 @@
         flex-grow: 1;
         position: sticky;
         top: 5rem;
-        width: 15%;
+        width: 20%;
         height: 100%;
     }
 
@@ -370,7 +431,7 @@
         padding: 1.5rem 0.5rem;
         width: 100%;
         height: 100%;
-        min-height: calc(50dvh - 10rem);
+        min-height: calc(75dvh - 10rem);
         max-width: 149rem;
         max-height: 78rem;
         margin: 0 auto;
@@ -421,48 +482,64 @@
 
     /* MEDIA QUERIES */
 
-    @media screen and (max-width: 1500px) {
+    @media screen and (max-width: 1100px) {
+        .setSelection {
+            min-width: 20rem;
+        }
+
+        .chart {
+            padding: 0.2rem 0.5rem;
+        }
+    }
+
+    @media screen and (max-width: 1000px) {
         .results {
             flex-direction: column;
         }
 
         .chart {
-            max-width: none;
-            max-height: none;
+            max-width: 100%;
+            max-height: 100%;
             flex-grow: 1;
+            min-height: calc(100dvh - 25rem);
+            padding: 1rem 0;
         }
 
         .setList {
             flex-direction: row;
             gap: 2.5rem;
+            width: 100%;
+            position: static;
         }
 
         .setSelection {
-            max-width: none;
+            max-width: 42rem;
+            min-width: 20rem;
+            flex: 1;
         }
     }
 
 
-    @media screen and (max-width: 1300px) {
-        .results {
-            min-height: calc(80dvh - 10rem);
+
+    @media screen and (max-width: 800px) {
+        .chart {
+            min-height: calc(70dvh - 25rem);
         }
     }
 
+    @media screen and (max-width: 430px) {
+        .setList {
+            align-items: center;
+        }
 
-    @media screen and (max-width: 1000px) {
-        .results {
-            min-height: calc(60dvh - 10rem);
+        .setSelection {
+            min-width: 40rem;
+            max-width: 10000rem;
         }
 
         .chart {
-            padding: 1rem 0;
-        }
-    }
-
-    @media screen and (max-width: 600px) {
-        .setSelection {
-            width: 100%;
+            height: calc(10dvh - 25rem);
+            min-height: 0;
         }
     }
 </style>

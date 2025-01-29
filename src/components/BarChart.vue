@@ -21,7 +21,9 @@
         props: {
             datasets: Array,
             labels: Array,
-            average: Number
+            annotations: Array,
+            average: Number,
+            percentageY: Boolean
         },
 
         data() {
@@ -33,6 +35,8 @@
                 
                 chartOptions: {
                     responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
                     plugins: {
                         legend: {
                             position: 'bottom',
@@ -45,23 +49,7 @@
                         },
 
                         annotation: {
-                            annotations: {
-                                average: {
-                                    type: 'line',
-                                    yMin: this.average,
-                                    yMax: this.average,
-                                    borderColor: 'black',
-                                    borderWidth: 2,
-                                    label: {
-                                        content: 'Y = 50', // Popis čáry
-                                        enabled: true,
-                                        position: 'center',
-                                        font: {
-                                            size: 12
-                                        }
-                                    }
-                                }
-                            }
+                            annotations: this.annotations
                         },
                     },
                     scales: {
@@ -78,9 +66,9 @@
                             },
 
                             min: 0,
-                            max: 100,
+                            // max: 100,
 
-                            ticks: {
+                            ticks: !this.percentageY ? {} : {
                                 beginAtZero: true,
                                 max: 100,
                                 callback: function (value) {
