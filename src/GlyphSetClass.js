@@ -9,28 +9,30 @@ class GlyphSet {
         this.info = info
         this.glyphs = glyphs
 
-        // ALGORITHM VALUES
-        // right answer - lastDistance * (this.gamma ** this.progressStep)
-        // wrong answer - lastDistance / (this.gamma ** this.regressStep)
-
-        this.gamma = 0.7
-        this.progressStep = 1
-        this.regressStep = 3
-        this.rewardEqual = true
-
-
         this.distance = distance
         this.actualDistance = distance
         this.rotation = false
         this.glyphStepsCount = this.glyphs.length
         this.db = null
         this.answers = []
+        this.distanceSteps = []
+        this.stepIndex = 0
 
         this.rotationClass = 'normalBtnOff'
 
         if (distance == undefined) {
             this.distance = this.glyphStepsCount * 0.2
         }
+
+
+
+        // ALGORITHM VALUES
+        // right answer --> lastDistance * (this.gamma ** this.progressStep)
+        // wrong answer --> lastDistance / (this.gamma ** this.regressStep)
+        this.gamma = 0.7
+        this.progressStep = 1
+        this.regressStep = 3
+        this.rewardEqual = true
 
 
         this.initPromise = null // state of initialization
@@ -67,6 +69,23 @@ class GlyphSet {
 
                     // Create new glyph set
                     if (this.data == null || !this.data) {
+                        // ALGORITHM STEPS
+                        let tempDistance = this.distance
+                        let prevDistance
+
+                        while (tempDistance >= 1) {
+                            // dont push duplicates
+                            prevDistance != tempDistance ? this.distanceSteps.push(tempDistance) : null
+                            
+                            // calculate new distance
+                            prevDistance = tempDistance
+                            tempDistance = Math.floor(tempDistance * this.gamma)
+                        }
+
+                        console.log(this.distanceSteps)
+
+
+
                         // save
                         this.data = {
                             "id": this.id,
@@ -75,6 +94,7 @@ class GlyphSet {
                             "version": this.info.version,
                             "glyphs": this.glyphs,
                             "distance": this.distance,
+                            "distanceSteps": this.distanceSteps,
                             "gamma": this.gamma,
                             "glyphStepsCount": this.glyphStepsCount,
                             "rotation": this.rotation,
@@ -90,6 +110,7 @@ class GlyphSet {
                     else {
                         this.glyphs = this.data.glyphs
                         this.distance = this.data.distance
+                        this.distanceSteps = this.data.distanceSteps
                         this.actualDistance = this.distance
                         this.gamma = this.data.gamma
                         this.glyphStepsCount = this.glyphs.length
@@ -390,6 +411,29 @@ class GlyphSet {
         else if (this.actualDistance > this.glyphStepsCount * 0.2) {
             this.actualDistance = this.glyphStepsCount * 0.2
         }
+
+
+
+
+        // Get new index
+        if (lastCorrect) {
+            this.stepIndex = this.stepIndex + this.progressStep
+        }
+
+        else {
+            this.stepIndex = this.stepIndex - this.regressStep
+        }
+
+
+        this.stepIndex = this.stepIndex < 0 ? 0 : this.stepIndex // is lower than 0
+        this.stepIndex = this.stepIndex > this.distanceSteps.length - 1 ? this.distanceSteps.length - 1 : this.stepIndex // is higher than the length
+        this.stepIndex = lastDistance === undefined ? 0 : this.stepIndex // is first
+        
+        // get new distance
+        this.actualDistance = this.distanceSteps[this.stepIndex]
+        console.log(this.actualDistance)
+
+
 
         this.actualDistance = Math.round(this.actualDistance)
 
