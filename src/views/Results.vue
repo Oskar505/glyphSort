@@ -27,7 +27,7 @@
                 </div>
 
                 <div class="chart resultBox">
-                    <bar-chart :datasets="charts[2].datasets" :labels="charts[2].labels" :annotations="cnharts[2].annotations" :percentageY="false" v-if="charts.length > 0"></bar-chart>
+                    <bar-chart :datasets="charts[2].datasets" :labels="charts[2].labels" :annotations="charts[2].annotations" :percentageY="false" v-if="charts.length > 0"></bar-chart>
                 </div>
             </section>
             
