@@ -23,7 +23,8 @@
             labels: Array,
             annotations: Array,
             average: Number,
-            percentageY: Boolean
+            percentageY: Boolean,
+            titles: Array,
         },
 
         data() {
@@ -56,13 +57,13 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Glyph value'
+                                text: this.titles[0]
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Succes'
+                                text: this.titles[1]
                             },
 
                             min: 0,

@@ -256,6 +256,7 @@ label {
 
 #fileName {
     color: var(--header);
+    font-size: 3rem;
 }
 
 

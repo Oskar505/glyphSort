@@ -23,11 +23,11 @@
                 </div>
 
                 <div class="chart resultBox">
-                    <bar-chart :datasets="charts[1].datasets" :labels="charts[1].labels" :annotations="charts[1].annotations" :percentageY="true" v-if="charts.length > 0"></bar-chart>
+                    <bar-chart :datasets="charts[1].datasets" :labels="charts[1].labels" :annotations="charts[1].annotations" :percentageY="true" :titles="['Glyph value', 'Success']" v-if="charts.length > 0"></bar-chart>
                 </div>
 
                 <div class="chart resultBox">
-                    <bar-chart :datasets="charts[2].datasets" :labels="charts[2].labels" :annotations="charts[2].annotations" :percentageY="false" v-if="charts.length > 0"></bar-chart>
+                    <bar-chart :datasets="charts[2].datasets" :labels="charts[2].labels" :annotations="charts[2].annotations" :percentageY="false" :titles="['Difference', 'Answer count']" v-if="charts.length > 0"></bar-chart>
                 </div>
             </section>
             
@@ -278,13 +278,54 @@
                 }
             })
 
-            this.chartLabels = lowestLabel
+
+            // GET IDEAL X LABEL - for standard lengths - 100, 1000, 10000
+            let prevDistance
+            let idealLabel = []
+            let gamma = this.glyphSets[0].gamma
+
+            let tempDistance
+            let setLength
+
+
+            // get right starting distance
+            this.glyphSets.forEach(set => {
+                if (isPowerOfTwenty(set.distance)) {
+                    tempDistance = set.distance
+                    setLength = set.glyphs.length
+                }
+            })
+
+
+            // if standard distance wasnt found, use first
+            if (tempDistance == undefined) {
+                tempDistance = this.glyphSets[0].distance
+            }
+
+            if (setLength == undefined) {
+                setLength = this.glyphSets[0].glyphs.length
+            }
+
+
+
+            for (let i = 0; i < lowestLabel.length; i++) {
+                // dont push duplicates
+                prevDistance != tempDistance ? idealLabel.push((tempDistance / (setLength / 100)).toFixed(2)) : null
+                
+                // calculate new distance
+                prevDistance = tempDistance
+                tempDistance = Math.floor(tempDistance * gamma)
+            }
+
+            idealLabel = idealLabel.reverse()
+
+
 
 
             // Push data
-            this.charts.push({'datasets': this.chartDatasets, 'labels': this.chartLabels})
+            this.charts.push({'datasets': this.chartDatasets, 'labels': idealLabel})
             this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2, 'annotations': chartAnnotations2})
-            this.charts.push({'datasets': chartDatasets3, 'labels': chartLabels3, 'annotations': chartAnnotations3})
+            this.charts.push({'datasets': chartDatasets3, 'labels': idealLabel, 'annotations': chartAnnotations3})
 
 
 
@@ -331,6 +372,14 @@
                 })
             }
         }
+    }
+
+
+
+    function isPowerOfTwenty(num) {
+        if (num < 20 || num % 20 !== 0) return false;
+        let divided = num / 2;
+        return Number.isInteger(Math.log10(divided));
     }
 </script>
 

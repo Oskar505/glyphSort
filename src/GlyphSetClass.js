@@ -32,7 +32,7 @@ class GlyphSet {
         this.gamma = 0.7
         this.progressStep = 1
         this.regressStep = 3
-        this.rewardEqual = true
+        this.rewardEqual = false
 
 
         this.initPromise = null // state of initialization
@@ -81,8 +81,6 @@ class GlyphSet {
                             prevDistance = tempDistance
                             tempDistance = Math.floor(tempDistance * this.gamma)
                         }
-
-                        console.log(this.distanceSteps)
 
 
 
