@@ -7,12 +7,17 @@
         <section v-show="glyphSets.length > 0" style="width: 100%;" class="results">
             <div class="setList">
                 <div class="setSelection resultBox" v-for="(glyphSet, index) in glyphSets" @click="toggleCurve(charts[0].datasets.filter(dataset => dataset.setId == glyphSet.id).map(dataset => dataset.label))" :key="glyphSet.id">
-                    <h2 class="setHeader">{{ glyphSet.id.charAt(0).toUpperCase() + glyphSet.id.slice(1) }}</h2>
-                    <div class="legend">
-                        <div class="curve" v-for="(rotation, curveIndex) in charts[0].datasets.filter(dataset => dataset.setId == glyphSet.id)" :class="rotation.disabled ? '' : 'curveEnabled'" @click.stop="toggleCurve([rotation.label])" v-if="charts[0] && charts.length">
-                            <div class="colorCircle" :style="'background-color: ' + (rotation.disabled ? rotation.disabledColor : rotation.backgroundColor)"></div> {{ rotation.rotation }}
+                    <div>
+                        <h2 class="setHeader">{{ glyphSet.id.charAt(0).toUpperCase() + glyphSet.id.slice(1) }}</h2>
+                        <div class="legend">
+                            <div class="curve" v-for="(rotation, curveIndex) in charts[0].datasets.filter(dataset => dataset.setId == glyphSet.id)" :class="rotation.disabled ? '' : 'curveEnabled'" @click.stop="toggleCurve([rotation.label])" v-if="charts[0] && charts.length">
+                                <div class="colorCircle" :style="'background-color: ' + (rotation.disabled ? rotation.disabledColor : rotation.backgroundColor)"></div> {{ rotation.rotation }}
+                            </div>
                         </div>
                     </div>
+                    
+
+                    <glyph-set-info :glyphSet="glyphSet"></glyph-set-info>
                 </div>
             </div>
             
@@ -44,8 +49,7 @@
 
 
 <script>
-    import Annotation from 'chartjs-plugin-annotation'
-import GlyphSet from '../GlyphSetClass.js'
+    import GlyphSet from '../GlyphSetClass.js'
     import { toRaw } from 'vue'
 
 
@@ -499,9 +503,9 @@ import GlyphSet from '../GlyphSetClass.js'
     }
 
     .setSelection {
-        display: flex;
+        display: flex;     
         flex-direction: column;
-        gap: 1rem;
+        justify-content: space-between;
         padding: 0.5rem 1rem;
         cursor: pointer;
         max-width: 30rem;
@@ -549,8 +553,7 @@ import GlyphSet from '../GlyphSetClass.js'
         display: flex;
         flex-direction: row;
         gap: 1rem;
-        margin-bottom: 1rem;
-        margin-left: 0.5rem;
+        margin: 1rem 0 1.2rem 0.5rem;
         flex-wrap: wrap;
     }
 

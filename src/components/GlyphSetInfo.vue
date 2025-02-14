@@ -1,5 +1,5 @@
 <template>
-    <div class="infoWrapper" v-if="glyphSet" :style="live ? 'gap: 20px' : 'gap: 15px'">
+    <div class="infoWrapper" v-if="glyphSet">
         <div class="infoBox" title="Number of sorted glyphs">
             <p class="data">{{ glyphSet.sortedCount }}</p>
             <p class="label">Count</p>
@@ -14,17 +14,6 @@
             <p class="data">{{ glyphSet.successRate }}%</p>
             <p class="label">Success</p>
         </div>
-
-        <div class="infoBox" title="Difference between glyph values (0 - 100)" v-if="live">
-            <p class="data">{{ difference }}</p>
-            <p class="label">Difference</p>
-        </div>
-
-
-        <div class="infoBox" title="The lowest difference between glyph values (0 - 100)" v-if="!live">
-            <p class="data">{{ difference }}</p>
-            <p class="label">Difference</p>
-        </div>
     </div>
 </template>
 
@@ -34,8 +23,7 @@ import { nextTick } from 'vue';
 
 export default {
     props: {
-        glyphSet: Object,
-        live: Boolean
+        glyphSet: Object
     },
     
     data() {
@@ -77,7 +65,7 @@ export default {
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 0.8rem;
         width: 100%;
     }
 
@@ -87,23 +75,23 @@ export default {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 4px;
+        gap: 0.1rem;
         flex: 1;
-        border: 2px solid var(--text);
-        border-radius: 15px;
-        padding: 8px;
+        border: 0.2rem solid var(--border2);
+        border-radius: 1.5rem;
+        padding: 0.4rem;
         cursor: help;
         background-color: var(--element-bg);
     }
 
     .infoBox .data {
-        font-size: 28px;
-        color: var(--text);
+        font-size: 2.2rem;
+        color: var(--text2);
         font-weight: 500;
     }
 
     .infoBox .label {
-        font-size: 19px;
-        color: var(--text2);
+        font-size: 1.8rem;
+        color: var(--text3);
     }
 </style>
