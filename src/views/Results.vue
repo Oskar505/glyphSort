@@ -23,11 +23,11 @@
                 </div>
 
                 <div class="chart resultBox">
-                    <bar-chart :datasets="charts[1].datasets" :labels="charts[1].labels" :annotations="charts[1].annotations" :percentageY="true" :titles="['Glyph value', 'Success']" v-if="charts.length > 0"></bar-chart>
+                    <bar-chart :datasets="charts[1].datasets.filter(dataset => !dataset.disabled)" :labels="charts[1].labels" :annotations="charts[1].annotations.filter(dataset => !dataset.disabled)" :percentageY="true" :titles="['Glyph value', 'Success']" v-if="charts.length > 0" :key="lineChartKey"></bar-chart>
                 </div>
 
                 <div class="chart resultBox">
-                    <bar-chart :datasets="charts[2].datasets" :labels="charts[2].labels" :annotations="charts[2].annotations" :percentageY="false" :titles="['Difference', 'Answer count']" v-if="charts.length > 0"></bar-chart>
+                    <bar-chart :datasets="charts[2].datasets.filter(dataset => !dataset.disabled)" :labels="charts[2].labels" :annotations="charts[2].annotations.filter(dataset => !dataset.disabled)" :percentageY="false" :titles="['Difference', 'Answer count']" v-if="charts.length > 0" :key="lineChartKey"></bar-chart>
                 </div>
             </section>
             
@@ -44,7 +44,8 @@
 
 
 <script>
-    import GlyphSet from '../GlyphSetClass.js'
+    import Annotation from 'chartjs-plugin-annotation'
+import GlyphSet from '../GlyphSetClass.js'
     import { toRaw } from 'vue'
 
 
@@ -135,6 +136,8 @@
                 x = chartData[0][0].map(obj => obj.x)
                 let rotations = []
 
+
+                // all 5 curves for 1 set
                 for (let i = 0; i < 5; i++) {
                     const color = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 1)`
                     const disabledColor = `hsla(${colorHue[colorIndex]}, ${colorSaturation[i]}%,${colorLightness[i]}%, 0.7)`
@@ -146,6 +149,7 @@
                     y = y.map(value => isNaN(value) ? null : value)
 
 
+                    // set with rotations
                     if ((i != 4 && !y.every(value => value === null)) || (i == 4 && rotations.length != 1)) {
                         let chartDataset = {
                             setId: glyphSetId,
@@ -187,7 +191,7 @@
                 y = chartData[1].map(obj => obj.y)
 
 
-                const color = `hsla(${colorHue[colorIndex]}, 100%, 45%, 1)`
+                const color = `hsla(${colorHue[colorIndex]}, 95%, 55%, 1)`
 
 
                 let chartDataset = {
@@ -195,18 +199,22 @@
                     data: y,
                     borderColor: color,
                     backgroundColor: color,
-                    tension: 0.4
+                    tension: 0.4,
+                    disabled: !glyphSetIds.includes(glyphSetId)
                 }
 
                 
                 let average = y.reduce((a, b) => a + b, 0) / y.length
+                average = isNaN(average) ? 0 : average
 
                 let chartAnnotation = {
+                    setId: glyphSetId,
                     type: 'line',
                     yMin: average,
                     yMax: average,
                     borderColor: `hsla(${colorHue[colorIndex]}, 100%, 30%, 1)`,
                     borderWidth: 2,
+                    disabled: !glyphSetIds.includes(glyphSetId)
                 }
 
                 
@@ -232,18 +240,22 @@
                     data: y,
                     borderColor: color,
                     backgroundColor: color,
-                    tension: 0.4
+                    tension: 0.4,
+                    disabled: !glyphSetIds.includes(glyphSetId)
                 }
 
                 
                 average = y.reduce((a, b) => a + b, 0) / y.length
+                average = isNaN(average) ? 0 : average
 
                 chartAnnotation = {
+                    setId: glyphSetId,
                     type: 'line',
                     yMin: average,
                     yMax: average,
                     borderColor: `hsla(${colorHue[colorIndex]}, 100%, 30%, 1)`,
                     borderWidth: 2,
+                    disabled: !glyphSetIds.includes(glyphSetId)
                 }
 
                 
@@ -358,6 +370,13 @@
 
         methods: {
             toggleCurve(labels) {
+                console.log(labels)
+                console.log(this.charts[0].datasets)
+                console.log(this.charts[0].datasets.filter(dataset => dataset.label == labels[0])[0].disabled)
+
+
+
+                // Toggle curves in the first chart
                 let disabled = labels.every(label => !this.charts[0].datasets.filter(dataset => dataset.label == label)[0].disabled)
 
                 labels.forEach(label => {
@@ -369,6 +388,44 @@
                     this.$nextTick(() => {
                         this.lineChartKey++
                     })
+                })
+
+
+
+                // Toggle curves in the other charts
+                // is the whole set disabled
+                let setId = this.charts[0].datasets.filter(dataset => dataset.label == labels[0])[0].setId
+
+                let filteredDatasets = this.charts[0].datasets.filter(dataset => dataset.setId == setId)
+                let wholeSetDisabled = filteredDatasets.every(dataset => dataset.disabled)
+
+                console.log(this.charts[1].datasets.filter(dataset => dataset.label == setId)[0])
+
+
+                // toggle curves in the other charts
+                if (wholeSetDisabled) {
+                    this.charts[1].datasets.filter(dataset => dataset.label == setId)[0].disabled = true
+                    this.charts[2].datasets.filter(dataset => dataset.label == setId)[0].disabled = true
+
+                    this.charts[1].annotations.filter(annotation => annotation.setId == setId)[0].disabled = true
+                    this.charts[2].annotations.filter(annotation => annotation.setId == setId)[0].disabled = true
+                }
+
+                else if (!wholeSetDisabled) {
+                    this.charts[1].datasets.filter(dataset => dataset.label == setId)[0].disabled = false
+                    this.charts[2].datasets.filter(dataset => dataset.label == setId)[0].disabled = false
+
+                    this.charts[1].annotations.filter(annotation => annotation.setId == setId)[0].disabled = false
+                    this.charts[2].annotations.filter(annotation => annotation.setId == setId)[0].disabled = false
+                }
+
+
+                // Force update
+                this.charts[1].datasets = [...this.charts[1].datasets];
+                this.charts[2].datasets = [...this.charts[2].datasets];
+
+                this.$nextTick(() => {
+                    this.lineChartKey++
                 })
             }
         }

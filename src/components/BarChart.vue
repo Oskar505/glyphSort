@@ -43,7 +43,9 @@
                             position: 'bottom',
                             labels: {
                                 usePointStyle: true,
-                            }
+                            },
+
+                            display: false,
                         },
                         tooltip: {
                             enabled: true

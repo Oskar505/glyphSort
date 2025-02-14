@@ -389,38 +389,54 @@ class GlyphSet {
         // if last response was correct, decrease distance, otherwise increase distance
 
         // dont reward equal
-        if (!this.rewardEqual && lastValsEqual && lastDistance != undefined) {
-            this.actualDistance = lastCorrect ? lastDistance : lastDistance / (this.gamma ** this.regressStep);
-        }
+        // if (!this.rewardEqual && lastValsEqual && lastDistance != undefined) {
+        //     this.actualDistance = lastCorrect ? lastDistance : lastDistance / (this.gamma ** this.regressStep);
+        // }
 
-        // reward equal (normal)
-        else if (lastDistance != undefined) {
-            this.actualDistance = lastCorrect ? lastDistance * (this.gamma ** this.progressStep) : lastDistance / (this.gamma ** this.regressStep);
-        }
+        // // reward equal (normal)
+        // else if (lastDistance != undefined) {
+        //     this.actualDistance = lastCorrect ? lastDistance * (this.gamma ** this.progressStep) : lastDistance / (this.gamma ** this.regressStep);
+        // }
 
 
-        // Control distance
-        // if distance is too small, start over
-        if (this.actualDistance < 1) {
-            this.actualDistance = 20
-        }
+        // // Control distance
+        // // if distance is too small, start over
+        // if (this.actualDistance < 1) {
+        //     this.actualDistance = 20
+        // }
 
-        // distance cannot be higher than the starting distance
-        else if (this.actualDistance > this.glyphStepsCount * 0.2) {
-            this.actualDistance = this.glyphStepsCount * 0.2
-        }
+        // // distance cannot be higher than the starting distance
+        // else if (this.actualDistance > this.glyphStepsCount * 0.2) {
+        //     this.actualDistance = this.glyphStepsCount * 0.2
+        // }
 
 
 
 
         // Get new index
-        if (lastCorrect) {
-            this.stepIndex = this.stepIndex + this.progressStep
+        if (!this.rewardEqual && lastValsEqual && lastDistance != undefined) {
+            if (lastCorrect) {
+                this.stepIndex = this.stepIndex
+            }
+    
+            else {
+                this.stepIndex = this.stepIndex - this.regressStep
+            }
         }
 
-        else {
-            this.stepIndex = this.stepIndex - this.regressStep
+
+        else if (lastDistance != undefined) {
+            if (lastCorrect) {
+                this.stepIndex = this.stepIndex + this.progressStep
+            }
+    
+            else {
+                this.stepIndex = this.stepIndex - this.regressStep
+            }
         }
+
+
+        
 
 
         this.stepIndex = this.stepIndex < 0 ? 0 : this.stepIndex // is lower than 0
