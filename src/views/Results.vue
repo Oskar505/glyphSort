@@ -529,7 +529,7 @@
 
     .charts {
         width: 100%;
-        min-height: 100dvh;
+        min-height: 100lvh;
         display: flex;
         flex-direction: column;
         gap: 4rem;
@@ -541,7 +541,7 @@
         padding: 1.5rem 0.5rem;
         width: 100%;
         height: 100%;
-        min-height: calc(75dvh - 10rem);
+        min-height: calc(75lvh - 10rem);
         max-width: 149rem;
         max-height: 78rem;
         margin: 0 auto;
@@ -610,7 +610,7 @@
             max-width: 100%;
             max-height: 100%;
             flex-grow: 1;
-            min-height: calc(100dvh - 25rem);
+            min-height: calc(100lvh - 25rem);
             padding: 1rem 0;
         }
 
@@ -632,7 +632,7 @@
 
     @media screen and (max-width: 800px) {
         .chart {
-            min-height: calc(70dvh - 25rem);
+            min-height: calc(70lvh - 25rem);
         }
     }
 
@@ -647,7 +647,7 @@
         }
 
         .chart {
-            height: calc(10dvh - 25rem);
+            height: calc(10lvh - 25rem);
             min-height: 0;
         }
     }

@@ -232,12 +232,11 @@ label {
 
 
 #filePreview {
-    width: 100rem;
+    width: clamp(20rem, 80%, 100rem);
     height: 50rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: top;
     flex-wrap: wrap;
     gap: 5rem;
     border-radius: 1.5rem;
@@ -249,7 +248,7 @@ label {
     /* position: relative; */
     position: absolute;
     left: 50%;
-    top: 9%;
+    top: 10%;
     transform: translateX(-50%);
 }
 
@@ -301,6 +300,7 @@ h2 {
     padding: 0.3em 0.7em;
     margin-bottom: 1.5rem;
     transition: 0.3s ease;
+    user-select: none;
 }
 
 

@@ -47,8 +47,6 @@
 
 <style scoped>
     div {
-        width: 1in;
-        height: 1in;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -58,7 +56,6 @@
     div img {
         width: 1in;
         height: 1in;
-        /* border: 3px solid black; */
     }
 
 

@@ -82,18 +82,22 @@
         <div class="cardCalibrationWrapper settingsWrapper">
             <div class="instructions">
                 <h2>Calibration</h2>
-                <p><span class="strong">Adjust this rectangle to match your credit card.</span class="strong"> <br> If you don't have a credit card, use a ruler to measure the width. It should be 8.56cm wide.</p>
+                <p><span class="strong">Adjust this rectangle to match your credit card.</span class="strong"> <br> If you don't have a credit card, use a ruler to measure the 1 inch square (2.54 cm).</p>
             </div>
 
             <div class="cardContainer">
                 <div class="card" :style="{width: `${cardWidth}px`, height: `${cardHeight}px`}">
-                    <p>{{ cardWidth.toFixed(0) }}px</p>
+                    <div class="inch" :style="{width: `${dpi}px`, height: `${dpi}px`}">
+                        <p>1 inch</p>
+                    </div>
+                    <p class="cardWidth">{{ cardWidth.toFixed(0) }}px</p>
                 </div>
             </div>
 
             <div class="userInput">
-                <input type="range" id="slider" min="50" max="500" :value=cardWidth @input="adjustWidth()">
-                <button id="confirmBtn" @click="calculateDPI()">Confirm</button>
+                <input type="range" id="slider" min="200" max="1800" step="10" :value=cardWidth @input="adjustWidth()">
+                <p class="dpiNum">DPI: {{ dpi }}</p>
+                <!-- <button id="confirmBtn" @click="calculateDPI()">Confirm</button> -->
             </div>
         </div>
     </main>
@@ -116,7 +120,7 @@
 
 
         mounted() {
-            this.dpi = parseFloat(this.$getCookie('dpi'))
+            this.dpi = parseFloat(this.$getCookie('dpi')).toFixed(0)
 
             if (this.dpi) {
                 this.cardWidth = 3.375 * this.dpi
@@ -160,20 +164,26 @@
 
                 this.cardWidth = width
                 this.cardHeight = width / 1.58577
+
+                this.calculateDPI()
             },
 
 
-            calculateDPI() {
+            calculateDPI(saveCookie=true) {
                 const pixelWidth = parseInt(this.cardWidth, 10); // digital widt in px
                 const cardWidthCm = 8.56; // real width in cm
 
                 // calculate DPI
-                const dpi = pixelWidth / (cardWidthCm / 2.54);
+                const dpi = (pixelWidth / (cardWidthCm / 2.54)).toFixed(0);
+                this.dpi = dpi
+
+                console.log(dpi)
                 
                 // save cokie
-                document.cookie = `dpi=${dpi}; path=/; max-age=31536000; SameSite=Strict`;
-
-                this.$router.push({path:'/'})
+                if (saveCookie) {
+                    document.cookie = `dpi=${dpi}; path=/; max-age=31536000; SameSite=Strict`;
+                }
+                
             },
 
 
@@ -343,8 +353,9 @@
 
 
     .cardContainer {
-        width: 50.1rem;
-        height: 31.7rem;
+        width: 100%;
+        height: 380px;
+        overflow: hidden;
         margin: 2rem 0;
         display: flex;
         align-items: center;
@@ -357,12 +368,25 @@
         padding-bottom: 0.5rem;
         background-color: #888;
         display: flex;
-        align-items: flex-end;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
         font-size: 1.4rem;
+        position: relative;
     }
 
-    .card p {
+    .cardWidth {
+        color: var(--page-bg);
+        position: absolute;
+        bottom: 2%;
+    }
+
+    .inch {
+        border: 0.2rem solid var(--text);
+        width: 1in;
+        height: 1in;
+        text-align: center;
+        align-content: center;
         color: var(--page-bg);
     }
 
@@ -372,7 +396,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 2rem;
+        /* gap: 2rem; */
     }
 
     #slider {
@@ -382,6 +406,12 @@
 
     #slide[type='range'] {
         color: var(--enabled);
+    }
+
+    .dpiNum {
+        color: var(--text);
+        font-size: 1.7rem;
+        margin-top: 1rem;
     }
 
 

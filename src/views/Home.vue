@@ -275,6 +275,7 @@
         display: grid;
         gap: 3rem;
         justify-items: center;
+        justify-content: center;
         grid-template-columns: repeat(3, 1fr);
         grid-template-columns: repeat(auto-fit, minmax(45.5rem, 1fr));
     }
@@ -282,11 +283,12 @@
     .smallSavedSetsWrapper {
         grid-template-columns: repeat(auto-fit, 1fr);
         max-width: 112rem;
+        width: 100%;
     }
 
     .setPreviewWrapper {
         width: 100%;
-        width: clamp(43rem, 100%, 52rem);
+        width: clamp(30rem, 100%, 52rem);
         max-width: 55rem;
         border-radius: 1.5rem;
         background-color: var(--element-bg);
