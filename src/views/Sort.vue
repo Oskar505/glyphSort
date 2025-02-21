@@ -101,6 +101,8 @@
 
                 log: [],
                 showLog: false,
+
+                newGlyphTimestamp: 0,
             }
         },
 
@@ -149,9 +151,11 @@
 
                 let pickedSet = glyphSets[this.pickedSet]
 
-
                 this.img1 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
                 this.img2 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
+
+
+                this.newGlyphTimestamp = Date.now()
 
                 // get stats
                 glyphSets[0].getStats()
@@ -172,7 +176,7 @@
         methods: {
             checkAnswer(buttonId, glyphSet, inverted) {
                 let correct = false
-                let logBtnId = buttonId
+                let logBtnId
                 let equalValues = this.val1 == this.val2
 
 
@@ -185,7 +189,7 @@
                         this.btn0Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
 
-                        logBtnId = 2
+                        logBtnId = "<"
                     }
 
                     else if (buttonId == 1) {
@@ -195,7 +199,7 @@
                         this.btn1Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
 
-                        logBtnId = 1
+                        logBtnId = "="
                     }
 
                     else if (buttonId == 2) {
@@ -205,7 +209,7 @@
                         this.btn2Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
 
-                        logBtnId = 0
+                        logBtnId = ">"
                     }
                 }
 
@@ -217,6 +221,8 @@
                         // show neutral feedback
                         this.btn0Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
+
+                        logBtnId = ">"
                     }
 
                     else if (buttonId == 1) {
@@ -225,6 +231,8 @@
                         // show neutral feedback
                         this.btn1Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
+
+                        logBtnId = "="
                     }
 
                     else if (buttonId == 2) {
@@ -233,22 +241,25 @@
                         // show neutral feedback
                         this.btn2Feedback = "neutralBtn"
                         this.borderFeedback = "neutralBorder"
+                        logBtnId = "<"
                     }
                 }
                 
-
+                console.log(glyphSet.actualDistance)
 
                 // Save new answer
-                // TODO: add rotation val 2
                 let answerData = {
-                    "val1": this.val1,
-                    "val2": this.val2,
+                    "setId": glyphSet.id,
+                    "setVersion": glyphSet.version,
+                    "val1": parseFloat((this.val1 / glyphSet.glyphStepsCount * 100).toFixed(2)),
+                    "val2": parseFloat((this.val2 / glyphSet.glyphStepsCount * 100).toFixed(2)),
                     "btnId": logBtnId,
                     "correct": correct,
-                    'distance': glyphSet.actualDistance,
-                    "time": Date.now(),
+                    'distance': parseFloat((glyphSet.actualDistance / glyphSet.glyphStepsCount * 100).toFixed(2)),
+                    "time": Date.now() - this.newGlyphTimestamp,
                     "rotation": this.rotation,
-                    "rotationValue1": this.rotationValue1
+                    "rotationValue1": this.rotationValue1,
+                    "rotationValue2": this.rotationValue2
                 }
 
                 glyphSet.addAnswer(answerData)
@@ -307,6 +318,9 @@
 
                     this.img1 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val1])
                     this.img2 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val2])
+
+
+                    this.newGlyphTimestamp = Date.now()
 
                     this.animationClass = ''
                 }, 500);

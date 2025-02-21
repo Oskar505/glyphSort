@@ -227,7 +227,10 @@ class GlyphSet {
     async downloadAnswers() {
         await this.getData()
 
-        const dataString = JSON.stringify(this.data.answers, null, 2)
+        let data = this.data
+        delete data.glyphs
+
+        const dataString = JSON.stringify(data, null, 2)
         const blob = new Blob([dataString], { type: 'application/json' })
         const url = URL.createObjectURL(blob)
 
@@ -528,34 +531,39 @@ class GlyphSet {
 
         // time per sort and session time
         try {
-            this.sessionTime = allAnswers[allAnswers.length - 1].time - allAnswers[0].time
-            this.sortTime = ((this.sessionTime / allAnswers.length) / 1000).toFixed(2)
+            this.sessionTime = 0
+
+            this.sortTime = parseFloat((this.answers.reduce((sum, obj) => sum + obj.time, 0) / this.answers.length / 1000).toFixed(2))
+
+
+            // this.sessionTime = allAnswers[allAnswers.length - 1].time - allAnswers[0].time
+            // this.sortTime = ((this.sessionTime / allAnswers.length) / 1000).toFixed(2)
 
             
 
-            if (this.sortTime > 7) {
-                let lastTime = 0
+            // if (this.sortTime > 7) {
+            //     let lastTime = 0
 
-                allAnswers.forEach(element => {
-                    if (lastTime == 0) {
-                        lastTime = element.time
-                    }
+            //     allAnswers.forEach(element => {
+            //         if (lastTime == 0) {
+            //             lastTime = element.time
+            //         }
 
-                    let timeDiff = element.time - lastTime
+            //         let timeDiff = element.time - lastTime
 
-                    if (timeDiff > 7000) {
-                        this.sessionTime = this.sessionTime - timeDiff
-                    }
+            //         if (timeDiff > 7000) {
+            //             this.sessionTime = this.sessionTime - timeDiff
+            //         }
 
-                    lastTime = element.time
-                });
-
-
-            }
+            //         lastTime = element.time
+            //     });
 
 
-            this.sortTime = ((this.sessionTime / allAnswers.length) / 1000).toFixed(2)
-            this.sessionTime = ((this.sessionTime / 1000)).toFixed(2)
+            // }
+
+
+            // this.sortTime = ((this.sessionTime / allAnswers.length) / 1000).toFixed(2)
+            // this.sessionTime = ((this.sessionTime / 1000)).toFixed(2)
         }
 
         catch (error) {
