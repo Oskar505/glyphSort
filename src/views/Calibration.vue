@@ -228,7 +228,21 @@
                     data.forEach(glyphSet => {
                         glyphSet.glyphs = []
                     });
-                } 
+                }
+
+                // convert distance steps and distance
+                data.forEach(glyphSet => {
+                    let newDistanceSteps = []
+
+                    glyphSet.distanceSteps.forEach(step => {
+                        newDistanceSteps.push(parseFloat((step / glyphSet.glyphStepsCount * 100).toFixed(2)))
+                    })
+
+                    glyphSet.distanceSteps = newDistanceSteps
+
+                    // distance
+                    glyphSet.distance = parseFloat((glyphSet.distance / glyphSet.glyphStepsCount * 100).toFixed(2))
+                })
 
 
                 const jsonString = JSON.stringify(data, null, 4)

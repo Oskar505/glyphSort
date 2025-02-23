@@ -534,36 +534,6 @@ class GlyphSet {
             this.sessionTime = 0
 
             this.sortTime = parseFloat((this.answers.reduce((sum, obj) => sum + obj.time, 0) / this.answers.length / 1000).toFixed(2))
-
-
-            // this.sessionTime = allAnswers[allAnswers.length - 1].time - allAnswers[0].time
-            // this.sortTime = ((this.sessionTime / allAnswers.length) / 1000).toFixed(2)
-
-            
-
-            // if (this.sortTime > 7) {
-            //     let lastTime = 0
-
-            //     allAnswers.forEach(element => {
-            //         if (lastTime == 0) {
-            //             lastTime = element.time
-            //         }
-
-            //         let timeDiff = element.time - lastTime
-
-            //         if (timeDiff > 7000) {
-            //             this.sessionTime = this.sessionTime - timeDiff
-            //         }
-
-            //         lastTime = element.time
-            //     });
-
-
-            // }
-
-
-            // this.sortTime = ((this.sessionTime / allAnswers.length) / 1000).toFixed(2)
-            // this.sessionTime = ((this.sessionTime / 1000)).toFixed(2)
         }
 
         catch (error) {

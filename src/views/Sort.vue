@@ -249,8 +249,6 @@
 
                 // Save new answer
                 let answerData = {
-                    "setId": glyphSet.id,
-                    "setVersion": glyphSet.version,
                     "val1": parseFloat((this.val1 / glyphSet.glyphStepsCount * 100).toFixed(2)),
                     "val2": parseFloat((this.val2 / glyphSet.glyphStepsCount * 100).toFixed(2)),
                     "btnId": logBtnId,
