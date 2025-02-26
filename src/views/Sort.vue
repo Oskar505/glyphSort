@@ -247,6 +247,8 @@
                 
                 console.log(glyphSet.actualDistance)
 
+                
+
                 // Save new answer
                 let answerData = {
                     "val1": parseFloat((this.val1 / glyphSet.glyphStepsCount * 100).toFixed(2)),
@@ -259,6 +261,11 @@
                     "rotationValue1": this.rotationValue1,
                     "rotationValue2": this.rotationValue2
                 }
+
+                console.log(this.val1, parseFloat((this.val1 / glyphSet.glyphStepsCount * 100).toFixed(2)), parseFloat((this.val1 / glyphSet.glyphStepsCount * 100)))
+                console.log(glyphSet.glyphStepsCount)
+                console.log(answerData)
+
 
                 glyphSet.addAnswer(answerData)
 

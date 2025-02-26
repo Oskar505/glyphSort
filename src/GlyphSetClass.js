@@ -452,7 +452,7 @@ class GlyphSet {
 
 
 
-        this.actualDistance = Math.round(this.actualDistance)
+        // this.actualDistance = Math.round(this.actualDistance)
 
         console.log(this.actualDistance)
 
@@ -629,10 +629,12 @@ class GlyphSet {
         // Glyph accuracy and value chart
         
         let accuracyAndVal = []
-        let valueGroup = (this.glyphStepsCount / 10)
+        let valueGroup = 10
         
         for (let i = 0; i < this.glyphStepsCount / valueGroup; i++) {
             let answerGroup = allAnswers.filter(answer => (answer.val1 + answer.val2) / 2 > valueGroup * i && (answer.val1 + answer.val2) / 2 <= valueGroup * (i + 1))
+
+            console.log(answerGroup)
 
             let correctCount = 0
 
@@ -642,10 +644,13 @@ class GlyphSet {
                 }
             })
 
+            
 
             let accuracy = Math.round((correctCount / answerGroup.length) * 100)
             accuracy = accuracy == 0 ? 1 : accuracy
             accuracy = isNaN(accuracy) || accuracy == null ? 0 : accuracy
+
+            console.log(accuracy)
 
             accuracyAndVal.push({'x': ((valueGroup * i) / this.glyphStepsCount) * 100, 'y':accuracy})
         }
