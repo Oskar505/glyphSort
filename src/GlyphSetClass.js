@@ -4,7 +4,7 @@ import { logMessage } from './views/Sort.vue'
 
 
 class GlyphSet {
-    constructor(id, glyphs=[], info={}, distance=undefined) {
+    constructor(id, glyphs=[], info={}, distance=20) {
         this.id = id
         this.info = info
         this.glyphs = glyphs
@@ -20,9 +20,6 @@ class GlyphSet {
 
         this.rotationClass = 'normalBtnOff'
 
-        if (distance == undefined) {
-            this.distance = this.glyphStepsCount * 0.2
-        }
 
 
 
@@ -69,20 +66,26 @@ class GlyphSet {
 
                     // Create new glyph set
                     if (this.data == null || !this.data) {
-                        // ALGORITHM STEPS
+                        // ALGORITHM STEPS - get all possible steps for the set resolution - round only control value, save float
                         let tempDistance = this.distance
                         let prevDistance
+                        let digits = this.glyphStepsCount === 0 ? 1 : Math.floor(Math.log10(Math.abs(this.glyphStepsCount - 1))) + 1
+                        let control = 20
+                        let controls = []
 
-                        while (tempDistance >= 1) {
+                        while (control >= 1) {
                             // dont push duplicates
-                            prevDistance != tempDistance ? this.distanceSteps.push(tempDistance) : null
+                            prevDistance != control ? this.distanceSteps.push(tempDistance) : null
+                            prevDistance != control ? controls.push(control) : null
                             
                             // calculate new distance
-                            prevDistance = tempDistance
-                            tempDistance = Math.floor(tempDistance * this.gamma)
+                            prevDistance = control
+                            tempDistance = tempDistance * this.gamma
+                            control = Math.round(tempDistance / 100 * this.glyphStepsCount)
                         }
 
-
+                        console.log(this.distanceSteps)
+                        console.log(controls)
 
                         // save
                         this.data = {
@@ -389,32 +392,6 @@ class GlyphSet {
 
 
         // GET DISTANCE
-        // if last response was correct, decrease distance, otherwise increase distance
-
-        // dont reward equal
-        // if (!this.rewardEqual && lastValsEqual && lastDistance != undefined) {
-        //     this.actualDistance = lastCorrect ? lastDistance : lastDistance / (this.gamma ** this.regressStep);
-        // }
-
-        // // reward equal (normal)
-        // else if (lastDistance != undefined) {
-        //     this.actualDistance = lastCorrect ? lastDistance * (this.gamma ** this.progressStep) : lastDistance / (this.gamma ** this.regressStep);
-        // }
-
-
-        // // Control distance
-        // // if distance is too small, start over
-        // if (this.actualDistance < 1) {
-        //     this.actualDistance = 20
-        // }
-
-        // // distance cannot be higher than the starting distance
-        // else if (this.actualDistance > this.glyphStepsCount * 0.2) {
-        //     this.actualDistance = this.glyphStepsCount * 0.2
-        // }
-
-
-
 
         // Get new index
         if (!this.rewardEqual && lastValsEqual && lastDistance != undefined) {
@@ -448,42 +425,41 @@ class GlyphSet {
         
         // get new distance
         this.actualDistance = this.distanceSteps[this.stepIndex]
-        console.log(this.actualDistance)
 
 
 
         // this.actualDistance = Math.round(this.actualDistance)
 
-        console.log(this.actualDistance)
 
         // GET VALUES
         let offset = this.actualDistance / 2
 
         // Get the middle value. After adding or subtracting the offset, it cannot be lower than 0 or higher than the highest glyph.
-        let midVal = getRandomInt(offset, this.glyphStepsCount - offset - 1)
+        let midVal = getRandomInt(offset, 100 - offset - 1, 3)
+        console.log(midVal)
 
         let randomVal = getRandomInt(0,2)
 
         // higher, lower or equal
         if (randomVal == 0) {
-            val1 = Math.round(midVal - offset);
-            val2 = Math.round(midVal + offset);
+            val1 = midVal - offset;
+            val2 = midVal + offset;
         }
 
         else if (randomVal == 1) {
-            val1 = Math.round(midVal + offset);
-            val2 = Math.round(midVal - offset);
+            val1 = midVal + offset;
+            val2 = midVal - offset;
         }
 
         else {
-            val1 = getRandomInt(0, this.glyphStepsCount - 1);
+            val1 = getRandomInt(0, 100 - 1, 3);
             val2 = val1;
         }
 
 
 
         logMessage('-')
-        logMessage(`New glyph pair: ${this.id}, values: ${val1}, ${val2}, distance: ${Math.round(this.actualDistance)}, rotations: ${rotationValue1}, ${rotationValue2}, gamma: ${this.gamma}`)
+        logMessage(`New glyph pair: ${this.id}, values: ${val1.toFixed(2)}, ${val2.toFixed(2)}, distance: ${this.actualDistance.toFixed(2)}, rotations: ${rotationValue1}, ${rotationValue2}, gamma: ${this.gamma}`)
         
         return {val1:val1, val2:val2, distance:this.actualDistance, rotation:this.rotation, rotationValue1:rotationValue1, rotationValue2:rotationValue2}
     }
@@ -573,6 +549,7 @@ class GlyphSet {
 
         distances.sort((a, b) => a - b)
 
+        console.log(distances)
 
         // sort answers 
 
@@ -597,7 +574,7 @@ class GlyphSet {
                 })
 
                 // diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
-                diffsAndErrs[i].push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
+                diffsAndErrs[i].push({'x':(distance).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
             }
 
 
@@ -607,7 +584,7 @@ class GlyphSet {
 
             let distanceAnswers = allAnswers.filter(item => item.distance == distance)
 
-
+            console.log(distance.toFixed(2), distanceAnswers.length)
 
             distanceAnswers.forEach(answer => {
                 if (answer.correct) {
@@ -617,24 +594,22 @@ class GlyphSet {
                 count++
             })
 
-            console.log(distance / this.glyphStepsCount * 100)
 
             // diffsAndErrs[Math.round(distance / this.glyphStepsCount * 100)] = 100 - Math.round((correctCount / count) * 100)
-            diffsAndErrs[4].push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
-            diffsAndAnswerCount.push({'x':(distance / this.glyphStepsCount * 100).toFixed(2), 'y':distanceAnswers.length})
+            diffsAndErrs[4].push({'x':(distance).toFixed(2), 'y':100 - Math.round((correctCount / count) * 100)})
+            diffsAndAnswerCount.push({'x':(distance).toFixed(2), 'y':distanceAnswers.length})
         });
 
 
 
         // Glyph accuracy and value chart
-        
+        // FIXME: weird mean values, mainly cool line 2 with 980 glyphs
+
         let accuracyAndVal = []
         let valueGroup = 10
         
-        for (let i = 0; i < this.glyphStepsCount / valueGroup; i++) {
+        for (let i = 0; i < 10; i++) {
             let answerGroup = allAnswers.filter(answer => (answer.val1 + answer.val2) / 2 > valueGroup * i && (answer.val1 + answer.val2) / 2 <= valueGroup * (i + 1))
-
-            console.log(answerGroup)
 
             let correctCount = 0
 
@@ -650,11 +625,12 @@ class GlyphSet {
             accuracy = accuracy == 0 ? 1 : accuracy
             accuracy = isNaN(accuracy) || accuracy == null ? 0 : accuracy
 
-            console.log(accuracy)
 
             accuracyAndVal.push({'x': ((valueGroup * i) / this.glyphStepsCount) * 100, 'y':accuracy})
         }
 
+
+        console.log(diffsAndErrs)
 
         return [diffsAndErrs, accuracyAndVal, diffsAndAnswerCount]
     }
@@ -667,7 +643,6 @@ class GlyphSet {
         this.rotation = mode
         this.data.rotation = this.rotation
 
-        console.log(mode)
 
         await this.saveData()
     }
@@ -686,7 +661,16 @@ class GlyphSet {
 
 
 
-function getRandomInt(min, max) {
+function getRandomInt(min, max, digits=undefined) {
+    if (digits != undefined) {
+        min = (min/100) * 10 ** digits
+        max = (max/100) * 10 ** digits
+
+        let randomInt = Math.floor(Math.random() * (max - min + 1) ) + min;
+        return (randomInt / 10 ** digits) * 100
+    }
+
+
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 }
 

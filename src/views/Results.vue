@@ -140,6 +140,7 @@
                 x = chartData[0][0].map(obj => obj.x)
                 let rotations = []
 
+                console.log(x)
 
                 // all 5 curves for 1 set
                 for (let i = 0; i < 5; i++) {
@@ -194,6 +195,7 @@
                 x = chartData[1].map(obj => obj.x)
                 y = chartData[1].map(obj => obj.y)
 
+                console.log(chartData)
 
                 const color = `hsla(${colorHue[colorIndex]}, 95%, 55%, 1)`
 
@@ -210,6 +212,9 @@
                 
                 let average = y.reduce((a, b) => a + b, 0) / y.length
                 average = isNaN(average) ? 0 : average
+
+                console.log(average)
+                console.log(y)
 
                 let chartAnnotation = {
                     setId: glyphSetId,
@@ -298,52 +303,51 @@
 
 
             // GET IDEAL X LABEL - for standard lengths - 100, 1000, 10000
-            let prevDistance
-            let idealLabel = []
-            let gamma = this.glyphSets[0].gamma
+            // let prevDistance
+            // let idealLabel = []
+            // let gamma = this.glyphSets[0].gamma
 
-            let tempDistance
-            let setLength
-
-
-            // get right starting distance
-            this.glyphSets.forEach(set => {
-                if (isPowerOfTwenty(set.distance)) {
-                    tempDistance = set.distance
-                    setLength = set.glyphs.length
-                }
-            })
+            // let tempDistance
+            // let setLength
 
 
-            // if standard distance wasnt found, use first
-            if (tempDistance == undefined) {
-                tempDistance = this.glyphSets[0].distance
-            }
-
-            if (setLength == undefined) {
-                setLength = this.glyphSets[0].glyphs.length
-            }
-
+            // // get right starting distance
+            // this.glyphSets.forEach(set => {
+            //     if (isPowerOfTwenty(set.distance)) {
+            //         tempDistance = set.distance
+            //         setLength = set.glyphs.length
+            //     }
+            // })
 
 
-            for (let i = 0; i < lowestLabel.length; i++) {
-                // dont push duplicates
-                prevDistance != tempDistance ? idealLabel.push((tempDistance / (setLength / 100)).toFixed(2)) : null
+            // // if standard distance wasnt found, use first
+            // if (tempDistance == undefined) {
+            //     tempDistance = this.glyphSets[0].distance
+            // }
+
+            // if (setLength == undefined) {
+            //     setLength = this.glyphSets[0].glyphs.length
+            // }
+
+
+
+            // for (let i = 0; i < lowestLabel.length; i++) {
+            //     // dont push duplicates
+            //     prevDistance != tempDistance ? idealLabel.push((tempDistance / (setLength / 100)).toFixed(2)) : null
                 
-                // calculate new distance
-                prevDistance = tempDistance
-                tempDistance = Math.floor(tempDistance * gamma)
-            }
+            //     // calculate new distance
+            //     prevDistance = tempDistance
+            //     tempDistance = Math.floor(tempDistance * gamma)
+            // }
 
-            idealLabel = idealLabel.reverse()
-
+            // idealLabel = idealLabel.reverse()
 
 
 
             // Push data
-            this.charts.push({'datasets': this.chartDatasets, 'labels': idealLabel})
+            this.charts.push({'datasets': this.chartDatasets, 'labels': lowestLabel})
             this.charts.push({'datasets': chartDatasets2, 'labels': chartLabels2, 'annotations': chartAnnotations2})
-            this.charts.push({'datasets': chartDatasets3, 'labels': idealLabel, 'annotations': chartAnnotations3})
+            this.charts.push({'datasets': chartDatasets3, 'labels': lowestLabel, 'annotations': chartAnnotations3})
 
 
 
@@ -358,6 +362,18 @@
             let maxLength = Math.max(...datasetLengths)
 
             toRaw(toRaw(this.charts)[0].datasets).forEach(dataset => {
+                let datasetLength = dataset.data.length
+
+                if (datasetLength < maxLength) {
+                    let diff = maxLength - datasetLength
+
+                    for (let i = 0; i < diff; i++) {
+                        dataset.data.unshift(null)
+                    }
+                }
+            });
+
+            toRaw(toRaw(this.charts)[2].datasets).forEach(dataset => {
                 let datasetLength = dataset.data.length
 
                 if (datasetLength < maxLength) {
@@ -462,6 +478,7 @@
         justify-content: center;
         gap: 10rem;
         flex-wrap: wrap;
+        padding-bottom: 3rem;
     }
 
     .results {

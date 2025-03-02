@@ -6,7 +6,7 @@
         </div>
         
         <div class="infoBox" title="Average time to sort a pair of glyphs">
-            <p class="data">{{ glyphSet.sortTime }}s</p>
+            <p class="data">{{ time }}s</p>
             <p class="label">Time</p>
         </div>
 
@@ -28,7 +28,8 @@ export default {
     
     data() {
         return {
-            difference: 0
+            difference: 0,
+            time: 0,
         }
     },
 
@@ -36,6 +37,16 @@ export default {
     mounted() {
         // get stats
         this.glyphSet.getStats()
+
+        console.log(this.glyphSet.sortTime, isNaN(this.glyphSet.sortTime))
+
+        if (isNaN(this.glyphSet.sortTime)) {
+            this.time = 0
+        }
+
+        else {
+            this.time = this.glyphSet.sortTime
+        }
 
 
         nextTick(() => {

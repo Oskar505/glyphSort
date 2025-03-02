@@ -47,6 +47,22 @@
 
             <div class="sortingBtns generalSettingWrapper">
                 <h3 class="strong">Sorting buttons order</h3>
+                
+                <div class="answerBtnWrapper" @click="saveSortingBtnsOrder(0)" :style="{ 'border-color': btnsOrder === 0 ? 'var(--enabled)' : '' }">
+                    <div class="answerBtn">
+                        <p>></p>
+                    </div>
+
+                    <div class="answerBtn">
+                        <p>=</p>
+                    </div>
+
+                    <div class="answerBtn">
+                        <p><</p>
+                    </div>
+                </div>
+
+                
                 <div class="answerBtnWrapper" @click="saveSortingBtnsOrder(1)" :style="{ 'border-color': btnsOrder === 1 ? 'var(--enabled)' : '' }">
                     <div class="answerBtn">
                         <p><</p>
@@ -61,19 +77,7 @@
                     </div>
                 </div>
 
-                <div class="answerBtnWrapper" @click="saveSortingBtnsOrder(0)" :style="{ 'border-color': btnsOrder === 0 ? 'var(--enabled)' : '' }">
-                    <div class="answerBtn">
-                        <p>></p>
-                    </div>
-
-                    <div class="answerBtn">
-                        <p>=</p>
-                    </div>
-
-                    <div class="answerBtn">
-                        <p><</p>
-                    </div>
-                </div>
+                
             </div>
         </div>
 
@@ -229,20 +233,6 @@
                         glyphSet.glyphs = []
                     });
                 }
-
-                // convert distance steps and distance
-                data.forEach(glyphSet => {
-                    let newDistanceSteps = []
-
-                    glyphSet.distanceSteps.forEach(step => {
-                        newDistanceSteps.push(parseFloat((step / glyphSet.glyphStepsCount * 100).toFixed(2)))
-                    })
-
-                    glyphSet.distanceSteps = newDistanceSteps
-
-                    // distance
-                    glyphSet.distance = parseFloat((glyphSet.distance / glyphSet.glyphStepsCount * 100).toFixed(2))
-                })
 
 
                 const jsonString = JSON.stringify(data, null, 4)

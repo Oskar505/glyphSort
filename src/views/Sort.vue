@@ -151,8 +151,11 @@
 
                 let pickedSet = glyphSets[this.pickedSet]
 
-                this.img1 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val1])
-                this.img2 = await pickedSet.decodeGlyph(pickedSet.glyphs[this.val2])
+                let index1 = Math.round(this.val1 / 100 * pickedSet.glyphStepsCount)
+                let index2 = Math.round(this.val2 / 100 * pickedSet.glyphStepsCount)
+
+                this.img1 = await pickedSet.decodeGlyph(pickedSet.glyphs[index1])
+                this.img2 = await pickedSet.decodeGlyph(pickedSet.glyphs[index2])
 
 
                 this.newGlyphTimestamp = Date.now()
@@ -251,11 +254,11 @@
 
                 // Save new answer
                 let answerData = {
-                    "val1": parseFloat((this.val1 / glyphSet.glyphStepsCount * 100).toFixed(2)),
-                    "val2": parseFloat((this.val2 / glyphSet.glyphStepsCount * 100).toFixed(2)),
+                    "val1": this.val1,
+                    "val2": this.val2,
                     "btnId": logBtnId,
                     "correct": correct,
-                    'distance': parseFloat((glyphSet.actualDistance / glyphSet.glyphStepsCount * 100).toFixed(2)),
+                    'distance': glyphSet.actualDistance,
                     "time": Date.now() - this.newGlyphTimestamp,
                     "rotation": this.rotation,
                     "rotationValue1": this.rotationValue1,
@@ -275,7 +278,7 @@
                 this.animationClass = 'newGlyphs'
 
 
-                logMessage(`ANSWER: ${glyphSet.id} – ${Math.round(glyphSet.actualDistance)} (${this.val1} – ${this.val2}) – button: ${logBtnId} – ${correct ? '✓' : '✗'}`)
+                logMessage(`ANSWER: ${glyphSet.id} – ${glyphSet.actualDistance.toFixed(2)} (${this.val1.toFixed(2)} – ${this.val2.toFixed(2)}) – button: ${logBtnId} – ${correct ? '✓' : '✗'}`)
 
 
                 // reset feedbacks and get new glyphs
@@ -321,8 +324,13 @@
                     this.rotationValue1 = newGlyphData.rotationValue1
                     this.rotationValue2 = newGlyphData.rotationValue2
 
-                    this.img1 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val1])
-                    this.img2 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[this.val2])
+                    let index1 = Math.round(this.val1 / 100 * newGlyphSet.glyphStepsCount)
+                    let index2 = Math.round(this.val2 / 100 * newGlyphSet.glyphStepsCount)
+
+                    console.log(index1, index2)
+
+                    this.img1 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[index1])
+                    this.img2 = await newGlyphSet.decodeGlyph(newGlyphSet.glyphs[index2])
 
 
                     this.newGlyphTimestamp = Date.now()
