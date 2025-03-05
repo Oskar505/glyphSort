@@ -40,6 +40,7 @@
                 imageList: [],
                 images: [],
                 info: {},
+                glyphVals: [],
             };
         },
 
@@ -86,8 +87,8 @@
                     console.warn("Loadng only the first file.");
                 }
 
-                if (!file.name.endsWith(".zip")) {
-                    console.error("File is not a zip file");
+                if (!file.name.endsWith(".zip") || file.name.endsWith(".mglyph")) {
+                    console.warn("Unknown filetype");
                 }
 
 
@@ -120,6 +121,8 @@
                                 this.imageList = this.metadata.images;
                                 this.version = this.metadata.version;
 
+                                this.glyphVals = this.imageList.map(glyphInfo => glyphInfo[1])
+
                                 this.info = {
                                     "name":this.name,
                                     "author":this.author,
@@ -151,7 +154,7 @@
 
 
             async saveSet() {
-                await new GlyphSet(this.shortName, this.images, this.info).init()
+                await new GlyphSet(this.shortName, this.images, this.info, this.glyphVals).init()
 
                 this.closePopup()
                 this.$emit('setSaved')

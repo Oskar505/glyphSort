@@ -151,8 +151,8 @@
 
                 let pickedSet = glyphSets[this.pickedSet]
 
-                let index1 = Math.round(this.val1 / 100 * pickedSet.glyphStepsCount)
-                let index2 = Math.round(this.val2 / 100 * pickedSet.glyphStepsCount)
+                let index1 = pickedSet.getClosestIndex(this.val1)
+                let index2 = pickedSet.getClosestIndex(this.val2)
 
                 this.img1 = await pickedSet.decodeGlyph(pickedSet.glyphs[index1])
                 this.img2 = await pickedSet.decodeGlyph(pickedSet.glyphs[index2])
@@ -324,8 +324,8 @@
                     this.rotationValue1 = newGlyphData.rotationValue1
                     this.rotationValue2 = newGlyphData.rotationValue2
 
-                    let index1 = Math.round(this.val1 / 100 * newGlyphSet.glyphStepsCount)
-                    let index2 = Math.round(this.val2 / 100 * newGlyphSet.glyphStepsCount)
+                    let index1 = newGlyphSet.getClosestIndex(this.val1)
+                    let index2 = newGlyphSet.getClosestIndex(this.val2)
 
                     console.log(index1, index2)
 

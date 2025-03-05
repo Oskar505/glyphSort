@@ -79,11 +79,6 @@
             </div>
         </transition>
     </div>
-
-
-    <footer>
-        <p>Developed by <a href="https://github.com/Oskar505">Oskar Tvrďoch</a></p>
-    </footer>
 </template>
 
 
@@ -501,28 +496,6 @@
         opacity: 0;
     }
 
-
-
-
-    footer {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        padding: 1.5rem;
-        margin-top: 1rem;
-        color: var(--text2);
-        font-size: 1.3rem;
-        position: absolute;
-        top: 100lvh;
-        border-top: 1px solid var(--border2);
-        width: 100%;
-        display: none;
-    }
-
-
-    footer a {
-        color: var(--text);
-    }
 
 
 

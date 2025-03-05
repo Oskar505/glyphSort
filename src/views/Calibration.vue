@@ -105,6 +105,12 @@
             </div>
         </div>
     </main>
+
+
+    <section class="appInfo">
+        <p class="author">Developed by <a href="https://github.com/Oskar505" target="_blank">Oskar Tvrďoch</a></p>
+        <a class="about" href="https://tmgc.fit.vutbr.cz/" target="_blank">Learn more</a>
+    </section>
 </template>
 
 
@@ -544,6 +550,39 @@
         color: var(--page-bg);
         transition: 0.3s ease;
     }
+
+
+    .appInfo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 30rem;
+        margin: 0 auto;
+        padding: 1rem;
+        margin-top: 8rem;
+        color: var(--text2);
+        font-size: 1.5rem;
+        border: 0.3rem solid var(--border2);
+        border-radius: 1.5rem;
+        display: none;
+    }
+
+    .appInfo .author {
+        color: var(--text);
+        font-size: 1.5rem;
+    }
+
+
+    .appInfo a {
+        color: var(--text);
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+
+
 
 
     @media screen and (max-width: 1300px) {

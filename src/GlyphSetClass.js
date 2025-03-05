@@ -4,7 +4,7 @@ import { logMessage } from './views/Sort.vue'
 
 
 class GlyphSet {
-    constructor(id, glyphs=[], info={}, distance=20) {
+    constructor(id, glyphs=[], info={}, glyphVals=[], distance=20) {
         this.id = id
         this.info = info
         this.glyphs = glyphs
@@ -17,9 +17,9 @@ class GlyphSet {
         this.answers = []
         this.distanceSteps = []
         this.stepIndex = 0
+        this.glyphVals = toRaw(glyphVals)
 
         this.rotationClass = 'normalBtnOff'
-
 
 
 
@@ -69,12 +69,12 @@ class GlyphSet {
                         // ALGORITHM STEPS - get all possible steps for the set resolution - round only control value, save float
                         let tempDistance = this.distance
                         let prevDistance
-                        let digits = this.glyphStepsCount === 0 ? 1 : Math.floor(Math.log10(Math.abs(this.glyphStepsCount - 1))) + 1
                         let control = 20
                         let controls = []
 
                         while (control >= 1) {
                             // dont push duplicates
+                            // TODO: maybe it doesnt make sense
                             prevDistance != control ? this.distanceSteps.push(tempDistance) : null
                             prevDistance != control ? controls.push(control) : null
                             
@@ -94,6 +94,7 @@ class GlyphSet {
                             "author": this.info.author,
                             "version": this.info.version,
                             "glyphs": this.glyphs,
+                            "glyphVals": this.glyphVals,
                             "distance": this.distance,
                             "distanceSteps": this.distanceSteps,
                             "gamma": this.gamma,
@@ -110,6 +111,7 @@ class GlyphSet {
                     // Load glyph set
                     else {
                         this.glyphs = this.data.glyphs
+                        this.glyphVals = this.data.glyphVals
                         this.distance = this.data.distance
                         this.distanceSteps = this.data.distanceSteps
                         this.actualDistance = this.distance
@@ -655,6 +657,35 @@ class GlyphSet {
 
         else if (!this.rotation && this.rotationClass == 'normalBtnOn' && !hover) {
             this.rotationClass = 'normalBtnOff'
+        }
+    }
+
+
+    getClosestIndex(target, returnVal=false) {
+        let left = 0
+        let right = this.glyphVals.length - 1
+
+        // binary search
+        while (right - left > 1) {
+            let mid = Math.floor((left + right) / 2)
+
+            if (target > this.glyphVals[mid]) {
+                left = mid
+            } 
+            
+            else {
+                right = mid
+            }
+        }
+
+        
+        if (returnVal) {
+            // compare last two values
+            return Math.abs(this.glyphVals[left] - target) <= Math.abs(this.glyphVals[right] - target) ? this.glyphVals[left] : this.glyphVals[right]
+        }
+
+        else {
+            return Math.abs(this.glyphVals[left] - target) <= Math.abs(this.glyphVals[right] - target) ? left : right
         }
     }
 }
