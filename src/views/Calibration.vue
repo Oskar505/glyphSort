@@ -1,5 +1,5 @@
 <template>
-    <header-bar :activeBtn="-1" :selectedGlyphs="glyphSetIds"></header-bar>
+    <header-bar h1Text='Settings' :activeBtn="-1" :selectedGlyphs="glyphSetIds"></header-bar>
 
 
     <main>
@@ -104,13 +104,14 @@
                 <!-- <button id="confirmBtn" @click="calculateDPI()">Confirm</button> -->
             </div>
         </div>
+
+
+        <div class="appInfo">
+            <h2>About</h2>
+            <p class="author">Developed by <a href="https://github.com/Oskar505" target="_blank">Oskar Tvrďoch</a></p>
+            <a class="about" href="https://tmgc.fit.vutbr.cz/" target="_blank">Learn more</a>
+        </div>
     </main>
-
-
-    <section class="appInfo">
-        <p class="author">Developed by <a href="https://github.com/Oskar505" target="_blank">Oskar Tvrďoch</a></p>
-        <a class="about" href="https://tmgc.fit.vutbr.cz/" target="_blank">Learn more</a>
-    </section>
 </template>
 
 
@@ -555,23 +556,30 @@
     .appInfo {
         display: flex;
         justify-content: center;
-        align-items: center;
         flex-direction: column;
         gap: 0.5rem;
-        max-width: 30rem;
-        margin: 0 auto;
+        max-width: 50rem;
+        /* margin: 0 auto; */
         padding: 1rem;
-        margin-top: 8rem;
+        margin: 4rem 0 0 5rem;
         color: var(--text2);
-        font-size: 1.5rem;
+        font-size: 2.2rem;
         border: 0.3rem solid var(--border2);
         border-radius: 1.5rem;
         display: none;
     }
 
+    .appInfo h2 {
+        color: var(--text);
+        font-size: 3.2rem;
+    }
+
+    .author, .about {
+        margin-left: 0.5rem;
+    }
+
     .appInfo .author {
         color: var(--text);
-        font-size: 1.5rem;
     }
 
 

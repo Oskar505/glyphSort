@@ -1,5 +1,5 @@
 <template>
-    <header-bar :activeBtn="1" :selectedGlyphs="glyphSetIds"></header-bar>
+    <header-bar h1Text='Sort' :activeBtn="1" :selectedGlyphs="glyphSetIds"></header-bar>
 
     <main>
         <section v-show="glyphSets.length > 0">

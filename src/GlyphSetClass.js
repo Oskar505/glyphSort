@@ -15,7 +15,7 @@ class GlyphSet {
         this.glyphStepsCount = this.glyphs.length
         this.db = null
         this.answers = []
-        this.distanceSteps = []
+        this.distanceSteps = [distance]
         this.stepIndex = 0
         this.glyphVals = toRaw(glyphVals)
 
@@ -66,26 +66,6 @@ class GlyphSet {
 
                     // Create new glyph set
                     if (this.data == null || !this.data) {
-                        // ALGORITHM STEPS - get all possible steps for the set resolution - round only control value, save float
-                        let tempDistance = this.distance
-                        let prevDistance
-                        let control = 20
-                        let controls = []
-
-                        while (control >= 1) {
-                            // dont push duplicates
-                            // TODO: maybe it doesnt make sense
-                            prevDistance != control ? this.distanceSteps.push(tempDistance) : null
-                            prevDistance != control ? controls.push(control) : null
-                            
-                            // calculate new distance
-                            prevDistance = control
-                            tempDistance = tempDistance * this.gamma
-                            control = Math.round(tempDistance / 100 * this.glyphStepsCount)
-                        }
-
-                        console.log(this.distanceSteps)
-                        console.log(controls)
 
                         // save
                         this.data = {
@@ -94,13 +74,12 @@ class GlyphSet {
                             "author": this.info.author,
                             "version": this.info.version,
                             "glyphs": this.glyphs,
-                            "glyphVals": this.glyphVals,
                             "distance": this.distance,
-                            "distanceSteps": this.distanceSteps,
                             "gamma": this.gamma,
                             "glyphStepsCount": this.glyphStepsCount,
                             "rotation": this.rotation,
                             "answers": this.answers, // []
+                            "glyphVals": this.glyphVals,
                         }
 
                         await this.saveData(true)
@@ -113,7 +92,6 @@ class GlyphSet {
                         this.glyphs = this.data.glyphs
                         this.glyphVals = this.data.glyphVals
                         this.distance = this.data.distance
-                        this.distanceSteps = this.data.distanceSteps
                         this.actualDistance = this.distance
                         this.gamma = this.data.gamma
                         this.glyphStepsCount = this.glyphs.length
@@ -422,10 +400,20 @@ class GlyphSet {
 
 
         this.stepIndex = this.stepIndex < 0 ? 0 : this.stepIndex // is lower than 0
-        this.stepIndex = this.stepIndex > this.distanceSteps.length - 1 ? this.distanceSteps.length - 1 : this.stepIndex // is higher than the length
+        // this.stepIndex = this.stepIndex > this.distanceSteps.length - 1 ? this.distanceSteps.length - 1 : this.stepIndex // is higher than the length
         this.stepIndex = lastDistance === undefined ? 0 : this.stepIndex // is first
         
         // get new distance
+
+        // get new step if needed
+        if (this.stepIndex > this.distanceSteps.length - 1) {
+            for (let i = 0; i < this.progressStep; i++) {
+                let smallestDistance = this.distanceSteps[this.distanceSteps.length - 1]
+                this.distanceSteps.push(smallestDistance * this.gamma)
+            }
+        }
+
+
         this.actualDistance = this.distanceSteps[this.stepIndex]
 
 

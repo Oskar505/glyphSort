@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="headerContainer">
-            <h1 @click="clearStorage()">Home</h1>
+            <h1 @click="clearStorage()">{{ h1Text }}</h1>
 
             <nav>
                 <div @click="this.$router.push({path:'/', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})"><h2 :class="activeBtn == 0 ? 'navActive' : '' ">Home</h2></div>
@@ -26,6 +26,11 @@
             selectedGlyphs: {
                 type: Array,
                 default: []
+            },
+
+            h1Text: {
+                type: String,
+                default: "Home"
             }
         },
 

@@ -1,5 +1,5 @@
 <template>
-    <header-bar :activeBtn="2" :selectedGlyphs="this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []"></header-bar>
+    <header-bar h1Text='Results' :activeBtn="2" :selectedGlyphs="this.$route.query.glyphSetIds ? JSON.parse(this.$route.query.glyphSetIds) : []"></header-bar>
 
 
 
