@@ -593,7 +593,6 @@ class GlyphSet {
 
 
         // Glyph accuracy and value chart
-        // FIXME: weird mean values, mainly cool line 2 with 980 glyphs
 
         let accuracyAndVal = []
         let valueGroup = 10
@@ -659,7 +658,7 @@ class GlyphSet {
 
             if (target > this.glyphVals[mid]) {
                 left = mid
-            } 
+            }
             
             else {
                 right = mid
