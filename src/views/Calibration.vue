@@ -106,12 +106,15 @@
         </div>
 
 
-        <div class="appInfo">
-            <h2>About</h2>
-            <p class="author">Developed by <a href="https://github.com/Oskar505" target="_blank">Oskar Tvrďoch</a></p>
-            <a class="about" href="https://tmgc.fit.vutbr.cz/" target="_blank">Learn more</a>
-        </div>
+        
     </main>
+
+
+    <div class="appInfo">
+        <h2>About</h2>
+        <p class="author">Developed by <a href="https://github.com/Oskar505" target="_blank">Oskar Tvrďoch</a></p>
+        <a class="about" href="https://tmgc.fit.vutbr.cz/" target="_blank">Learn more</a>
+    </div>
 </template>
 
 
@@ -561,12 +564,12 @@
         max-width: 50rem;
         /* margin: 0 auto; */
         padding: 1rem;
-        margin: 4rem 0 0 5rem;
+        margin: 4rem 5rem 3rem 5rem;
         color: var(--text2);
         font-size: 2.2rem;
         border: 0.3rem solid var(--border2);
         border-radius: 1.5rem;
-        display: none;
+        /* display: none; */
     }
 
     .appInfo h2 {
@@ -602,6 +605,8 @@
 
 
     @media screen and (max-width: 700px) {
-
+        .appInfo {
+            max-width: none;
+        }
     }
 </style>

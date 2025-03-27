@@ -5,8 +5,10 @@
         <section v-show="glyphSets.length > 0">
             <div class="sortWrapper" :class="borderFeedback">
                 <div class="glyphCardWrapper">
-                    <glyph-card :value="img1" :rotationValue="rotationValue1" :class="animationClass"></glyph-card>
-                    <glyph-card :value="img2" :rotationValue="rotationValue2" :class="animationClass"></glyph-card>
+                    <glyph-card :value="img1" :rotationValue="rotationValue1" :class="animationClass" :isLoading="isLoading"></glyph-card>
+                    <glyph-card :value="img2" :rotationValue="rotationValue2" :class="animationClass" :isLoading="isLoading"></glyph-card>
+
+                    <loader :sort="true" v-if="isLoading"></loader>
                 </div>
                 
 
@@ -62,7 +64,6 @@
     <div class="floatingBtn" @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})">
         <svg xmlns="http://www.w3.org/2000/svg" height="4rem" viewBox="0 -960 960 960" width="4rem" fill="var(--text)"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
     </div>
-    
 </template>
 
 
@@ -94,6 +95,8 @@
 
                 lastCorrect: true,
 
+                isLoading: false,
+
                 btn0Feedback: '',
                 btn1Feedback: '',
                 btn2Feedback: '',
@@ -109,6 +112,9 @@
 
 
         async mounted() {
+            this.isLoading = true
+
+
             window.addEventListener('keydown', this.handleKeydown)
 
 
@@ -168,6 +174,9 @@
             // btns order
             this.btnsOrder = Number(this.$getCookie('sortingBtnsOrder')) ? Number(this.$getCookie('sortingBtnsOrder')) : 0
             
+
+
+            this.isLoading = false
         },
 
         beforeUnmount() {

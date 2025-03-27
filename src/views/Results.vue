@@ -45,6 +45,9 @@
             <h2>Select set on the <a href="/">home page</a></h2>
         </section>
     </main>
+
+
+    <loader v-if="isLoading"></loader>
 </template>
 
 
@@ -70,14 +73,14 @@
                 glyphStepsCount: null,
 
                 lineChartKey: 0,
+                isLoading: false
             }
         },
 
 
 
         async mounted() {
-            // chart line colors
-            
+            this.isLoading = true
 
 
             // re-init glyph sets and get stats
@@ -387,6 +390,9 @@
 
 
             console.log(this.charts)
+
+
+            this.isLoading = false
         },
 
 
@@ -516,7 +522,7 @@
         gap: 3rem;
         flex-grow: 1;
         position: sticky;
-        top: 5rem;
+        top: 3rem;
         width: 20%;
         height: 100%;
     }

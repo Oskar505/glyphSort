@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <img :src="value" alt="glyph" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px', transform: 'rotate(' + rotationValue + 'deg)' }">
+    <div :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px' }">
+        <img :src="value" v-show="!isLoading" alt="glyph" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px', transform: 'rotate(' + rotationValue + 'deg)' }">
     </div>
 </template>
 
@@ -33,7 +33,11 @@
             rotationValue: {
                 type: Number,
                 default: 0
+            },
 
+            isLoading: {
+                type: Boolean,
+                default: false
             }
         },
 

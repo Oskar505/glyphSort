@@ -79,6 +79,10 @@
             </div>
         </transition>
     </div>
+
+
+
+    <loader v-if="isLoading"></loader>
 </template>
 
 
@@ -99,6 +103,8 @@
                 floatingBtnHover: false,
                 floatingBtnClicks: 0,
                 rotationMode: 0,
+
+                isLoading: false
             }
         },
 
@@ -108,7 +114,10 @@
                 this.glyphSetList = []
 
 
-                this.setIdList.forEach(async glyphSetId => {
+                let imageTest = []
+
+
+                for (const glyphSetId of this.setIdList) {
                     try {
                         let glyphSet = new GlyphSet(glyphSetId)
                         await glyphSet.init()
@@ -116,11 +125,12 @@
                         this.glyphSetList.push(glyphSet)
                         await glyphSet.getStats()
 
+                        console.log(glyphSet.glyphs[glyphSet.glyphs.length - 1])
+
                         let previewImage = await glyphSet.decodeGlyph(glyphSet.glyphs[glyphSet.glyphs.length - 1])
 
-                        if (!this.previewImages.includes(previewImage)) {
-                            this.previewImages.push(previewImage)
-                        }
+                        this.previewImages.push(previewImage)
+                        imageTest.push(glyphSet.id)
 
 
                         // get rotation settings
@@ -133,7 +143,11 @@
                     catch (error) {
                         console.error(error)
                     } 
-                })
+                }
+
+
+                console.log(this.previewImages)
+                console.log(imageTest)
             },
 
 
@@ -235,7 +249,9 @@
 
 
 
-        mounted() {
+        async mounted() {
+            this.isLoading = true
+
             this.setIdList = localStorage.getItem("glyphSetList") ? JSON.parse(localStorage.getItem("glyphSetList")) : [];
             
 
@@ -250,7 +266,9 @@
 
 
 
-            this.getSavedSets()
+            await this.getSavedSets()
+
+            this.isLoading = false
         }
     }
 </script>

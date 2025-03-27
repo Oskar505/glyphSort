@@ -17,9 +17,10 @@
             <img src="" alt="preview image" id="previewImage">
 
             <div class="saveBtn" @click="saveSet"><p>Save</p></div>
+
+            <loader :fileInput="true" v-if="isLoading"></loader>
         </div>
     </div>
-    
 </template>
 
 
@@ -41,6 +42,7 @@
                 images: [],
                 info: {},
                 glyphVals: [],
+                isLoading: false
             };
         },
 
@@ -80,6 +82,9 @@
 
             
             async processFiles(files) {
+                this.isLoading = true
+
+
                 let file = files[0];
 
 
@@ -150,11 +155,18 @@
                 const imageElement = document.getElementById("previewImage");
                 imageElement.src = this.images[this.images.length - 1];
                 document.getElementById("filePreview").appendChild(imageElement);
+
+
+                this.isLoading = false
             },
 
 
             async saveSet() {
+                this.isLoading = true
+
                 await new GlyphSet(this.shortName, this.images, this.info, this.glyphVals).init()
+
+                this.isLoading = false
 
                 this.closePopup()
                 this.$emit('setSaved')

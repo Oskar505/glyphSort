@@ -44,6 +44,9 @@
     --shadow1: #eee;
     --shadow2: #dedede;
     --shadow3: #bababa;
+
+    /* loading */
+    --loading-filter: #ffffff4d;
   }
 
   [data-theme="dark"] {
@@ -70,6 +73,9 @@
     --shadow1: rgba(0, 0, 0, 0);
     --shadow2: rgba(0, 0, 0, 0);
     --shadow3: rgba(0, 0, 0, 0);
+
+    /* loading */
+    --loading-filter: #0000004d;
   }
 
 

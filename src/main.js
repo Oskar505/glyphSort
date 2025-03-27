@@ -10,6 +10,7 @@ import BarChart from './components/BarChart.vue'
 import FileInput from './components/FileInput.vue'
 import GlyphSetInfo from './components/GlyphSetInfo.vue'
 import HeaderBar from './components/HeaderBar.vue'
+import Loader from './components/Loader.vue'
 
 const app = createApp(App)
 
@@ -19,6 +20,7 @@ app.component('bar-chart', BarChart)
 app.component('file-input', FileInput)
 app.component('glyph-set-info', GlyphSetInfo)
 app.component('header-bar', HeaderBar)
+app.component('loader', Loader)
 
 app.use(createPinia())
 app.use(router)
