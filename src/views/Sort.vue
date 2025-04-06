@@ -4,13 +4,13 @@
     <main>
         <section v-show="glyphSets.length > 0">
             <div class="sortWrapper" :class="borderFeedback">
-                <div class="glyphCardWrapper">
-                    <glyph-card :value="img1" :rotationValue="rotationValue1" :class="animationClass" :isLoading="isLoading"></glyph-card>
-                    <glyph-card :value="img2" :rotationValue="rotationValue2" :class="animationClass" :isLoading="isLoading"></glyph-card>
-
-                    <loader :sort="true" v-if="isLoading"></loader>
-                </div>
                 
+                    <div class="glyphCardWrapper">
+                        <glyph-card :value="img1" :rotationValue="rotationValue1" :class="animationClass" :isLoading="isLoading"></glyph-card>
+                        <glyph-card :value="img2" :rotationValue="rotationValue2" :class="animationClass" :isLoading="isLoading"></glyph-card>
+
+                        <loader :sort="true" v-if="isLoading"></loader>
+                    </div>
 
 
                 <div class="answerBtnWrapper" v-if="btnsOrder === 0">
@@ -56,7 +56,7 @@
         
         <section class="middlePageWarning" v-if="glyphSets.length == 0">
             <h1>No set selected</h1>
-            <h2>Select set on the <a href="/">home page</a></h2>
+            <h2>Select it on the <router-link to="/">home page</router-link></h2>
         </section>
     </main>
 
@@ -68,7 +68,8 @@
 
 
 <script>
-    import GlyphSet from '../GlyphSetClass.js'
+    import router from '@/router.js'
+import GlyphSet from '../GlyphSetClass.js'
     import { toRaw } from 'vue'
 
 
@@ -95,7 +96,7 @@
 
                 lastCorrect: true,
 
-                isLoading: false,
+                isLoading: true,
 
                 btn0Feedback: '',
                 btn1Feedback: '',
@@ -698,6 +699,18 @@
 
     .newGlyphs {
         animation: newGlyphPairKeyFrame 400ms ease-in;
+    }
+
+
+
+    .fade2-enter-active,
+    .fade2-leave-active {
+        transition: opacity 3s ease;
+    }
+
+    .fade2-enter-from,
+    .fade2-leave-to {
+        opacity: 0;
     }
 
 

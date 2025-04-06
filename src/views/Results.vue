@@ -5,7 +5,7 @@
 
     <main>
         <section v-show="glyphSets.length > 0" style="width: 100%;" class="results">
-            <div class="setList">
+            <transition-group name="fade2" class="setList" tag="div">
                 <div class="setSelection resultBox" v-for="(glyphSet, index) in glyphSets" @click="toggleCurve(charts[0].datasets.filter(dataset => dataset.setId == glyphSet.id).map(dataset => dataset.label))" :key="glyphSet.id">
                     <div>
                         <h2 class="setHeader">{{ glyphSet.id.charAt(0).toUpperCase() + glyphSet.id.slice(1) }}</h2>
@@ -19,7 +19,7 @@
 
                     <glyph-set-info :glyphSet="glyphSet"></glyph-set-info>
                 </div>
-            </div>
+            </transition-group>
             
 
             <section class="charts">
@@ -42,7 +42,7 @@
 
         <section class="middlePageWarning" v-if="glyphSets.length == 0">
             <h1>No set selected</h1>
-            <h2>Select set on the <a href="/">home page</a></h2>
+            <h2>Select it on the <router-link to="/">home page</router-link></h2>
         </section>
     </main>
 

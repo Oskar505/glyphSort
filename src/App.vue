@@ -138,6 +138,22 @@
 
 
 
+  .fade2-enter-active {
+    transition: opacity 0.7s ease;
+  }
+
+  .fade2-leave-active {
+    transition: none;
+  }
+
+  .fade2-enter-from,
+  .fade2-leave-to {
+    opacity: 0;
+  }
+
+
+
+
 
 
   @media only screen and (max-width: 1700px) {

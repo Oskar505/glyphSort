@@ -1,55 +1,59 @@
 <template>
     <header-bar :activeBtn="0" :selectedGlyphs="selectedGlyphs"></header-bar>
 
+    <transition-group name="fade2" tag="div">
+        <section class="pickSets" v-if="glyphSetList.length > 0">
+            <div class="savedSetsWrapper" :class="glyphSetList.length == 1 ? 'smallSavedSetsWrapper' : ''">
 
-    <section class="pickSets" v-if="glyphSetList.length > 0">
-        <div class="savedSetsWrapper" :class="glyphSetList.length == 1 ? 'smallSavedSetsWrapper' : ''">
-            <div class="setPreviewWrapper" v-for="(glyphSet, index) in glyphSetList" :key="glyphSet.id" @click="handleSetSelection(glyphSet.id)" :class="selectedGlyphs.includes(glyphSet.id) ? 'selected' : 'notSelected'">
-                <h2>{{ glyphSet.name }}</h2>
-                <h3>{{ glyphSet.id }}</h3>
+                
+                    <div class="setPreviewWrapper" v-for="(glyphSet, index) in glyphSetList" :key="glyphSet.id" @click="handleSetSelection(glyphSet.id)" :class="selectedGlyphs.includes(glyphSet.id) ? 'selected' : 'notSelected'">
+                        <h2>{{ glyphSet.name }}</h2>
+                        <h3>{{ glyphSet.id }}</h3>
 
 
-                <div class="infoContent">
-                    <div class="infoWrapper">
-                        <div>
-                            <p class="info"><span class="lessImportant">Author: </span>{{ glyphSet.author }}</p>
-                            <p class="info"><span class="lessImportant">Image count: </span>{{ glyphSet.glyphs.length }}</p>
-                            <p class="info"><span class="lessImportant">Version: </span>{{ glyphSet.version }}</p>
-                        </div>
-                        
+                        <div class="infoContent">
+                            <div class="infoWrapper">
+                                <div>
+                                    <p class="info"><span class="lessImportant">Author: </span>{{ glyphSet.author }}</p>
+                                    <p class="info"><span class="lessImportant">Image count: </span>{{ glyphSet.glyphs.length }}</p>
+                                    <p class="info"><span class="lessImportant">Version: </span>{{ glyphSet.version }}</p>
+                                </div>
+                                
 
-                        <div class="setBtnWrapper">
-                            <svg class="deleteBtn" @click.stop="deleteSet(glyphSet)" xmlns="http://www.w3.org/2000/svg" height="2.8rem" viewBox="0 -960 960 960" width="2.8rem" fill="var(--text)">
-                                <title>Delete set</title>
-                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
-                            </svg>
+                                <div class="setBtnWrapper">
+                                    <svg class="deleteBtn" @click.stop="deleteSet(glyphSet)" xmlns="http://www.w3.org/2000/svg" height="2.8rem" viewBox="0 -960 960 960" width="2.8rem" fill="var(--text)">
+                                        <title>Delete set</title>
+                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                    </svg>
 
-                            <svg :class="glyphSet.data.answers.length == 0 ? 'disabledBtn' : 'deleteBtn'" @click.stop="glyphSet.deleteAnswers()" xmlns="http://www.w3.org/2000/svg" height="2.8rem" viewBox="0 -960 960 960" width="2.8rem" fill="var(--text)">
-                                <title>Delete answers</title>
-                                <path d="M240-800v200-200 640-9.5 9.5-640Zm0 720q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v174q-19-7-39-10.5t-41-3.5v-120H520v-200H240v640h254q8 23 20 43t28 37H240Zm396-20-56-56 84-84-84-84 56-56 84 84 84-84 56 56-83 84 83 84-56 56-84-83-84 83Z"/>
-                            </svg>
+                                    <svg :class="glyphSet.data.answers.length == 0 ? 'disabledBtn' : 'deleteBtn'" @click.stop="glyphSet.deleteAnswers()" xmlns="http://www.w3.org/2000/svg" height="2.8rem" viewBox="0 -960 960 960" width="2.8rem" fill="var(--text)">
+                                        <title>Delete answers</title>
+                                        <path d="M240-800v200-200 640-9.5 9.5-640Zm0 720q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v174q-19-7-39-10.5t-41-3.5v-120H520v-200H240v640h254q8 23 20 43t28 37H240Zm396-20-56-56 84-84-84-84 56-56 84 84 84-84 56 56-83 84 83 84-56 56-84-83-84 83Z"/>
+                                    </svg>
 
-                            <svg :class="glyphSet.data.answers.length == 0 ? 'disabledBtn' : 'normalBtnOff'" @click.stop="glyphSet.downloadAnswers()" xmlns="http://www.w3.org/2000/svg" height="2.8rem" viewBox="0 -960 960 960" width="2.8rem" fill="var(--text)">
-                                <title>Download answers</title>
-                                <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
-                            </svg>
+                                    <svg :class="glyphSet.data.answers.length == 0 ? 'disabledBtn' : 'normalBtnOff'" @click.stop="glyphSet.downloadAnswers()" xmlns="http://www.w3.org/2000/svg" height="2.8rem" viewBox="0 -960 960 960" width="2.8rem" fill="var(--text)">
+                                        <title>Download answers</title>
+                                        <path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <img :src="previewImages[index]" alt="preview image" class="previewImage">
                         </div>
                     </div>
+                
+                
 
-                    <img :src="previewImages[index]" alt="preview image" class="previewImage">
+                <div class="centerFileInput" :class="glyphSetList.length == 1 ? 'rightFileInput' : 'centerFileInput'">
+                    <file-input class="fileInput" @setSaved="reloadSets"/>
                 </div>
             </div>
-            
-
-            <div class="centerFileInput" :class="glyphSetList.length == 1 ? 'rightFileInput' : 'centerFileInput'">
-                <file-input class="fileInput" @setSaved="reloadSets"/>
-            </div>
-        </div>
         
 
         
-    </section>
-
+        </section>
+    </transition-group>
+                
 
     <section class="middlePageWarning" v-if="glyphSetList.length == 0">
         <h1>Nothing's here yet!</h1>

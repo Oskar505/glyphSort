@@ -1,7 +1,7 @@
 <template>
-    <div :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px' }">
-        <img :src="value" v-show="!isLoading" alt="glyph" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px', transform: 'rotate(' + rotationValue + 'deg)' }">
-    </div>
+    <transition-group name="fade2" tag="div" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px' }">
+        <img :src="value" v-if="!isLoading" alt="glyph" :style="{ width: glyphWidth + 'px', height: glyphWidth + 'px', transform: 'rotate(' + rotationValue + 'deg)' }">
+    </transition-group>
 </template>
 
 
@@ -37,7 +37,7 @@
 
             isLoading: {
                 type: Boolean,
-                default: false
+                default: true
             }
         },
 
