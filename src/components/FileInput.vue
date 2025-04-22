@@ -208,10 +208,10 @@
 }
 
 #dropZone {
-    width: 40rem;
-    height: 20rem;
+    width: 100rem;
+    height: 17rem;
     border: 0.2rem dashed var(--border2);
-    border-radius: 0.8rem;
+    border-radius: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -221,6 +221,7 @@
     font-size: 1.8rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin: 3rem 0;
 }
 
 #dropZone.dragover {

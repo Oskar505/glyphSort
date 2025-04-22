@@ -39,6 +39,7 @@
     /* highlight */
     --highlight-color: #000;
     --enabled: #4a90e2;
+    --enabled-bg: #ebf5ff;
 
     /* shadow */
     --shadow1: #eee;
@@ -68,6 +69,7 @@
     /* highlight */
     --highlight-color: #fff;
     --enabled: #4a90e2;
+    --enabled-bg: #1b2128;
 
     /* shadow */
     --shadow1: rgba(0, 0, 0, 0);

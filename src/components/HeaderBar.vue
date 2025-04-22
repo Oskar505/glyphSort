@@ -30,7 +30,7 @@
 
             h1Text: {
                 type: String,
-                default: "Home"
+                default: "Malleable Glyph Self-Evaluation Tool"
             }
         },
 
@@ -77,6 +77,10 @@
         user-select: none;
         display: flex;
         justify-content: center;
+        position: fixed;
+        inset: 0;
+        bottom: auto;
+        z-index: 100;
     }
 
     .headerContainer {

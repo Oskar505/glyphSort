@@ -68,8 +68,7 @@
 
 
 <script>
-    import router from '@/router.js'
-import GlyphSet from '../GlyphSetClass.js'
+    import GlyphSet from '../GlyphSetClass.js'
     import { toRaw } from 'vue'
 
 
