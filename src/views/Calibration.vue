@@ -269,6 +269,7 @@
         flex-wrap: wrap;
         gap: 4rem;
         padding: 0 5rem;
+        margin-top: 5.4rem;
     }
 
 
@@ -282,11 +283,11 @@
         background-color: var(--element-bg);
         box-shadow: 0 0 1.5rem var(--shadow2);
         border: 0.3rem solid var(--border2);
-        margin-top: 3%;
         padding: 1.5rem 2rem;
         user-select: none;
         max-width: 90%;
         margin: 0 auto;
+        margin-top: 3rem;
         min-width: 600px;
     }
 

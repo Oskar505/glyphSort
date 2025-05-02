@@ -1,9 +1,9 @@
 <template>
-    <header-bar h1Text='Sort' :activeBtn="1" :selectedGlyphs="glyphSetIds"></header-bar>
+    <header-bar h1Text='Evaluate' :activeBtn="1" :selectedGlyphs="glyphSetIds" :showNav="false"></header-bar>
 
     <main>
         <section v-show="glyphSets.length > 0">
-            <div class="sortWrapper" :class="borderFeedback">
+            <div class="sortWrapper">
                 
                     <div class="glyphCardWrapper">
                         <glyph-card :value="img1" :rotationValue="rotationValue1" :class="animationClass" :isLoading="isLoading"></glyph-card>
@@ -42,6 +42,13 @@
                 </div>
             </div>
 
+            <div class="finishedWrapper">
+                <div class="finishedBtn btn" @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})">
+                    Finished
+                </div>
+            </div>
+            
+
 
             <!-- <glyph-set-info :glyphSet="glyphSets[pickedSet]" :live="true" style="margin-top: 6%;" v-if="glyphSets[pickedSet]"/> -->
         </section>
@@ -59,11 +66,6 @@
             <h2>Select it on the <router-link to="/">home page</router-link></h2>
         </section>
     </main>
-
-
-    <div class="floatingBtn" @click="this.$router.push({path:'/results', query: {glyphSetIds: JSON.stringify(glyphSetIds)}})">
-        <svg xmlns="http://www.w3.org/2000/svg" height="4rem" viewBox="0 -960 960 960" width="4rem" fill="var(--text)"><path d="M662.82-440.39H145.87v-79.22h516.95L423.87-758.57 480-814.7 814.7-480 480-145.87l-56.13-55.56 238.95-238.96Z"/></svg>
-    </div>
 </template>
 
 
@@ -453,6 +455,7 @@
        max-width: 70rem;
        width: 100%;
        margin: 0 auto;
+       margin-top: 5.4rem;
        display: flex;
        flex-direction: column;
        align-items: center;
@@ -464,11 +467,9 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 5rem;
+        gap: 4rem;
         border-radius: 1.5rem;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 1.5rem var(--shadow2);
-        border: 0.3rem solid var(--border2);
         margin-top: 13%;
         padding: 5rem 9rem;
         user-select: none;
@@ -494,42 +495,39 @@
 
 
     .answerBtn {
-        font-size: 4.9rem;
+        font-size: 4.5rem;
         font-weight: 500;
         border: 0.3rem solid #444;
         color: #444;
         padding: 0 2.5rem;
         border-radius: 1.5rem;
         background-color: #fcfcfc;
-    }
-
-
-
-    .floatingBtn {
-        position: fixed;
-        bottom: 6rem;
-        right: clamp(3rem, 5.2vw, 8rem);
-        background-color: transparent;
-        border: 0.3rem solid var(--text);
-        border-radius: 50%;
-        padding: 0.7rem;
         cursor: pointer;
-        transition: 0.2s;
+    }
+
+
+
+    .finishedWrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-end;
+        margin: 3rem 0rem;
+    }
+
+    .finishedBtn {
+        font-size: 2.5rem;
+        font-weight: 500;
+        border: 0.2rem solid var(--text2);
+        color: var(--text2);
+        padding: 0.2rem 1.3rem;
+        border-radius: 1rem;
         background-color: var(--element-bg);
-        box-shadow: 0px 0px 1rem var(--shadow2);
-        transition: 0.3s ease;
+        cursor: pointer;
     }
 
-    .floatingBtn:hover {
-        border-color: var(--enabled);
-        background-color: var(--enabled);
-        transition: 0.3s ease;
-    }
 
-    .floatingBtn:hover svg{
-        fill: var(--page-bg);
-        transition: 0.3s ease;
-    }
+
 
 
 

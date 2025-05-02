@@ -15,7 +15,7 @@ const router = createRouter({
       path: '/sort',
       name: 'Sort',
       component: () => import('./views/Sort.vue'), // lazy-loaded
-      meta: { title: 'Self eval - Sort' }
+      meta: { title: 'Self eval - Evaluate' }
     },
     {
       path: '/results',

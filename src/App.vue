@@ -39,7 +39,7 @@
     /* highlight */
     --highlight-color: #000;
     --enabled: #4a90e2;
-    --enabled-bg: #ebf5ff;
+    --enabled-bg: #d6e4ff;
 
     /* shadow */
     --shadow1: #eee;
@@ -69,7 +69,7 @@
     /* highlight */
     --highlight-color: #fff;
     --enabled: #4a90e2;
-    --enabled-bg: #1b2128;
+    --enabled-bg: #263443;
 
     /* shadow */
     --shadow1: rgba(0, 0, 0, 0);
@@ -104,6 +104,19 @@
     background-color: var(--page-bg);
   }
 
+
+
+  .btn {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .btn:hover {
+    color: var(--page-bg) !important;
+    border-color: var(--enabled) !important;
+    background-color: var(--enabled) !important;
+    transition: 0.3s ease !important;
+  }
   
 
 

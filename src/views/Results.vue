@@ -485,12 +485,14 @@
         gap: 10rem;
         flex-wrap: wrap;
         padding-bottom: 3rem;
+        margin-top: 5.4rem;
     }
 
     .results {
         width: 100%;
         height: 100%;
         margin: 0 auto;
+        margin-top: 3rem;
         display: flex;
         gap: 3rem;
     }
@@ -522,7 +524,7 @@
         gap: 3rem;
         flex-grow: 1;
         position: sticky;
-        top: 3rem;
+        top: 8.4rem;
         width: 20%;
         height: 100%;
     }
