@@ -6,20 +6,30 @@
             <input type="file" id="fileInput" @change="handleFileSelect">
         </div>
 
-        <div id="filePreview" ref="targetElement">
-            <div>
-                <h1 id="fileName">{{ name }}</h1>
-                <h2>{{ shortName }}</h2>
-                <p class="info"><span class="lessImportant">Author: </span>{{ author }}</p>
-                <p class="info"><span class="lessImportant">Image count: </span>{{ imageList.length }}</p>
+        <transition name="modalFade">
+            <div class="modalWrapper" v-if="showPreview">
+                <div class="modalBackdrop" key="fileBackdrop"></div>
+
+                <div class="filePreview modal" ref="targetElement" key="fileModal" id="filePreview">
+                    <div>
+                        <h1 id="fileName">{{ name }}</h1>
+                        <h2>{{ shortName }}</h2>
+                        <p class="info"><span class="lessImportant">Author: </span>{{ author }}</p>
+                        <p class="info"><span class="lessImportant">Image count: </span>{{ imageList.length }}</p>
+                    </div>
+                    
+                    <img src="" alt="preview image" id="previewImage">
+
+                    <div class="btnWrapper">
+                        <div class="cancelBtn neutralBtn" @click="showPreview = false"><p>Cancel</p></div>
+                        <div class="saveBtn btn" @click="saveSet"><p>Save</p></div>
+                    </div>
+                    
+
+                    <loader :fileInput="true" v-if="isLoading"></loader>
+                </div>
             </div>
-            
-            <img src="" alt="preview image" id="previewImage">
-
-            <div class="saveBtn" @click="saveSet"><p>Save</p></div>
-
-            <loader :fileInput="true" v-if="isLoading"></loader>
-        </div>
+        </transition>
     </div>
 </template>
 
@@ -42,7 +52,8 @@
                 images: [],
                 info: {},
                 glyphVals: [],
-                isLoading: false
+                isLoading: false,
+                showPreview: false,
             };
         },
 
@@ -97,8 +108,10 @@
                 }
 
 
-                document.getElementById("dropZone").style.display = "none";
-                document.getElementById("filePreview").style.display = "flex";
+                // document.getElementById("dropZone").style.display = "none";
+                // document.getElementById("filePreview").style.display = "flex";
+
+                this.showPreview = true
 
 
                 const zip = new JSZip();
@@ -188,8 +201,10 @@
 
 
             closePopup() {
-                document.getElementById("dropZone").style.display = "flex";
-                document.getElementById("filePreview").style.display = "none";
+                // document.getElementById("dropZone").style.display = "flex";
+                // document.getElementById("filePreview").style.display = "none";
+
+                this.showPreview = false
             }
         },
     };
@@ -247,25 +262,17 @@ label {
 }
 
 
-#filePreview {
-    width: clamp(20rem, 80%, 100rem);
-    height: 50rem;
+.filePreview {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 5rem;
-    border-radius: 1.5rem;
     background-color: var(--element-bg);
-    box-shadow: 0 0 5rem var(--shadow3);
     border: 0.3rem solid var(--border2);
-    display: none;
-    padding: 1.5rem 3rem;
-    /* position: relative; */
-    position: absolute;
-    left: 50%;
-    top: 10%;
-    transform: translateX(-50%);
+    width: 50%;
+    min-height: 50rem;
+    padding: 2rem;
 }
 
 
@@ -301,6 +308,29 @@ h2 {
 }
 
 
+
+.btnWrapper {
+    position: absolute;
+    bottom: 5%;
+    right: 2rem;
+    /* transform: translateX(-133%); */
+    display: flex;
+    gap: 2rem;
+}
+
+.cancelBtn {
+    font-size: 2.7rem;
+    font-weight: 700;
+    color: var(--text);
+    background-color: var(--element-bg);
+    border: 0.3rem solid var(--text);
+    border-radius: 2.7rem;
+    cursor: pointer;
+    padding: 0.3em 0.7em;
+    transition: 0.3s ease;
+    user-select: none;
+}
+
 .saveBtn {
     font-size: 2.7rem;
     font-weight: 700;
@@ -309,21 +339,8 @@ h2 {
     border: 0.3rem solid var(--text);
     border-radius: 2.7rem;
     cursor: pointer;
-    position: absolute;
-    bottom: 0;
-    left: 100%;
-    transform: translateX(-133%);
     padding: 0.3em 0.7em;
-    margin-bottom: 1.5rem;
     transition: 0.3s ease;
     user-select: none;
-}
-
-
-.saveBtn:hover {
-    border-color: var(--enabled);
-    background-color: var(--enabled);
-    color: var(--page-bg);
-    transition: 0.3s ease;
 }
 </style>

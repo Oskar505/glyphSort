@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="headerContainer">
-            <h1 @click="clearStorage()">Malleable Glyph {{ dash }} <strong>{{ h1Text }}</strong></h1>
+            <h1>Malleable Glyph {{ dash }} <strong>{{ h1Text }}</strong></h1>
 
             <nav v-if="showNav">
                 <div @click="this.$router.push({path:'/', query: {glyphSetIds: JSON.stringify(selectedGlyphs)}})"><h2 :class="activeBtn == 0 ? 'navActive' : '' ">Home</h2></div>

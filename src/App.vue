@@ -23,6 +23,7 @@
   :root {
     /* bg */
     --page-bg: #fff;
+    --sidebar-btn-bg: #ffffff;
     --element-bg: #fcfcfc;
 
     /* text */
@@ -40,6 +41,7 @@
     --highlight-color: #000;
     --enabled: #4a90e2;
     --enabled-bg: #d6e4ff;
+    --delete: #f12626;
 
     /* shadow */
     --shadow1: #eee;
@@ -48,12 +50,15 @@
 
     /* loading */
     --loading-filter: #ffffff4d;
+
+    --modal-backdrop: #00000025;
   }
 
   [data-theme="dark"] {
     /* bg */
-    --element-bg: #222;
-    --page-bg: #111;
+    --element-bg: #212121;
+    --sidebar-btn-bg: #171717;
+    --page-bg: #121212;
 
     /* text */
     --header: #eee;
@@ -70,6 +75,7 @@
     --highlight-color: #fff;
     --enabled: #4a90e2;
     --enabled-bg: #263443;
+    --delete: #d32828;
 
     /* shadow */
     --shadow1: rgba(0, 0, 0, 0);
@@ -78,6 +84,9 @@
 
     /* loading */
     --loading-filter: #0000004d;
+
+
+    --modal-backdrop: #00000091;
   }
 
 
@@ -117,6 +126,91 @@
     background-color: var(--enabled) !important;
     transition: 0.3s ease !important;
   }
+
+
+  .btn {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .btn:hover {
+    color: var(--page-bg) !important;
+    border-color: var(--enabled) !important;
+    background-color: var(--enabled) !important;
+    transition: 0.3s ease !important;
+  }
+
+  .deleteBtn {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .deleteBtn:hover {
+    color: var(--page-bg) !important;
+    border-color: var(--delete) !important;
+    background-color: var(--delete) !important;
+    transition: 0.3s ease !important;
+  }
+
+
+  .neutralBtn {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .neutralBtn:hover {
+    color: var(--page-bg) !important;
+    border-color: var(--text) !important;
+    background-color: var(--border2) !important;
+    transition: 0.3s ease !important;
+  }
+
+
+  .disabled {
+    cursor: not-allowed !important;
+    color: var(--text3) !important;
+    border-color: var(--text3) !important;
+    background-color: var(--element-bg) !important;
+    transition: 0.3s ease !important;
+  }
+
+  .disabled:hover {
+    cursor: not-allowed !important;
+    color: var(--text3) !important;
+    border-color: var(--text3) !important;
+    background-color: var(--element-bg) !important;
+    transition: 0.3s ease !important;
+  }
+
+
+
+
+  .modalWrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+  }
+
+  .modalBackdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--modal-backdrop);
+    z-index: 999;
+  }
+
+  .modal {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    z-index: 1000;
+    width: 60%;
+    min-height: 55rem;
+    border: 0.3rem solid var(--border2);
+  }
   
 
 
@@ -132,6 +226,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    width: calc(100% - 30rem);
+    margin-top: 7rem;
+    position: absolute;
+    right: 0;
   }
 
   .middlePageWarning h1 {
@@ -143,7 +241,7 @@
     font-size: 3rem;
     font-weight: 500;
     color: var(--text);
-    margin-bottom: 1.3em;
+    margin-bottom: 0.3em !important;
   }
 
   .middlePageWarning a {
@@ -164,6 +262,22 @@
   .fade2-enter-from,
   .fade2-leave-to {
     opacity: 0;
+  }
+
+
+  .modalFade-enter-active,
+  .modalFade-leave-active {
+    transition: opacity 0.3s ease;
+  }
+
+  .modalFade-enter-from,
+  .modalFade-leave-to {
+    opacity: 0;
+  }
+
+  .modalFade-enter-to,
+  .modalFade-leave-from {
+    opacity: 1;
   }
 
 

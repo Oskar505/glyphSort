@@ -3,7 +3,6 @@
 
 
     <main>
-        
         <div class="generalSettingsWrapper settingsWrapper">
             <h2>General</h2>
 
@@ -101,7 +100,6 @@
             <div class="userInput">
                 <input type="range" id="slider" min="200" max="1800" step="10" :value=cardWidth @input="adjustWidth()">
                 <p class="dpiNum">DPI: {{ dpi }}</p>
-                <!-- <button id="confirmBtn" @click="calculateDPI()">Confirm</button> -->
             </div>
         </div>
 
